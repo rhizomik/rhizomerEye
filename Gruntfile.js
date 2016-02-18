@@ -71,7 +71,7 @@ module.exports = function (grunt) {
       options: {
         dest: 'app/scripts/config.js',
         name: 'config',
-        wrap: '"use strict";\n\n {%= __ngModule %}',
+        wrap: '\'use strict\';\n\n {%= __ngModule %}',
       },
       development: {
         constants: {
