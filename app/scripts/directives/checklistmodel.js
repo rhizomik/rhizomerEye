@@ -10,25 +10,32 @@ angular.module('rhizomerEyeApp')
   .directive('checklistModel', function () {
     return {
       restrict: 'A',
-      scope: true,
-      link: function postLink(scope, element, attrs) {
+      scope: {
+        checklistModel: '=',
+        checklistChanged: '=',
+        checklistValue: '@'
+      },
+      link: function postLink(scope, element) {
 
-        var checklistModel = scope.$eval(attrs.checklistModel);
-        var checklistValue = attrs.checklistValue;
+        var checklistOriginal = angular.copy(scope.checklistModel);
 
-        if (checklistModel.indexOf(checklistValue) >= 0) {
+        if (scope.checklistModel.indexOf(scope.checklistValue) >= 0) {
           element[0].checked = true;
         }
 
         element.bind('click', function() {
-          var index = checklistModel.indexOf(checklistValue);
+          var index = scope.checklistModel.indexOf(scope.checklistValue);
 
           if (element[0].checked && index < 0) {
-            checklistModel.push(checklistValue);
+            scope.checklistModel.push(scope.checklistValue);
           }
           else if (index >= 0) {
-            checklistModel.splice(index, 1);
+            scope.checklistModel.splice(index, 1);
           }
+
+          scope.checklistChanged.value = scope.checklistModel.toString() !== checklistOriginal.toString();
+          scope.$apply();
+
         });
       }
     };

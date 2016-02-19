@@ -1,19 +1,34 @@
-<div class="col-lg-10">
-  <h4>{{dataset.id}}</h4>
-  <p>{{dataset.sparqlEndPoint}}</p>
-  <p>Query type: {{dataset.queryType}}</p>
-  <p>Inference: {{dataset.inferenceEnabled}}</p>
-  <p>Sample size: {{dataset.sampleSize}}</p>
-  <p>Coverage: {{dataset.coverage}}</p>
-  <p>Dataset Graphs:
-    <li ng-repeat="datasetGraph in datasetGraphs">{{datasetGraph}}</li>
-  </p>
-  <p>Available Graphs:
+<h3>Dataset: {{dataset.id}}</h3>
+<section class="tab">
+  <ul class="nav nav-tabs">
+    <li ng-class="{active: tab.isSet(1)}">
+      <a href ng-click="tab.setTab(1)">Attributes</a></li>
+    <li ng-class="{active: tab.isSet(2)}">
+      <a href ng-click="tab.setTab(2)">Graphs</a></li>
+  </ul>
+  <div class="tab-message" ng-show="tab.isSet(1)">
+    <p>{{dataset.sparqlEndPoint}}</p>
+    <p>Query type: {{dataset.queryType}}</p>
+    <p>Inference: {{dataset.inferenceEnabled}}</p>
+    <p>Sample size: {{dataset.sampleSize}}</p>
+    <p>Coverage: {{dataset.coverage}}</p>
+    <p>Dataset Graphs:
+      <li ng-repeat="datasetGraph in datasetGraphs">{{datasetGraph}}</li>
+    </p>
+  </div>
+  <div class="tab-message" ng-show="tab.isSet(2)">
+    <div class="input-group">
+      <button type="button" class="btn btn-default" aria-label="Update Dataset Graphs"
+              ng-disabled="!isDatasetGraphsChanged.value"
+              ng-click="updateDatasetGraphs(newDatasetGraphs)">
+        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+      </button>
+    </div>
     <div class="checkbox" ng-repeat="serverGraph in serverGraphs | orderBy">
       <label>
-        <input type="checkbox" checklist-model="newDatasetGraphs" checklist-value="{{serverGraph}}"/>
+        <input type="checkbox" checklist-model="newDatasetGraphs" checklist-changed="isDatasetGraphsChanged" checklist-value="{{serverGraph}}"/>
         {{serverGraph}}
       </label>
     </div>
-  </p>
-</div>
+  </div>
+</section>
