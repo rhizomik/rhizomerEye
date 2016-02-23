@@ -21,10 +21,7 @@ angular.module('rhizomerEyeApp')
     };
 
     $scope.dataset = Dataset.get({id : $stateParams.id});
-    Dataset.datasetGraphs({id : $stateParams.id}, function(result) {
-      $scope.datasetGraphs = result;
-      $scope.newDatasetGraphs = angular.copy(result);
-    });
+    $scope.datasetGraphs = Dataset.datasetGraphs({id : $stateParams.id});
     $scope.serverGraphs = Dataset.serverGraphs({id : $stateParams.id});
     $scope.isDatasetGraphsChanged = { value: false };
 
