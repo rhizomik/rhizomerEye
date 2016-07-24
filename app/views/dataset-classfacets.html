@@ -1,0 +1,25 @@
+<h4>Dataset: {{dataset.id}}
+  <button type="submit" class="btn btn-default" aria-label="Edit Dataset" ui-sref="dataset-edit({id:dataset.id})">
+    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+  </button>
+</h4>
+<h3>Class: {{class.curie}} ({{class.instanceCount}})</h3>
+<div ng-show="error" class="alert alert-danger">{{error.message}}</div>
+<h4>Facets
+  <button type="button" class="btn btn-default" aria-label="Refresh Facets" ng-click="refreshFacets()">
+    <span class="glyphicon glyphicon-refresh" aria-hidden="false"></span>
+  </button>
+</h4>
+<div class="row" style="padding:15px 0px; margin: 5px 0px;" ng-repeat="facet in facets">
+  <div class="col-lg-12" style="border-bottom: 1px solid #e5e5e5; padding: 8px 2px;">
+    <div class="col-lg-10">
+      <h4>{{facet.label}}</h4>
+      <p>ID: {{facet.id}}</p>
+      <p>URI: {{facet.uri}}</p>
+      <p>Range: {{facet.range}}</p>
+      <p>Uses: {{facet.uses}}</p>
+      <p>Different values: {{facet.differentValues}}</p>
+      <p>Relation: {{facet.relation}}</p>
+    </div>
+  </div>
+</div>

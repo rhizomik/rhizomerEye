@@ -35,7 +35,11 @@ angular
       .state('dataset-classes', {
         url: '/datasets/{id}/classes',
         templateUrl: 'views/dataset-classes.html',
-        controller: 'DatasetClassesCtrl' });
+        controller: 'DatasetClassesCtrl' })
+      .state('dataset-classfacets', {
+        url: '/datasets/{did}/classes/{cid}/facets',
+        templateUrl: 'views/dataset-classfacets.html',
+        controller: 'DatasetClassFacetsCtrl' });
   })
   .run(function($state) {
         $state.go('datasets-list');
