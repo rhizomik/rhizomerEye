@@ -1,0 +1,16 @@
+<div>
+  <h1>New Dataset</h1>
+</div>
+<div ng-show="error" class="alert alert-danger">{{error}}</div>
+<form name="form" ng-submit="create(dataset)">
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" class="form-control" ng-model="dataset.id" placeholder="Unique name for the dataset"
+              required/>
+    <label>SPARQL Endpoint</label>
+    <input type="url" class="form-control" ng-model="dataset.sparqlEndPoint" placeholder="URL of the endpoint to build the dataset from"/>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Create dataset</button>
+  </div>
+</form>

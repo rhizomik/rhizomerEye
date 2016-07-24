@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name rhizomerEyeApp.controller:DatasetDetailCtrl
+ * @name rhizomerEyeApp.controller:DatasetEditCtrl
  * @description
- * # DatasetDetailCtrl
+ * # DatasetEditCtrl
  * Controller of the rhizomerEyeApp
  */
 angular.module('rhizomerEyeApp')
-  .controller('DatasetDetailCtrl', function ($scope, $stateParams, Dataset) {
+  .controller('DatasetEditCtrl', function ($scope, $state, $stateParams, Dataset) {
 
     $scope.tab = {
       selected: 1,
@@ -24,5 +24,16 @@ angular.module('rhizomerEyeApp')
     $scope.datasetGraphs = Dataset.datasetGraphs({id : $stateParams.id});
     $scope.serverGraphs = Dataset.serverGraphs({id : $stateParams.id});
     $scope.isDatasetGraphsChanged = { value: false };
+
+    $scope.updateDatasetGraphs = function(newGraphs) {
+      Dataset.updateDatasetGraphs({id : $stateParams.id}, newGraphs).$promise
+        .then(function () {
+          $state.go('dataset-detail', {id: $stateParams.id});
+        })
+        .catch(function (error) {
+          $scope.error = error;
+        });
+
+    };
 
   });

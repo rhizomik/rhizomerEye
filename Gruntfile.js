@@ -77,7 +77,7 @@ module.exports = function (grunt) {
         constants: {
           environment: {
             name: 'development',
-            api: '/rhizomerapi'
+            api: 'http://localhost:8080/rhizomerapi'
           }
         }
       },

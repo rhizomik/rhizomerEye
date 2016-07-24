@@ -1,4 +1,12 @@
 <h3>Dataset: {{dataset.id}}</h3>
+<div ng-show="error" class="alert alert-danger">{{error.message}}</div>
+<div>
+  <p>
+    <button type="button" class="btn btn-default" aria-label="Explore Dataset" ui-sref="dataset-explore({id:dataset.id})">
+      <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+    </button> Browse dataset
+  </p>
+</div>
 <section class="tab">
   <ul class="nav nav-tabs">
     <li ng-class="{active: tab.isSet(1)}">
@@ -39,7 +47,7 @@
         <div class="pull-right">
           <button type="button" class="btn btn-primary" aria-label="Update Dataset Graphs"
                   ng-disabled="!isDatasetGraphsChanged.value"
-                  ng-click="updateDatasetGraphs(newDatasetGraphs)">Update Dataset Graphs
+                  ng-click="updateDatasetGraphs(datasetGraphs)">Update Dataset Graphs
             <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
           </button>
         </div>

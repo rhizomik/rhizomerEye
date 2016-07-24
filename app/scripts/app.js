@@ -24,10 +24,14 @@ angular
         url: '/datasets',
         templateUrl: 'views/datasets-list.html',
         controller: 'DatasetsCtrl' })
-      .state('dataset-detail', {
-        url: '/datasets/{id}',
-        templateUrl: 'views/dataset-detail.html',
-        controller: 'DatasetDetailCtrl' });
+      .state('create-dataset', {
+        url: '/datasets/create',
+        templateUrl: 'views/dataset-form.html',
+        controller: 'DatasetCreateCtrl' })
+      .state('dataset-edit', {
+        url: '/datasets/{id}/edit',
+        templateUrl: 'views/dataset-edit.html',
+        controller: 'DatasetEditCtrl' });
   })
   .run(function($state) {
         $state.go('datasets-list');
