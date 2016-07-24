@@ -15,7 +15,7 @@ angular.module('rhizomerEyeApp')
     $scope.create = function(dataset) {
       Dataset.save(dataset).$promise
         .then(function () {
-          $state.go('dataset-detail', {id: dataset.id});
+          $state.go('dataset-edit', {id: dataset.id});
         })
         .catch(function (error) {
           $scope.error = error;

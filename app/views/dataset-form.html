@@ -1,7 +1,7 @@
 <div>
   <h1>New Dataset</h1>
 </div>
-<div ng-show="error" class="alert alert-danger">{{error}}</div>
+<div ng-show="error" class="alert alert-danger">{{error.message}}</div>
 <form name="form" ng-submit="create(dataset)">
   <div class="form-group">
     <label>Name</label>

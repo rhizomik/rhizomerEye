@@ -28,12 +28,11 @@ angular.module('rhizomerEyeApp')
     $scope.updateDatasetGraphs = function(newGraphs) {
       Dataset.updateDatasetGraphs({id : $stateParams.id}, newGraphs).$promise
         .then(function () {
-          $state.go('dataset-detail', {id: $stateParams.id});
+          $state.go('dataset-edit', {id: $stateParams.id});
         })
         .catch(function (error) {
           $scope.error = error;
         });
-
     };
 
   });
