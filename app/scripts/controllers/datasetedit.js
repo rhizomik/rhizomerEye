@@ -28,7 +28,7 @@ angular.module('rhizomerEyeApp')
     $scope.updateDatasetGraphs = function(newGraphs) {
       Dataset.updateDatasetGraphs({id : $stateParams.id}, newGraphs).$promise
         .then(function () {
-          $state.go('dataset-edit', {id: $stateParams.id});
+          $state.go('dataset-classes', {id: $stateParams.id});
         })
         .catch(function (error) {
           $scope.error = error;
