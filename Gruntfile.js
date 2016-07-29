@@ -99,17 +99,11 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
-      proxies: [{                   // grunt-connect-proxy
-        context: '/rhizomerapi',    // the context of the data service
-        host: 'localhost',          // wherever the data service is running
-        port: 8080                  // the port that the data service is running on
-      }],
       livereload: {
         options: {
-          open: true,
+          open: false,
           middleware: function (connect) {
             return [
-              require('grunt-connect-proxy/lib/utils').proxyRequest, // grunt-connect-proxy
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -468,7 +462,6 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'postcss:server',
-      'configureProxies:server',  // grunt-connect-proxy
       'connect:livereload',
       'watch'
     ]);
@@ -514,6 +507,5 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.loadNpmTasks('grunt-connect-proxy');  // grunt-connect-proxy
   grunt.loadNpmTasks('grunt-ng-constant');    // grunt-ng-constant
 };
