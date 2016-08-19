@@ -77,7 +77,7 @@ module.exports = function (grunt) {
         constants: {
           environment: {
             name: 'development',
-            api: 'http://localhost:8080/rhizomerapi'
+            api: 'http://localhost:8080'
           }
         }
       },
@@ -85,7 +85,7 @@ module.exports = function (grunt) {
         constants: {
           environment: {
             name: 'production',
-            api: 'http://rhizomik.net/rhizomerapi'
+            api: 'https://rhizomerapi.rhizomik.net'
           }
         }
       }
