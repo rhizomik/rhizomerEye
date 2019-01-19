@@ -1,6 +1,3 @@
-<h4 class="display-4">{{formTitle}}</h4>
-<p class="lead">{{formSubtitle}}</p>
-
 <form id="user-form" (ngSubmit)="onSubmit()" #form="ngForm">
   <fieldset>
 
@@ -12,14 +9,6 @@
       <div class="invalid-feedback">A username is required</div>
     </div>
 
-    <!-- E-Mail input -->
-    <div class="form-group" [class.was-validated]="email.dirty || email.touched">
-      <label class="control-label" for="email">E-Mail*</label>
-      <input id="email" name="email" type="email" class="form-control" required
-             [(ngModel)]="user.email" #email="ngModel">
-      <div class="invalid-feedback">A properly formatted e-mail is required</div>
-    </div>
-
     <!-- Password input -->
     <div class="form-group" [class.was-validated]="password.dirty || password.touched">
       <label class="control-label" for="password">Password*</label>
@@ -28,10 +17,17 @@
       <div class="invalid-feedback">A password longer than 8 characters is required</div>
     </div>
 
+    <!-- Role input -->
+    <div *ngIf="user.authorities.length" class="form-group" [class.was-validated]="role.dirty || role.touched">
+      <label class="control-label" for="role">Role*</label>
+      <input id="role" name="role" type="text" class="form-control" readonly
+             [(ngModel)]="user.authorities[0].authority" #role="ngModel">
+    </div>
+
     <!-- Button -->
     <div class="form-group">
       <button id="submit" type="submit" class="btn m-1 btn-success pull-right" [disabled]="!form.form.valid">Submit</button>
-      <button id="listBtn" type="button" [routerLink]="['..']" class="btn m-1 btn-outline-primary pull-right"><i style="margin-right: .25em" class="fa fa-angle-left"></i>Back</button>
+      <button id="listBtn" type="button" [routerLink]="['..']" class="btn m-1 btn-outline-primary pull-right">Back</button>
     </div>
 
   </fieldset>

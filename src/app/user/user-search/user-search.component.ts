@@ -1,5 +1,5 @@
-import {Component, Input, EventEmitter, Output} from '@angular/core';
-import {UserService} from '../user.service';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { UserService } from '../user.service';
 import { User } from '../../login-basic/user';
 
 @Component({
@@ -8,18 +8,14 @@ import { User } from '../../login-basic/user';
 })
 
 export class UserSearchComponent {
-  @Input()
-  users: User[];
-  @Output()
-  emitResults: EventEmitter<any> = new EventEmitter();
-
-  public errorMessage: string;
+  @Input() users: User[];
+  @Output() emitResults: EventEmitter<any> = new EventEmitter();
 
   constructor(private userService: UserService) {
   }
 
-  performSearch(searchTerm: string): void {
-    this.userService.findByUsernameContaining(searchTerm).subscribe(
+  performSearch(text: string): void {
+    this.userService.search(text).subscribe(
       users => {
         this.emitResults.emit(users);
       });

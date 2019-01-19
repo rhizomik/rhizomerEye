@@ -9,9 +9,6 @@ import { User } from '../../login-basic/user';
 })
 export class UserCreateComponent implements OnInit {
   public user: User;
-  public errorMessage: string;
-  public formTitle = 'Register User';
-  public formSubtitle = 'Register a new user with role USER';
 
   constructor(private router: Router,
               private userService: UserService) {
@@ -22,8 +19,7 @@ export class UserCreateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.userService.create(this.user)
-      .subscribe(
-        (user: User) => this.router.navigate([user.uri]));
+    this.userService.create(this.user).subscribe(
+      (user: User) => this.router.navigate(['users', user.id]));
   }
 }

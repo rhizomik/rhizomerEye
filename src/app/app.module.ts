@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,35 +18,27 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AboutComponent } from './about/about.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
-import { AdminListComponent } from './user/user-list/admin-list.component';
-import { AdminDetailComponent } from './user/user-detail/admin-detail.component';
-import { AdminCreateComponent } from './user/user-create/admin-create.component';
-import { AdminEditComponent } from './user/user-edit/admin-edit.component';
-import { AdminSearchComponent } from './user/user-search/admin-search.component';
-import { AdminService } from './user/admin.service';
 import { UserListComponent } from './user/user-list/user-list.component';
 import { UserDetailComponent } from './user/user-detail/user-detail.component';
 import { UserCreateComponent } from './user/user-create/user-create.component';
 import { UserEditComponent } from './user/user-edit/user-edit.component';
 import { UserSearchComponent } from './user/user-search/user-search.component';
 import { UserService } from './user/user.service';
+import { AdminService } from './user/admin.service';
 
 import { ListDatasetComponent } from './dataset/list-dataset/list-dataset.component';
 import { ListClassComponent } from './class/list-class/list-class.component';
 import { ListFacetComponent } from './facet/list-facet/list-facet.component';
 import { DetailDatasetComponent } from './dataset/detail-dataset/detail-dataset.component';
 import { DetailClassComponent } from './class/detail-class/detail-class.component';
+import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
+import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     AboutComponent,
-    AdminListComponent,
-    AdminDetailComponent,
-    AdminCreateComponent,
-    AdminEditComponent,
-    AdminSearchComponent,
     UserListComponent,
     UserDetailComponent,
     UserCreateComponent,
@@ -58,13 +50,16 @@ import { DetailClassComponent } from './class/detail-class/detail-class.componen
     ListFacetComponent,
     DetailDatasetComponent,
     DetailClassComponent,
+    CreateDatasetComponent,
+    EditDatasetComponent,
   ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    NgbModule.forRoot(),
+    NgbCollapseModule,
+    NgbDropdownModule,
     LoginBasicModule,
     ErrorHandlerModule,
   ],

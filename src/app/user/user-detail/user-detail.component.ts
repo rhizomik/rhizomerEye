@@ -9,9 +9,6 @@ import { User } from '../../login-basic/user';
 })
 export class UserDetailComponent implements OnInit {
   public user: User = new User();
-  public errorMessage: string;
-  public detailsPageTitle = 'User';
-  public detailsPageSubtitle = 'Details about a registered user with role USER';
 
   constructor(private route: ActivatedRoute,
               private userService: UserService,
