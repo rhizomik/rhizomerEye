@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Dataset } from '../dataset';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-detail-dataset',
@@ -19,12 +20,13 @@ export class DetailDatasetComponent implements OnInit {
 
   ngOnInit() {
     const datasetId = this.route.snapshot.paramMap.get('did');
-    this.datasetService.get(datasetId).subscribe(
-      (dataset: Dataset) => {
-        this.dataset = dataset;
-        this.datasetService.datasetGraphs(dataset.id).subscribe(
-          (graphs: string[]) => this.dataset.graphs = graphs
-        );
-      });
+    forkJoin([
+      this.datasetService.get(datasetId),
+      this.datasetService.datasetGraphs(datasetId)])
+    .subscribe(
+      ([dataset, graphs]) => {
+          this.dataset = dataset;
+          this.dataset.graphs = graphs;
+        });
   }
 }

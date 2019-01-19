@@ -18,15 +18,15 @@ export class EditDatasetComponent implements OnInit {
 
   ngOnInit() {
     const datasetId = this.route.snapshot.paramMap.get('did');
-    this.datasetService.get(datasetId).subscribe(
-      (dataset: Dataset) => {
+    forkJoin([
+      this.datasetService.get(datasetId),
+      this.datasetService.serverGraphs(datasetId),
+      this.datasetService.datasetGraphs(datasetId)])
+    .subscribe(
+      ([dataset, serverGraphs, datasetGraphs]) => {
         this.dataset = dataset;
-        this.datasetService.datasetGraphs(dataset.id).subscribe(
-          (graphs: string[]) => this.dataset.graphs = graphs
-        );
-        this.datasetService.serverGraphs(dataset.id).subscribe(
-          (graphs: string[]) => this.dataset.serverGraphs = graphs
-        );
+        this.dataset.serverGraphs = serverGraphs;
+        this.dataset.graphs = datasetGraphs;
       });
   }
 
@@ -39,7 +39,10 @@ export class EditDatasetComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.datasetService.updateGraphs(this.dataset.id, this.dataset.graphs).subscribe(
+    forkJoin([
+      this.datasetService.update(this.dataset),
+      this.datasetService.updateGraphs(this.dataset.id, this.dataset.graphs)])
+    .subscribe(
       () => this.router.navigate(['/datasets', this.dataset.id]));
   }
 
