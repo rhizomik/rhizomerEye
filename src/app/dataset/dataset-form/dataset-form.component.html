@@ -1,0 +1,44 @@
+<form id="dataset-form" (ngSubmit)="onSubmit()" #form="ngForm">
+  <fieldset>
+
+    <!-- Dataset name input -->
+    <div class="form-group" [class.was-validated]="name.dirty || name.touched">
+      <label class="control-label" for="name">Name*</label>
+      <input id="name" name="name" type="text" class="form-control" required
+             [(ngModel)]="dataset.id" #name="ngModel">
+      <div class="invalid-feedback">A dataset name is required</div>
+    </div>
+
+    <!-- Query Service input -->
+    <div class="form-group" [class.was-validated]="query.dirty || query.touched">
+      <label class="control-label" for="query">Query Service*</label>
+      <input id="query" name="query" type="url" class="form-control" required
+             [(ngModel)]="dataset.sparqlEndPoint" #query="ngModel">
+      <div class="invalid-feedback">At least a SPARQL query endpoint is required</div>
+    </div>
+
+    <!-- Update Service input -->
+    <div class="form-group" [class.was-validated]="update.dirty || update.touched">
+      <label class="control-label" for="update">Update Service*</label>
+      <input id="update" name="update" type="url" class="form-control"
+             [(ngModel)]="dataset.updateEndPoint" #update="ngModel">
+    </div>
+
+    <!-- Graphs checkboxes -->
+    <div class="row">
+      <label class="control-label col-12">Dataset Graphs</label>
+      <div *ngFor="let graph of dataset.serverGraphs" class="form-check col-lg-5 ml-3">
+        <input class="form-check-input" type="checkbox" value="{{graph}}"
+               (change)="graphChange(graph, $event.target.checked)" [checked]="isSelected(graph)">
+        <label class="form-check-label">{{graph}}</label>
+      </div>
+    </div>
+
+    <!-- Button -->
+    <div class="form-group">
+      <button id="submit" type="submit" class="btn m-1 btn-success pull-right" [disabled]="!form.form.valid">Submit</button>
+      <button id="listBtn" type="button" [routerLink]="['..']" class="btn m-1 btn-outline-primary pull-right">Cancel</button>
+    </div>
+
+  </fieldset>
+</form>

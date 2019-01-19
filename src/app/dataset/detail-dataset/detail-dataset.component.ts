@@ -20,6 +20,11 @@ export class DetailDatasetComponent implements OnInit {
   ngOnInit() {
     const datasetId = this.route.snapshot.paramMap.get('did');
     this.datasetService.get(datasetId).subscribe(
-      (dataset: Dataset) => { this.dataset = dataset; });
+      (dataset: Dataset) => {
+        this.dataset = dataset;
+        this.datasetService.datasetGraphs(dataset.id).subscribe(
+          (graphs: string[]) => this.dataset.graphs = graphs
+        );
+      });
   }
 }

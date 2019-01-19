@@ -19,15 +19,21 @@
     </div>
   </div>
   <div class="card-body row m-1">
-    <div class="col-md-4 p-1">
+    <div class="col-md-2 p-1">
       <h6 class="card-subtitle text-muted">Query Coverage</h6>
       <p class="card-text">{{dataset.coverage}}</p>
     </div>
-    <div class="col-md-4 p-1">
+    <div class="col-md-2 p-1">
       <h6 class="card-subtitle text-muted">Query Sample Size</h6>
       <p class="card-text">{{dataset.sampleSize}}</p>
     </div>
-    <div class="col-md-4 p-1">
+    <div class="col-md-8 p-1">
+      <h6 class="card-subtitle text-muted">Dataset Graphs</h6>
+      <p class="card-text">{{dataset.graphs}}</p>
+    </div>
+  </div>
+  <div class="card-footer text-right">
+    <div class="col-md-12 p-1">
       <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id, 'classes']"
               class="btn m-1 btn-outline-primary pull-right">
         <span class="fa fa-globe"></span> Explore</button>
