@@ -1,0 +1,41 @@
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <!-- app-facet-search (emitResults)="showSearchResults($event)" [facets]="facets"></app-facet-search -->
+  </div>
+</div>
+
+<div class="card mb-1" *ngFor="let facet of facets">
+  <div class="card-body row m-1">
+    <h4 class="card-title col-md-12 p-1">{{facet.label}}</h4>
+    <div class="col-md-2 p-1">
+      <h6 class="card-subtitle text-muted">Relationship?</h6>
+      <p class="card-text">{{facet.relation}}</p>
+    </div>
+    <div class="col-md-6 p-1">
+      <h6 class="card-subtitle text-muted">URI</h6>
+      <p class="card-text">{{facet.uri}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">CURIE</h6>
+      <p class="card-text">{{facet.curie}}</p>
+    </div>
+  </div>
+  <div class="card-body row m-1">
+    <div class="col-md-2 p-1">
+      <h6 class="card-subtitle text-muted">Times Used</h6>
+      <p class="card-text">{{facet.timesUsed}}</p>
+    </div>
+    <div class="col-md-6 p-1">
+      <h6 class="card-subtitle text-muted">Range</h6>
+      <p class="card-text">{{facet.range}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Different Values</h6>
+      <p class="card-text">{{facet.differentValues}}</p>
+    </div>
+  </div>
+</div>
+
+<p i18n class="text-center">Showing {{facets.length}} out of { totalFacets, plural,
+  =1 {1 class}
+  other { {{totalFacets}} facets} }</p>

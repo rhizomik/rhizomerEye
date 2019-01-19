@@ -1,0 +1,38 @@
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <!-- app-dataset-search (emitResults)="showSearchResults($event)" [datasets]="datasets"></app-dataset-search -->
+  </div>
+  <div class="col mb-3">
+    <button id="addBtn" type="button" [routerLink]="['/datasets/new']"
+            class="btn btn-primary pull-right">New Dataset</button>
+  </div>
+</div>
+
+<div class="card mb-1" *ngFor="let dataset of datasets">
+  <div class="card-body row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="['/datasets', dataset.id]">{{dataset.id}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Query Service</h6>
+      <p class="card-text">{{dataset.sparqlEndPoint}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Update Service</h6>
+      <p class="card-text">{{dataset.updateEndPoint}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <button id="editBtn" type="button" [routerLink]="['/datasets', dataset.id, 'edit']"
+              class="btn m-1 btn-outline-success pull-right">
+        <span class="fa fa-pencil"></span> Edit</button>
+      <button id="detailsBtn" type="button" [routerLink]="['/datasets', dataset.id]"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-info-circle"></span> Details</button>
+      <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id, 'classes']"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-globe"></span> Explore</button>
+    </div>
+  </div>
+</div>
+
+<p i18n class="text-center">Showing {{datasets.length}} out of { totalDatasets, plural,
+  =1 {1 dataset}
+  other { {{totalDatasets}} datasets} }</p>

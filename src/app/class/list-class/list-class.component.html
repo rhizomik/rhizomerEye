@@ -1,0 +1,31 @@
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <!-- app-class-search (emitResults)="showSearchResults($event)" [classes]="classes"></app-class-search -->
+  </div>
+</div>
+
+<div class="card mb-1" *ngFor="let clazz of classes">
+  <div class="card-body row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="[clazz.id]">{{clazz.label}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Count</h6>
+      <p class="card-text">{{clazz.instanceCount}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">CURIE</h6>
+      <p class="card-text">{{clazz.curie}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <button id="detailsBtn" type="button" [routerLink]="[clazz.id]"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-info-circle"></span> Details</button>
+      <button id="exploreBtn" type="button" [routerLink]="[clazz.id, 'facets']"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-globe"></span> Explore</button>
+    </div>
+  </div>
+</div>
+
+<p i18n class="text-center">Showing {{classes.length}} out of { totalClasses, plural,
+  =1 {1 class}
+  other { {{totalClasses}} classes} }</p>

@@ -1,0 +1,39 @@
+<div class="card mb-1">
+  <div class="card-body row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="['/datasets', dataset.id, 'classes']">{{dataset.id}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Query Service</h6>
+      <p class="card-text">{{dataset.sparqlEndPoint}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Update Service</h6>
+      <p class="card-text">{{dataset.updateEndPoint}}</p>
+    </div>
+    <div class="col-md-2 p-1">
+      <h6 class="card-subtitle text-muted">Query Type</h6>
+      <p class="card-text">{{dataset.queryType}}</p>
+    </div>
+    <div class="col-md-2 p-1">
+      <h6 class="card-subtitle text-muted">Inference?</h6>
+      <p class="card-text">{{dataset.inferenceEnabled}}</p>
+    </div>
+  </div>
+  <div class="card-body row m-1">
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Query Coverage</h6>
+      <p class="card-text">{{dataset.coverage}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Query Sample Size</h6>
+      <p class="card-text">{{dataset.sampleSize}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id, 'classes']"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-globe"></span> Explore</button>
+      <button id="editBtn" type="button" [routerLink]="['/datasets', dataset.id, 'edit']"
+              class="btn m-1 btn-outline-success pull-right">
+        <span class="fa fa-pencil"></span> Edit</button>
+    </div>
+  </div>
+</div>

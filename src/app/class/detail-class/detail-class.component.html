@@ -1,0 +1,31 @@
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <button id="listBtn" type="button" [routerLink]="['/dataset', datasetId, 'classes']"
+            class="btn btn-primary pull-right">Classes List</button>
+  </div>
+</div>
+
+<div class="card mb-1">
+  <div class="card-body row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="[clazz.id, 'facets']">{{clazz.label}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">Count</h6>
+      <p class="card-text">{{clazz.instanceCount}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">CURIE</h6>
+      <p class="card-text">{{clazz.curie}}</p>
+    </div>
+  </div>
+  <div class="card-body row m-1">
+    <div class="col-md-8 p-1">
+      <h6 class="card-subtitle text-muted">URI</h6>
+      <p class="card-text">{{clazz.uri}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <button id="exploreBtn" type="button" [routerLink]="[clazz.id, 'facets']"
+              class="btn m-1 btn-outline-primary pull-right">
+        <span class="fa fa-globe"></span> Explore</button>
+    </div>
+  </div>
+</div>

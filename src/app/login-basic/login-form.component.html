@@ -1,0 +1,29 @@
+<h4 class="display-4">Login</h4>
+<p class="lead">Please, provide your credentials to log in</p>
+
+<form id="login-form" (ngSubmit)="onSubmit(username, password)" #form="ngForm">
+  <fieldset>
+
+    <!-- Username input -->
+    <div class="form-group" [class.was-validated]="username.dirty || username.touched">
+      <label class="control-label" for="username">Username*</label>
+      <input id="username" name="username" type="text" class="form-control" required #username>
+      <div class="invalid-feedback">A username is required</div>
+    </div>
+
+    <!-- Password input -->
+    <div class="form-group" [class.was-validated]="password.dirty || password.touched">
+      <label class="control-label" for="password">Password*</label>
+      <input id="password" name="password" type="password" class="form-control" required minlength="8" maxlength="256"
+             #password>
+      <div class="invalid-feedback">A password longer than 8 characters is required</div>
+    </div>
+
+    <!-- Button -->
+    <div class="form-group">
+      <button id="submit" type="submit" class="btn btn-success pull-right" [disabled]="!form.form.valid">Submit</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div>
+
+  </fieldset>
+</form>

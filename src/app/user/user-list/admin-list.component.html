@@ -1,0 +1,33 @@
+<h4 class="display-4">Administrators</h4>
+<p class="lead">Administer the registered users with role admin</p>
+
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <app-admin-search (emitResults)="showSearchResults($event)" [admins]="admins"></app-admin-search>
+  </div>
+  <div class="col mb-3">
+    <button id="addBtn" class="btn btn-primary pull-right" type="button" [routerLink]="['/admins/new']">Add Administrator</button>
+  </div>
+</div>
+
+<div class="card mb-1 p-2" *ngFor="let admin of admins">
+  <div class="card-block row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="[admin.uri]">{{admin.id}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted"><i class="fa fa-ghost fa-sm prefix grey-text"></i>Username</h6>
+      <p class="card-text">{{admin.id}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">E-Mail</h6>
+      <p class="card-text">{{admin.email}}</p>
+    </div>
+    <div class="col-md-4 p-1" style="margin: auto">
+      <button id="editBtn" type="button" [routerLink]="[admin.uri, 'edit']" class="btn m-1 btn-outline-success pull-right"><i style="margin-right: .25em" class="fa fa-pencil"></i>Edit</button>
+      <button type="detailsBtn" type="button" [routerLink]="[admin.uri]" class="btn m-1 btn-outline-primary pull-right"><i style="margin-right: .25em" class="fa fa-info-circle"></i>Details</button>
+    </div>
+  </div>
+</div>
+
+<p i18n class="text-center mt-4">Showing {{admins.length}} out of { totalAdmins, plural,
+  =1 {1 admin}
+  other { {{totalAdmins}} admins} }</p>

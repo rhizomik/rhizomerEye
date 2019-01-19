@@ -1,0 +1,33 @@
+<h4 class="display-4">Users</h4>
+<p class="lead">Administer the registered users with role USER</p>
+
+<div class="row justify-content-between">
+  <div class="col mb-3">
+    <app-user-search (emitResults)="showSearchResults($event)" [users]="users"></app-user-search>
+  </div>
+  <div class="col mb-3">
+    <button id="addBtn" class="btn btn-primary pull-right" type="button" [routerLink]="['/users/new']">Add User</button>
+  </div>
+</div>
+
+<div class="card mb-1" *ngFor="let user of users">
+  <div class="card-block row m-1">
+    <h4 class="card-title col-md-12 p-1"><a [routerLink]="[user.uri]">{{user.id}}</a></h4>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted"><i class="fa fa-ghost fa-sm prefix grey-text"></i>Username</h6>
+      <p class="card-text">{{user.id}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <h6 class="card-subtitle text-muted">E-Mail</h6>
+      <p class="card-text">{{user.email}}</p>
+    </div>
+    <div class="col-md-4 p-1">
+      <button id="editBtn" type="button" [routerLink]="[user.uri, 'edit']" class="btn m-1 btn-outline-success pull-right"><i style="margin-right: .25em" class="fa fa-pencil"></i>Edit</button>
+      <button type="button" class="btn m-1 btn-outline-primary pull-right" [routerLink]="[user.uri]"><i style="margin-right: .25em" class="fa fa-info-circle"></i>Details</button>
+    </div>
+  </div>
+</div>
+
+<p i18n class="text-center">Showing {{users.length}} out of { totalUsers, plural,
+  =1 {1 user}
+  other { {{totalUsers}} users} }</p>

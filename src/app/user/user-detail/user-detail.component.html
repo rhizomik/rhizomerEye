@@ -1,0 +1,31 @@
+<h4 class="display-4">{{detailsPageTitle}}</h4>
+<p class="lead">{{detailsPageSubtitle}}</p>
+
+<div class="card mb-4">
+  <div class="card-block">
+    <h4 class="card-title col-md-12 p-3">{{user.id}}</h4>
+    <div class="p-3">
+      <h6 class="card-subtitle text-muted">Username</h6>
+      <p class="card-text">{{user.id}}</p>
+    </div>
+    <div class="p-3">
+      <h6 class="card-subtitle text-muted">E-Mail</h6>
+      <p class="card-text"><a href="mailto:{{user.email}}">{{user.email}}</a></p>
+    </div>
+    <div class="p-3">
+      <h6 class="card-subtitle text-muted">Role</h6>
+      <p class="card-text">{{user.authorities[0]?.authority.split('_')[1]}}</p>
+    </div>
+    <div class="card-footer text-right">
+        <button id="listBtn" type="button" [routerLink]="['..']"
+          class="btn m-1 btn-outline-primary"><i style="margin-right: .25em" class="fa fa-angle-left"></i>Back to List
+        </button>
+        <button id="editBtn" type="button" [routerLink]="['edit']"
+            class="btn m-1 btn-outline-success"><i style="margin-right: .25em" class="fa fa-pencil"></i>Edit
+        </button>
+        <button id="deleteBtn" type="button" (click)="delete()"
+            class="btn m-1 btn-outline-danger"><i style="margin-right: .25em" class="fa fa-bomb"></i>Delete
+        </button>
+      </div>
+  </div>
+</div>
