@@ -25,7 +25,7 @@
     </div>
 
     <!-- Graphs checkboxes -->
-    <div class="row" *ngIf="this.dataset.serverGraphs">
+    <div class="row" *ngIf="this.dataset.serverGraphs && this.dataset.serverGraphs.length > 0">
       <label class="control-label col-12">Dataset Graphs</label>
       <div *ngFor="let graph of dataset.serverGraphs" class="form-check col-lg-5 ml-3">
         <input class="form-check-input" type="checkbox" value="{{graph}}"

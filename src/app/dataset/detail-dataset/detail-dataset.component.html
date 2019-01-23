@@ -29,7 +29,8 @@
     </div>
     <div class="col-md-8 p-1">
       <h6 class="card-subtitle text-muted">Dataset Graphs</h6>
-      <p class="card-text">{{dataset.graphs}}</p>
+      <p *ngIf="!dataset.graphs?.length" class="card-text">Default graph</p>
+      <p *ngIf="dataset.graphs?.length" class="card-text">{{dataset.graphs}}</p>
     </div>
   </div>
   <div class="card-footer text-right">
