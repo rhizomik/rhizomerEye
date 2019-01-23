@@ -1,41 +1,28 @@
-<div class="row justify-content-between">
-  <div class="col mb-3">
-    <!-- app-facet-search (emitResults)="showSearchResults($event)" [facets]="facets"></app-facet-search -->
-  </div>
-</div>
+<div id="faceted" class="row">
 
-<div class="card mb-1" *ngFor="let facet of facets">
-  <div class="card-body row m-1">
-    <h4 class="card-title col-md-12 p-1">{{facet.label}}</h4>
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Relationship?</h6>
-      <p class="card-text">{{facet.relation}}</p>
+  <div id="facets" class="col-4 m-0">
+    <h5 class="p-1">Facets</h5>
+    <div class="row justify-content-between">
+      <div class="col mb-3">
+        <!-- app-facet-search (emitResults)="showSearchResults($event)" [facets]="facets"></app-facet-search -->
+      </div>
     </div>
-    <div class="col-md-6 p-1">
-      <h6 class="card-subtitle text-muted">URI</h6>
-      <p class="card-text">{{facet.uri}}</p>
+    <div class="card facet p-2 mb-2 info" *ngFor="let facet of facets">
+      <h6 class="card-title p-1 mb-1" title="{{facet.uri}}"><b>{{facet.label}}</b> ({{facet.timesUsed}})</h6>
+      <div class="card p-2 mb-1" *ngFor="let range of facet.ranges">
+        <p class="card-title p-1 m-0"><b>{{range.label}}</b> ({{range.timesUsed}})
+          <span class="fa fa-plus-circle" (click)="firstValues(facet, range)"></span>
+        </p>
+        <p class="card-text small pl-3 m-0" *ngFor="let value of range.values">{{value.label}} ({{value.count}})</p>
+      </div>
     </div>
-    <div class="col-md-4 p-1">
-      <h6 class="card-subtitle text-muted">CURIE</h6>
-      <p class="card-text">{{facet.curie}}</p>
-    </div>
+    <p i18n class="text-center">Showing {{facets.length}} out of { totalFacets, plural,
+      =1 {1 class}
+      other { {{totalFacets}} facets} }</p>
   </div>
-  <div class="card-body row m-1">
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Times Used</h6>
-      <p class="card-text">{{facet.timesUsed}}</p>
-    </div>
-    <div class="col-md-6 p-1">
-      <h6 class="card-subtitle text-muted">Range</h6>
-      <p class="card-text">{{facet.range}}</p>
-    </div>
-    <div class="col-md-4 p-1">
-      <h6 class="card-subtitle text-muted">Different Values</h6>
-      <p class="card-text">{{facet.differentValues}}</p>
-    </div>
-  </div>
-</div>
 
-<p i18n class="text-center">Showing {{facets.length}} out of { totalFacets, plural,
-  =1 {1 class}
-  other { {{totalFacets}} facets} }</p>
+  <div id="instances" class="col-8">
+    <h5 class="p-1">Instances</h5>
+  </div>
+
+</div>

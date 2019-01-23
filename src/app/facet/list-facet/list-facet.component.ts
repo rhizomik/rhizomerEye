@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Facet } from '../facet';
+import { Range } from '../../range/range';
 import { FacetService } from '../facet.service';
+import { RangeService } from '../../range/range.service';
+import { Value } from '../../range/value';
 
 @Component({
   selector: 'app-list-facet',
@@ -17,7 +20,8 @@ export class ListFacetComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private facetService: FacetService) {
+    private facetService: FacetService,
+    private rangeService: RangeService) {
   }
 
   ngOnInit() {
@@ -27,7 +31,16 @@ export class ListFacetComponent implements OnInit {
       (facets: Facet[]) => {
         this.facets = facets;
         this.totalFacets = facets.length;
+        this.facets.map(facet =>
+            this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
+              ranges => facet.ranges = ranges)
+        );
       });
+  }
+
+  firstValues(facet: Facet, range: Range) {
+    this.rangeService.getValues(this.datasetId, this.classId, facet.curie, range.curie).subscribe(
+      (values: Value[]) => range.values = values.map(value => new Value(value)));
   }
 
   showSearchResults(facets) {
