@@ -1,15 +1,14 @@
-import { Range } from '../range/range';
+import { Value } from './value';
 
-export class Facet {
+export class Range {
   id: string;
   uri: string;
   label: string;
-  range: string;
+  timesUsed : number;
+  differentValues : number;
   curie: string;
   relation: boolean;
-  timesUsed: number;
-  differentValues: number;
-  ranges: Range[];
+  values: Value[];
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
