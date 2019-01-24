@@ -5,6 +5,9 @@ import { Range } from '../../range/range';
 import { FacetService } from '../facet.service';
 import { RangeService } from '../../range/range.service';
 import { Value } from '../../range/value';
+import { ClassService } from '../../class/class.service';
+import { Resource } from '../../class/resource';
+import { Class } from '../../class/class';
 
 @Component({
   selector: 'app-list-facet',
@@ -16,10 +19,13 @@ export class ListFacetComponent implements OnInit {
   classId: string;
   facets: Facet[] = [];
   totalFacets = 0;
+  totalInstances = 0;
+  resources: Resource[];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private classService: ClassService,
     private facetService: FacetService,
     private rangeService: RangeService) {
   }
@@ -27,6 +33,10 @@ export class ListFacetComponent implements OnInit {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did');
     this.classId = this.route.snapshot.paramMap.get('cid');
+    this.classService.get(this.datasetId, this.classId).subscribe(
+      (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
+    this.classService.getInstances(this.datasetId, this.classId).subscribe(
+      (instances: any) => this.resources = instances['@graph'].map(instance => new Resource(instance)));
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
         this.facets = facets;
@@ -34,8 +44,7 @@ export class ListFacetComponent implements OnInit {
         this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
               ranges => facet.ranges = ranges)
-        );
-      });
+        );});
   }
 
   firstValues(facet: Facet, range: Range) {

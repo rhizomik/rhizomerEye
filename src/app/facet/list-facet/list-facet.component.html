@@ -2,18 +2,15 @@
 
   <div id="facets" class="col-4 m-0">
     <h5 class="p-1">Facets</h5>
-    <div class="row justify-content-between">
-      <div class="col mb-3">
-        <!-- app-facet-search (emitResults)="showSearchResults($event)" [facets]="facets"></app-facet-search -->
-      </div>
-    </div>
-    <div class="card facet p-2 mb-2 info" *ngFor="let facet of facets">
+    <div class="card facet p-2 mb-2" *ngFor="let facet of facets">
       <h6 class="card-title p-1 mb-1" title="{{facet.uri}}"><b>{{facet.label}}</b> ({{facet.timesUsed}})</h6>
-      <div class="card p-2 mb-1" *ngFor="let range of facet.ranges">
+      <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
         <p class="card-title p-1 m-0"><b>{{range.label}}</b> ({{range.timesUsed}})
-          <span class="fa fa-plus-circle" (click)="firstValues(facet, range)"></span>
+          <span class="fa fa-plus-circle" style="cursor: pointer" (click)="firstValues(facet, range)"></span>
         </p>
-        <p class="card-text small pl-3 m-0" *ngFor="let value of range.values">{{value.label}} ({{value.count}})</p>
+        <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
+           *ngFor="let value of range.values; let lastValue=last">{{value.label}} (<b>{{value.count}}</b>)
+        </p>
       </div>
     </div>
     <p i18n class="text-center">Showing {{facets.length}} out of { totalFacets, plural,
@@ -21,8 +18,21 @@
       other { {{totalFacets}} facets} }</p>
   </div>
 
-  <div id="instances" class="col-8">
+  <div id="instances" class="col-8 m-0">
     <h5 class="p-1">Instances</h5>
+    <div class="card mb-2" *ngFor="let resource of resources">
+      <div class="card-header">
+        <p class="card-text"><b>{{resource['@id']}}</b> a {{resource['@type']}}</p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item small" *ngFor="let property of resource.properties">
+          <b>{{property.name}}</b>: {{property.value}}
+        </li>
+      </ul>
+    </div>
+    <p i18n class="text-center">Showing {{resources?.length}} out of { totalInstances, plural,
+      =1 {1 class}
+      other { {{totalInstances}} instances} }</p>
   </div>
 
 </div>
