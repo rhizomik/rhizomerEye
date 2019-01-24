@@ -25,7 +25,7 @@ export class UserEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.user.authorities.length > 0 &&
-        this.user.authorities[0].authority.indexOf("ADMIN") > 0) {
+        this.user.authorities[0].authority.indexOf('ADMIN') > 0) {
       this.user.authorities = [];
       this.adminService.update(this.user)
       .subscribe(

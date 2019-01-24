@@ -25,16 +25,19 @@ export class Rest4Service<T> {
   }
 
   getAll(id1: string, id2: string, id3: string): Observable<T[]> {
-    return this.httpClient.get<T[]>(`${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}`);
+    return this.httpClient.get<T[]>(
+      `${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}`);
   }
 
   get(id1: string, id2: string, id3: string, id4: string): Observable<T> {
-    return this.httpClient.get<T>(`${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}/${id4}`);
+    return this.httpClient.get<T>(
+      `${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}/${id4}`);
   }
 
   create(id1: string, id2: string, id3: string, entity: T): Observable<T> {
     const body = JSON.stringify(entity);
-    return this.httpClient.post<T>(`${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}`,
+    return this.httpClient.post<T>(
+      `${environment.API}/${this.resource1}/${id1}/${this.resource2}/${id2}/${this.resource3}/${id3}/${this.resource4}`,
       body, this.getHttpOptions());
   }
 

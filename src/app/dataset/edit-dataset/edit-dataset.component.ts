@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset.service';
 import { Dataset } from '../dataset';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-edit-dataset',
@@ -31,7 +31,7 @@ export class EditDatasetComponent implements OnInit {
   }
 
   graphChange(graph: string, isChecked: boolean) {
-    if(isChecked) {
+    if (isChecked) {
       this.dataset.graphs.push(graph);
     } else {
       this.dataset.graphs = this.dataset.graphs.filter(item => item !== graph);

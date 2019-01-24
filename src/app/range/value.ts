@@ -1,14 +1,11 @@
 export class Value {
   value: string;
-  count : number;
+  count: number;
   curie: string;
   label: string;
 
   constructor(values: Object = {}) {
-    this.value = values['value'];
-    this.count = values['count'];
-    this.curie = values['curie'];
-    this.label = values['label'];
+    Object.assign(<any>this, values);
 
     if (!this.label) {
       if (this.curie) {

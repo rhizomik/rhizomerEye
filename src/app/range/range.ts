@@ -4,8 +4,8 @@ export class Range {
   id: string;
   uri: string;
   label: string;
-  timesUsed : number;
-  differentValues : number;
+  timesUsed: number;
+  differentValues: number;
   curie: string;
   relation: boolean;
   values: Value[];
