@@ -44,7 +44,8 @@ export class ListFacetComponent implements OnInit {
         this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
               ranges => facet.ranges = ranges)
-        );});
+        );
+      });
   }
 
   firstValues(facet: Facet, range: Range) {

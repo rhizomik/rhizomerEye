@@ -9,7 +9,7 @@ export class Value {
 
     if (!this.label) {
       if (this.curie) {
-        this.label = this.curie;
+        this.label = this.curie.split(':')[1];
       } else {
         this.label = this.value;
       }

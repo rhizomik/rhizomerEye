@@ -3,13 +3,14 @@
   <div id="facets" class="col-4 m-0">
     <h5 class="p-1">Facets</h5>
     <div class="card facet p-2 mb-2" *ngFor="let facet of facets">
-      <h6 class="card-title p-1 mb-1" title="{{facet.uri}}"><b>{{facet.label}}</b> ({{facet.timesUsed}})</h6>
+      <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b> ({{facet.timesUsed}})</h6>
       <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
-        <p class="card-title p-1 m-0"><b>{{range.label}}</b> ({{range.timesUsed}})
+        <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b> ({{range.timesUsed}})
           <span class="fa fa-plus-circle" style="cursor: pointer" (click)="firstValues(facet, range)"></span>
         </p>
         <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
-           *ngFor="let value of range.values; let lastValue=last">{{value.label}} (<b>{{value.count}}</b>)
+           *ngFor="let value of range.values; let lastValue=last">
+          <span [title]="value.curie? value.value : ''">{{value.label}}</span> (<b>{{value.count}}</b>)
         </p>
       </div>
     </div>
