@@ -6,7 +6,7 @@ import { FacetService } from '../facet.service';
 import { RangeService } from '../../range/range.service';
 import { Value } from '../../range/value';
 import { ClassService } from '../../class/class.service';
-import { Resource } from '../../class/resource';
+import { Description } from '../../class/description';
 import { Class } from '../../class/class';
 
 @Component({
@@ -20,7 +20,7 @@ export class ListFacetComponent implements OnInit {
   facets: Facet[] = [];
   totalFacets = 0;
   totalInstances = 0;
-  resources: Resource[];
+  resources: Description[];
 
   constructor(
     private router: Router,
@@ -36,7 +36,7 @@ export class ListFacetComponent implements OnInit {
     this.classService.get(this.datasetId, this.classId).subscribe(
       (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
     this.classService.getInstances(this.datasetId, this.classId).subscribe(
-      (instances: any) => this.resources = instances['@graph'].map(instance => new Resource(instance)));
+      (instances: any) => this.resources = instances['@graph'].map(instance => new Description(instance)));
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
         this.facets = facets;

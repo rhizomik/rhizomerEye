@@ -1,6 +1,6 @@
 import { Property } from './property';
 
-export class Resource {
+export class Description {
   '@id': string;
   '@type': string;
   properties: Property[] = [];
