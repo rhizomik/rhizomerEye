@@ -11,7 +11,7 @@ export class Value {
       if (this.curie) {
         this.label = this.curie.split(':')[1];
       } else {
-        this.label = this.value;
+        this.label = this.value.split('^^')[0];
       }
     }
   }
