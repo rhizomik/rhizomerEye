@@ -4,6 +4,10 @@ export class Property {
 
   constructor(name: string, value: any) {
     this.name = name;
-    this.value = value;
+    if (value['@language']) {
+      this.value = value['@value'];
+    } else {
+      this.value = value;
+    }
   }
 }
