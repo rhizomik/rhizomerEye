@@ -1,26 +1,26 @@
 <div id="faceted" class="row">
 
   <div id="facets" class="col-4 m-0">
-    <h5 class="p-1">Facets</h5>
+    <h5 class="p-1">Facets <span class="badge badge-warning badge-pill">{{totalFacets}}</span></h5>
     <div class="card facet p-2 mb-2" *ngFor="let facet of facets">
-      <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b> ({{facet.timesUsed}})</h6>
+      <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b>
+        <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span></h6>
       <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
-        <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b> ({{range.timesUsed}})
-          <span class="fa fa-plus-circle" style="cursor: pointer" (click)="firstValues(facet, range)"></span>
+        <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
+          <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
+          <span class="fa fa-plus-circle ml-1" style="cursor: pointer" (click)="firstValues(facet, range)"></span>
         </p>
         <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
            *ngFor="let value of range.values; let lastValue=last">
-          <span [title]="value.curie? value.value : ''">{{value.label}}</span> (<b>{{value.count}}</b>)
+          <span [title]="value.curie? value.value : ''">{{value.label}}</span>
+          <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
         </p>
       </div>
     </div>
-    <p i18n class="text-center">Showing {{facets.length}} out of { totalFacets, plural,
-      =1 {1 class}
-      other { {{totalFacets}} facets} }</p>
   </div>
 
   <div id="instances" class="col-8 m-0">
-    <h5 class="p-1">Instances</h5>
+    <h5 class="p-1">Instances <span class="badge badge-warning badge-pill">{{totalInstances}}</span></h5>
     <div class="card mb-2" *ngFor="let resource of resources">
       <div class="card-header">
         <p class="card-text"><b>{{resource['@id']}}</b> a {{resource['@type']}}</p>
