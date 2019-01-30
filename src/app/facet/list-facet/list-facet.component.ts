@@ -36,7 +36,14 @@ export class ListFacetComponent implements OnInit {
     this.classService.get(this.datasetId, this.classId).subscribe(
       (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
     this.classService.getInstances(this.datasetId, this.classId).subscribe(
-      (instances: any) => this.resources = instances['@graph'].map(instance => new Description(instance)));
+      (instances: any) => {
+        if (instances['@graph']) {
+          this.resources = instances['@graph']
+            .map(instance => new Description(instance));
+        } else {
+          this.resources = [new Description(instances)];
+        }
+      });
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
         this.facets = facets;
