@@ -12,7 +12,7 @@ export class RestService<T> {
     this.resource = resource;
   }
 
-  private getHttpOptions() {
+  protected getHttpOptions() {
     return {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
