@@ -47,7 +47,7 @@ export class ListFacetComponent implements OnInit {
       });
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
-        this.facets = facets;
+        this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
         this.totalFacets = facets.length;
         this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(

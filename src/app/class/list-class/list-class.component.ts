@@ -29,7 +29,7 @@ export class ListClassComponent implements OnInit {
   loadClassList() {
     this.classService.getAll(this.datasetId).subscribe(
       (classes: Class[]) => {
-        this.classes = classes;
+        this.classes = classes.sort((a, b) => a.label.localeCompare(b.label));
         this.totalClasses = classes.length;
       });
   }
