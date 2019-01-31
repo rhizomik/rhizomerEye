@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Facet } from '../facet';
-import { Range } from '../../range/range';
+import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
+import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
 import { RangeService } from '../../range/range.service';
-import { Value } from '../../range/value';
-import { ClassService } from '../../class/class.service';
-import { Description } from '../../class/description';
 import { Class } from '../../class/class';
+import { Facet } from '../facet';
+import { Range } from '../../range/range';
+import { Value } from '../../range/value';
+import { Description } from '../../class/description';
+import { Filter } from '../../breadcrumb/filter';
 
 @Component({
   selector: 'app-list-facet',
@@ -20,11 +22,12 @@ export class ListFacetComponent implements OnInit {
   facets: Facet[] = [];
   totalFacets = 0;
   totalInstances = 0;
-  resources: Description[];
+  resources: Description[] = [];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private breadcrumbService: BreadcrumbService,
     private classService: ClassService,
     private facetService: FacetService,
     private rangeService: RangeService) {
@@ -35,16 +38,8 @@ export class ListFacetComponent implements OnInit {
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.classService.get(this.datasetId, this.classId).subscribe(
       (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
-    this.classService.getInstances(this.datasetId, this.classId).subscribe(
-      (instances: any) => {
-        if (instances['@graph']) {
-          this.resources = instances['@graph']
-            .filter(instance => instance['@type'])
-            .map(instance => new Description(instance));
-        } else {
-          this.resources = [new Description(instances)];
-        }
-      });
+    this.breadcrumbService.filtersSelection.subscribe(
+      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
         this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
@@ -56,9 +51,34 @@ export class ListFacetComponent implements OnInit {
       });
   }
 
+  refreshInstances(datasetId: string, classId: string, filters: Filter[]) {
+    this.classService.getInstances(datasetId, classId, filters).subscribe(
+      (instances: any) => {
+        if (instances['@graph']) {
+          this.resources = instances['@graph']
+          .filter(instance => instance['@type'])
+          .map(instance => new Description(instance));
+        } else if (instances['@type']) {
+          this.resources = [new Description(instances)];
+        } else {
+          this.resources = [];
+        }
+      });
+  }
+
   firstValues(facet: Facet, range: Range) {
     this.rangeService.getValues(this.datasetId, this.classId, facet.curie, range.curie).subscribe(
       (values: Value[]) => range.values = values.map(value => new Value(value)));
+  }
+
+  filterValue(facet: Facet, value: Value) {
+    if (!value.selected) {
+      this.breadcrumbService.addFacetFilter(this.classId, facet, value);
+      value.selected = true;
+    } else {
+      this.breadcrumbService.removeFacetFilter(this.classId, facet, value);
+      value.selected = false;
+    }
   }
 
   showSearchResults(facets) {
