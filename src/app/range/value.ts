@@ -1,8 +1,10 @@
 export class Value {
   value: string;
   count: number;
+  uri: string;
   curie: string;
   label: string;
+  selected = false;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
