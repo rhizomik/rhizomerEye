@@ -23,8 +23,11 @@
   <div id="instances" class="col-8 m-0">
     <h5 class="p-1">Instances <span class="badge badge-warning badge-pill">{{totalInstances}}</span></h5>
     <div class="card mb-2" *ngFor="let resource of resources">
+      <img *ngIf="resource.depiction" class="card-img-top" src="{{resource.depiction}}" alt="resource depiction">
       <div class="card-header">
-        <p class="card-text"><b>{{resource['@id']}}</b> a {{resource['@type']}}</p>
+        <p class="card-text"><b>{{resource.label || resource['@id']}}</b>
+          <span class="badge badge-secondary badge-pill float-right">{{resource['@type']}}</span>
+        </p>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item small" *ngFor="let property of resource.properties">

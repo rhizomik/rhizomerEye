@@ -57,7 +57,7 @@ export class ListFacetComponent implements OnInit {
         if (instances['@graph']) {
           this.resources = instances['@graph']
           .filter(instance => instance['@type'])
-          .map(instance => new Description(instance));
+          .map(instance => new Description(instance, instances['@context']));
         } else if (instances['@type']) {
           this.resources = [new Description(instances)];
         } else {
