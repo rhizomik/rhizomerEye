@@ -34,4 +34,9 @@ export class BreadcrumbService {
       (filter.classId !== classId || filter.facet.id !== facet.id || filter.value.value !== value.value));
     this.filtersSelection.next(this.filters);
   }
+
+  clearFilter() {
+    this.filters = [];
+    this.filtersSelection.next(this.filters);
+  }
 }

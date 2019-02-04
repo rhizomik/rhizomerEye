@@ -1,3 +1,6 @@
+import { Filter } from '../breadcrumb/filter';
+import { Facet } from '../facet/facet';
+
 export class Value {
   value: string;
   count: number;
@@ -6,7 +9,7 @@ export class Value {
   label: string;
   selected = false;
 
-  constructor(values: Object = {}) {
+  constructor(values: Object = {}, facet: Facet, filters: Filter[]) {
     Object.assign(<any>this, values);
 
     if (!this.label) {
@@ -16,5 +19,7 @@ export class Value {
         this.label = this.value.split('^^')[0];
       }
     }
+    this.selected = filters.filter((filter: Filter) =>
+      (filter.facet.id === facet.id && filter.value.value === this.value)).length > 0;
   }
 }

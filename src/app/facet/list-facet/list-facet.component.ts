@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -10,13 +11,15 @@ import { Range } from '../../range/range';
 import { Value } from '../../range/value';
 import { Description } from '../../class/description';
 import { Filter } from '../../breadcrumb/filter';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list-facet',
   templateUrl: './list-facet.component.html',
   styleUrls: ['./list-facet.component.css']
 })
-export class ListFacetComponent implements OnInit {
+export class ListFacetComponent implements OnInit, OnDestroy {
+  ngUnsubscribe: Subject<void> = new Subject<void>();
   datasetId: string;
   classId: string;
   facets: Facet[] = [];
@@ -38,7 +41,7 @@ export class ListFacetComponent implements OnInit {
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.classService.get(this.datasetId, this.classId).subscribe(
       (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
-    this.breadcrumbService.filtersSelection.subscribe(
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
       (facets: Facet[]) => {
@@ -67,8 +70,11 @@ export class ListFacetComponent implements OnInit {
   }
 
   firstValues(facet: Facet, range: Range) {
-    this.rangeService.getValues(this.datasetId, this.classId, facet.curie, range.curie).subscribe(
-      (values: Value[]) => range.values = values.map(value => new Value(value)));
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => {
+        this.rangeService.getValues(this.datasetId, this.classId, facet.curie, range.curie, filters).subscribe(
+          (values: Value[]) => range.values = values.map(value => new Value(value, facet, filters)));
+      });
   }
 
   filterValue(facet: Facet, value: Value) {
@@ -83,5 +89,11 @@ export class ListFacetComponent implements OnInit {
 
   showSearchResults(facets) {
     this.facets = facets;
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.breadcrumbService.clearFilter();
   }
 }
