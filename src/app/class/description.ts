@@ -13,7 +13,10 @@ export class Description {
         switch (key) {
           case '@id': { this['@id'] = value; break; }
           case '@type': { this['@type'] = value; break; }
-          case 'label': { this.label = value; break; }
+          case 'label': {
+            if (value['@language']) { this.label = value['@value']; } else { this.label = value; }
+            break;
+          }
           case 'depiction': {
             if (context['depiction']['@id'] === 'http://xmlns.com/foaf/0.1/depiction') { this.depiction = value; }
             break;
