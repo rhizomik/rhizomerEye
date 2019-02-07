@@ -96,4 +96,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
   }
+
+  filterAll(facet: Facet) {
+    this.breadcrumbService.addFacetFilter(this.classId, facet, null);
+  }
 }

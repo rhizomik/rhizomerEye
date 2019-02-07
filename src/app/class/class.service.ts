@@ -19,7 +19,11 @@ export class ClassService extends Rest2Service<Class> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
       params = params.append(filter.facet.uri,
-        (filter.value.uri ? '<' + filter.value.uri + '>' : '"' + filter.value.value + '"')));
+        (filter.value ?
+          (filter.value.uri ?
+            '<' + filter.value.uri + '>'
+            : '"' + filter.value.value + '"')
+          : null)));
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/classes/${cid}/instances`, {params: params});
   }
