@@ -12,7 +12,8 @@ export class Description {
       ([key, value]) => {
         switch (key) {
           case '@id': { this['@id'] = value; break; }
-          case '@type': { this['@type'] = value; break; }
+          case '@type': { this['@type'] = this.processTypes(value); break; }
+          case '@context': { break; }
           case 'label': {
             if (value['@language']) { this.label = value['@value']; } else { this.label = value; }
             break;
@@ -25,5 +26,23 @@ export class Description {
         }
       }
     );
+  }
+
+  processTypes(value: any): string {
+    if (value instanceof Array) {
+      return value.map((url: string) => this.localName(url)).join(', ');
+    } else {
+      return this.localName(value);
+    }
+  }
+
+  localName(url: string): string {
+    if (url.indexOf('#') > 0) {
+      return url.substring(url.lastIndexOf('#') + 1);
+    } else if (url.indexOf('/') > 0) {
+      return url.substring(url.lastIndexOf('/') + 1);
+    } else {
+      return url;
+    }
   }
 }
