@@ -62,7 +62,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           .filter(instance => instance['@type'])
           .map(instance => new Description(instance, instances['@context']));
         } else if (instances['@type']) {
-          this.resources = [new Description(instances)];
+          this.resources = [new Description(instances, instances['@context'])];
         } else {
           this.resources = [];
         }
