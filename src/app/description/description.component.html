@@ -1,0 +1,21 @@
+<div class="card mb-2">
+  <img *ngIf="description.depiction" class="card-img-top" src="{{description.depiction}}" alt="resource depiction">
+  <div class="card-header">
+    <p class="card-text">
+      <b *ngIf="description['@id']">{{description.label || description['@id']}}</b>
+      <span *ngIf="!description['@id']" class="fa fa-minus-circle ml-1"></span>
+      <span class="badge badge-secondary badge-pill float-right">{{description['@type']}}</span>
+    </p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item small" *ngFor="let property of description.properties">
+      <b title="{{property.uri}}">{{property.label}}</b>:
+      <span *ngFor="let value of property.values; let firstValue=first">
+        <app-description *ngIf="isAnonResource(value)"
+          [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
+        </app-description>
+        <span *ngIf="!isAnonResource(value)"><span *ngIf="!firstValue">, </span>{{value}}</span>
+      </span>
+    </li>
+  </ul>
+</div>

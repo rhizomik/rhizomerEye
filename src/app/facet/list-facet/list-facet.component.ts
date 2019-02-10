@@ -9,7 +9,7 @@ import { Class } from '../../class/class';
 import { Facet } from '../facet';
 import { Range } from '../../range/range';
 import { Value } from '../../range/value';
-import { Description } from '../../class/description';
+import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
 
@@ -25,7 +25,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   facets: Facet[] = [];
   totalFacets = 0;
   totalInstances = 0;
+  datasetClass: Class = new Class();
   resources: Description[] = [];
+  anonResources: Map<string, Description> = new Map<string, Description>();
 
   constructor(
     private router: Router,
@@ -40,7 +42,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.datasetId = this.route.snapshot.paramMap.get('did');
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.classService.get(this.datasetId, this.classId).subscribe(
-      (datasetClass: Class) => this.totalInstances = datasetClass.instanceCount);
+      (datasetClass: Class) => {
+        this.datasetClass = datasetClass;
+        this.totalInstances = datasetClass.instanceCount;
+    });
     this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
     this.facetService.getAll(this.datasetId, this.classId).subscribe(
@@ -59,8 +64,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       (instances: any) => {
         if (instances['@graph']) {
           this.resources = instances['@graph']
-          .filter(instance => instance['@type'])
-          .map(instance => new Description(instance, instances['@context']));
+            .filter(instance => instance['@type'] && instance['@type'] === this.datasetClass.uri )
+            .map(instance => new Description(instance, instances['@context']));
+          instances['@graph']
+            .filter(instance => (<string>instance['@id']).startsWith('_:'))
+            .map(instance => this.anonResources.set( instance['@id'], new Description(instance, instances['@context'])));
         } else if (instances['@type']) {
           this.resources = [new Description(instances, instances['@context'])];
         } else {

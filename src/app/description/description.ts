@@ -11,7 +11,9 @@ export class Description {
     Object.entries(values).forEach(
       ([key, value]) => {
         switch (key) {
-          case '@id': { this['@id'] = value; break; }
+          case '@id': {
+            if ((<string>value).startsWith('_:')) { this['@id'] = null;
+            } else { this['@id'] = value; } break; }
           case '@type': { this['@type'] = this.processTypes(value); break; }
           case '@context': { break; }
           case 'label': {
