@@ -11,6 +11,7 @@ export class DescriptionComponent implements OnInit {
   description: Description;
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
+  depictionExpanded = false;
 
   constructor() { }
 
@@ -23,5 +24,9 @@ export class DescriptionComponent implements OnInit {
 
   getAnonResource(value: any) {
     return this.anonDescriptions.get(value);
+  }
+
+  switchExpansion() {
+    this.depictionExpanded = !this.depictionExpanded;
   }
 }
