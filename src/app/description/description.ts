@@ -20,10 +20,9 @@ export class Description {
             if (value['@language']) { this.label = value['@value']; } else { this.label = value; }
             break;
           }
-          case 'depiction': {
-            if (context['depiction']['@id'] === 'http://xmlns.com/foaf/0.1/depiction') { this.depiction = value; }
-            break;
-          }
+          case 'http://xmlns.com/foaf/0.1/depiction': {
+            if (value['@id']) { this.depiction = value['@id']; } else { this.depiction = value; }
+            break; }
           default: this.properties.push(new Property(key, value));
         }
       }
