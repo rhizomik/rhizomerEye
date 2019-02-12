@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -25,6 +25,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   facets: Facet[] = [];
   totalFacets = 0;
   totalInstances = 0;
+  filteredInstances = 0;
   datasetClass: Class = new Class();
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
@@ -60,11 +61,17 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   refreshInstances(datasetId: string, classId: string, filters: Filter[]) {
-    this.classService.getInstances(datasetId, classId, filters).subscribe(
-      (instances: any) => {
+    this.filteredInstances = 0;
+    forkJoin([
+      this.classService.getInstances(datasetId, classId, filters),
+      this.classService.getInstancesCount(datasetId, classId, filters)])
+    .subscribe(
+      ([instances, count]) => {
         if (instances['@graph']) {
           this.resources = instances['@graph']
-            .filter(instance => instance['@type'] && instance['@type'] === this.datasetClass.uri )
+            .filter(instance => instance['@type'] &&
+              (instance['@type'] === this.datasetClass.uri ||
+                (<Array<string>>instance['@type']).includes(this.datasetClass.uri)) )
             .map(instance => new Description(instance, instances['@context']));
           instances['@graph']
             .filter(instance => (<string>instance['@id']).startsWith('_:'))
@@ -74,6 +81,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         } else {
           this.resources = [];
         }
+        this.filteredInstances = count;
       });
   }
 

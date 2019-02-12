@@ -22,13 +22,16 @@
   </div>
 
   <div id="instances" class="col-8 m-0">
-    <h5 class="p-1">Instances <span class="badge badge-warning badge-pill">{{totalInstances}}</span></h5>
+    <h5 class="p-1">Instances
+      <span *ngIf="filteredInstances" class="badge badge-warning badge-pill">{{filteredInstances}} from {{totalInstances}}</span>
+      <span *ngIf="!filteredInstances" class="badge badge-warning badge-pill">Loading...</span>
+    </h5>
     <div *ngFor="let resource of resources">
       <app-description [description]="resource" [anonDescriptions]="anonResources"></app-description>
     </div>
-    <p i18n class="text-center">Showing {{resources?.length}} out of { totalInstances, plural,
+    <p i18n class="text-center">Showing {{resources?.length}} out of { filteredInstances, plural,
       =1 {1 instance}
-      other { {{totalInstances}} instances} }</p>
+      other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
   </div>
 
 </div>
