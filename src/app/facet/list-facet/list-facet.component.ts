@@ -70,8 +70,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         if (instances['@graph']) {
           this.resources = instances['@graph']
             .filter(instance => instance['@type'] &&
-              (instance['@type'] === this.datasetClass.uri ||
-                (<Array<string>>instance['@type']).includes(this.datasetClass.uri)) )
+              Description.isOfType(instance['@type'], this.datasetClass.uri, instances['@context']) )
             .map(instance => new Description(instance, instances['@context']));
           instances['@graph']
             .filter(instance => (<string>instance['@id']).startsWith('_:'))
