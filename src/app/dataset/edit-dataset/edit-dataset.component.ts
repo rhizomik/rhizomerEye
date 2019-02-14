@@ -43,7 +43,7 @@ export class EditDatasetComponent implements OnInit {
       this.datasetService.update(this.dataset),
       this.datasetService.updateGraphs(this.dataset.id, this.dataset.graphs)])
     .subscribe(
-      () => this.router.navigate(['/datasets', this.dataset.id]));
+      () => this.router.navigate(['/datasets', this.dataset.id, 'details']));
   }
 
   isSelected(graph: string): boolean {

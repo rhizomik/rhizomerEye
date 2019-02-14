@@ -21,6 +21,6 @@ export class CreateDatasetComponent implements OnInit {
 
   onSubmit(): void {
     this.datasetService.create(this.dataset).subscribe(
-      (dataset: Dataset) => this.router.navigate(['/datasets', dataset.id]));
+      (dataset: Dataset) => this.router.navigate(['/datasets', dataset.id, 'details']));
   }
 }

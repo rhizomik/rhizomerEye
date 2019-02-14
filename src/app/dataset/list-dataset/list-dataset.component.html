@@ -20,10 +20,10 @@
       <p class="card-text">{{dataset.updateEndPoint}}</p>
     </div>
     <div class="col-md-4 p-1">
-      <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id, 'classes']"
+      <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id]"
               class="btn m-1 btn-outline-primary pull-right">
         <span class="fa fa-globe"></span> Explore</button>
-      <button id="detailsBtn" type="button" [routerLink]="['/datasets', dataset.id]"
+      <button id="detailsBtn" type="button" [routerLink]="['/datasets', dataset.id, 'details']"
               class="btn m-1 btn-outline-primary pull-right">
         <span class="fa fa-info-circle"></span> Details</button>
     </div>
