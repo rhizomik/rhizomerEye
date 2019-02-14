@@ -23,7 +23,7 @@ export class WordCloudComponent implements OnInit {
   private width: number;
   private height: number;
   private fillScale;
-  private minFontSize = 18;
+  private minFontSize = 12;
   private maxFontSize = 36;
 
   constructor(
@@ -110,6 +110,6 @@ export class WordCloudComponent implements OnInit {
   }
 
   browse(c) {
-    this.router.navigate([c.id, 'facets']);
+    this.router.navigate(['/datasets', this.datasetId, c.curie]);
   }
 }
