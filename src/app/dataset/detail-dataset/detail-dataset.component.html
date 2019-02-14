@@ -1,33 +1,26 @@
 <div class="card mb-1">
   <div class="card-body row m-1">
     <h4 class="card-title col-md-12 p-1"><a [routerLink]="['/datasets', dataset.id, 'classes']">{{dataset.id}}</a></h4>
-    <div class="col-md-4 p-1">
+    <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Query Service</h6>
       <p class="card-text">{{dataset.sparqlEndPoint}}</p>
     </div>
-    <div class="col-md-4 p-1">
+    <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Update Service</h6>
       <p class="card-text">{{dataset.updateEndPoint}}</p>
     </div>
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Query Type</h6>
-      <p class="card-text">{{dataset.queryType}}</p>
-    </div>
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Inference?</h6>
-      <p class="card-text">{{dataset.inferenceEnabled}}</p>
-    </div>
   </div>
   <div class="card-body row m-1">
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Query Coverage</h6>
-      <p class="card-text">{{dataset.coverage}}</p>
+    <div class="col-md-3 p-1">
+      <h6 class="card-subtitle text-muted">Owner</h6>
+      <p class="card-text">{{dataset.owner}}</p>
     </div>
-    <div class="col-md-2 p-1">
-      <h6 class="card-subtitle text-muted">Query Sample Size</h6>
-      <p class="card-text">{{dataset.sampleSize}}</p>
+    <div class="col-md-3 p-1">
+      <h6 class="card-subtitle text-muted">Access</h6>
+      <p *ngIf="!dataset.public" class="card-text">Private</p>
+      <p *ngIf="dataset.public" class="card-text">Public</p>
     </div>
-    <div class="col-md-8 p-1">
+    <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Dataset Graphs</h6>
       <p *ngIf="!dataset.graphs?.length" class="card-text">Default graph</p>
       <p *ngIf="dataset.graphs?.length" class="card-text">{{dataset.graphs}}</p>

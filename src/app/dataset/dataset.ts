@@ -2,6 +2,8 @@ export class Dataset {
   id: string;
   sparqlEndPoint: string;
   updateEndPoint: string;
+  public = false;
+  owner: string;
   queryType: string;
   inferenceEnabled = false;
   sampleSize: number;
