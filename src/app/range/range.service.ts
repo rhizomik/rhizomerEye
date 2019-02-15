@@ -20,11 +20,7 @@ export class RangeService extends Rest4Service<Range> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
       params = params.append(filter.facet.uri,
-        (filter.value ?
-          (filter.value.uri ?
-            '<' + filter.value.uri + '>'
-            : '"' + filter.value.value + '"')
-          : null)));
+        (filter.value ? filter.value.value : null)));
     return this.http.get<Value[]>(
       `${environment.API}/datasets/${did}/classes/${cid}/facets/${fid}/ranges/${rid}/values`,
       {params: params});

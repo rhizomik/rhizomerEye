@@ -19,6 +19,13 @@ export class Value {
         this.label = this.value.split('^^')[0];
       }
     }
+    if (this.uri) {
+      this.value = '<' + this.uri + '>';
+    } else if (this.value.indexOf('^^') > 0) {
+      this.value = '\"' + this.value.split('^^')[0] +
+        '\"^^<' + this.value.split('^^')[1] + '>';
+    }
+
     this.selected = filters.filter((filter: Filter) =>
       (filter.facet.id === facet.id && filter.value && filter.value.value === this.value)).length > 0;
   }
