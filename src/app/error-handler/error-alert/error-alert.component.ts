@@ -8,7 +8,7 @@ import {ErrorMessageService} from '../error-message.service';
 })
 export class ErrorAlertComponent implements OnInit {
 
-  private ALERT_TIMEOUT = 70000;
+  private ALERT_TIMEOUT = 10000;
   closed: boolean;
   errorMessage: string;
   timerId: number;
