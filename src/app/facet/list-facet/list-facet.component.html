@@ -1,7 +1,10 @@
 <div id="faceted" class="row">
 
   <div id="facets" class="col-4 m-0">
-    <h5 class="p-1">Facets <span class="badge badge-warning badge-pill">{{totalFacets}}</span></h5>
+    <h5 class="p-1">Facets
+      <span *ngIf="totalFacets" class="badge badge-warning badge-pill">{{totalFacets}}</span>
+      <span *ngIf="!totalFacets" class="badge badge-warning badge-pill">Loading...</span>
+    </h5>
     <div class="card facet p-2 mb-2" *ngFor="let facet of facets">
       <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b>
         <span class="badge badge-primary badge-pill float-right" style="cursor: pointer"

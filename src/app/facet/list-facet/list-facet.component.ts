@@ -102,6 +102,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
+  filterAll(facet: Facet) {
+    this.breadcrumbService.addFacetFilter(this.classId, facet, null);
+  }
+
   showSearchResults(facets) {
     this.facets = facets;
   }
@@ -110,9 +114,5 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
-  }
-
-  filterAll(facet: Facet) {
-    this.breadcrumbService.addFacetFilter(this.classId, facet, null);
   }
 }
