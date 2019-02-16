@@ -34,6 +34,10 @@
       <button id="editBtn" type="button" [routerLink]="['/datasets', dataset.id, 'edit']"
               class="btn m-1 btn-outline-success pull-right">
         <span class="fa fa-pencil"></span> Edit</button>
+      <button id="updateBtn" type="button" (click)="reloadClassList()"
+              class="btn m-1 btn-outline-warning pull-right">Reload</button>
+      <button id="deleteBtn" type="button" (click)="deleteDataset()"
+              class="btn m-1 btn-outline-danger pull-right">Delete</button>
     </div>
   </div>
 </div>

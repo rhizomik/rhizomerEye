@@ -47,12 +47,6 @@ export class WordCloudComponent implements OnInit {
       });
   }
 
-  reloadClassList(): void {
-    this.datasetService.clearClasses(this.datasetId).subscribe(
-      () => this.loadClassList()
-    );
-  }
-
   private setup() {
     this.fillScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemeCategory10);
     this.svg = d3.select('svg');

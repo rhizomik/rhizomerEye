@@ -29,4 +29,16 @@ export class DetailDatasetComponent implements OnInit {
           this.dataset.graphs = graphs;
         });
   }
+
+  reloadClassList(): void {
+    this.datasetService.clearClasses(this.dataset.id).subscribe(
+      () => this.router.navigate(['/datasets', this.dataset.id])
+    );
+  }
+
+  deleteDataset() {
+    this.datasetService.delete(this.dataset).subscribe(
+      () => this.router.navigate(['datasets'])
+    );
+  }
 }
