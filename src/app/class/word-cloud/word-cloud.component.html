@@ -1,9 +1,10 @@
 <div class="row justify-content-between">
   <div class="col mb-3">
     <!-- app-class-search (emitResults)="showSearchResults($event)" [classes]="classes"></app-class-search -->
-    <button id="updateBtn" type="button" (click)="reloadClassList()"
-            class="btn m-1 btn-outline-warning pull-right">Reload Classes</button>
   </div>
 </div>
-
+<div *ngIf="classes.length == 0" id="loading" style="text-align: center;">
+  <div id="spinner"></div>
+  <p>Analyzing all classes, this might require some time...</p>
+</div>
 <svg style="width: 100%; height: auto"></svg>
