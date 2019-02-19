@@ -24,6 +24,8 @@ export class Value {
     } else if (this.value.indexOf('^^') > 0) {
       this.value = '\"' + this.value.split('^^')[0] +
         '\"^^<' + this.value.split('^^')[1] + '>';
+    } else {
+      this.value = '\"' + this.value + '\"';
     }
 
     this.selected = filters.filter((filter: Filter) =>
