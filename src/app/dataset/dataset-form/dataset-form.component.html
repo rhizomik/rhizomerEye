@@ -24,12 +24,23 @@
              [(ngModel)]="dataset.updateEndPoint" #update="ngModel">
     </div>
 
-    <div class="form-group" [class.was-validated]="public.dirty || public.touched">
+    <!-- Access Level input -->
+    <div class="form-group">
       <label class="control-label" for="isPublic">Access</label>
       <select id="isPublic" name="isPublic" class="form-control" required
-              [(ngModel)]="dataset.public" #public="ngModel">
+              [(ngModel)]="dataset.public">
         <option [value]="true">Public</option>
         <option [value]="false">Private</option>
+      </select>
+    </div>
+
+    <!-- Access Level input -->
+    <div class="form-group">
+      <label class="control-label" for="queryType">Query Type</label>
+      <select id="queryType" name="queryType" class="form-control" required
+              [(ngModel)]="dataset.queryType">
+        <option [value]="'OPTIMIZED'">Optimized</option>
+        <option [value]="'DETAILED'">Detailed</option>
       </select>
     </div>
 

@@ -4,7 +4,7 @@ export class Dataset {
   updateEndPoint: string;
   public = false;
   owner: string;
-  queryType: string;
+  queryType = 'OPTIMIZED';
   inferenceEnabled = false;
   sampleSize: number;
   coverage: number;
