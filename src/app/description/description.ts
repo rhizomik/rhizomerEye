@@ -2,7 +2,7 @@ import { Property } from './property';
 
 export class Description {
   '@id': string;
-  '@type': string;
+  '@type': string[];
   depiction: string;
   label: string;
   properties: Property[] = [];
@@ -52,11 +52,11 @@ export class Description {
     }
   }
 
-  processTypes(value: any): string {
+  processTypes(value: any): string[] {
     if (value instanceof Array) {
-      return value.map((url: string) => this.localName(url)).join(', ');
+      return value.map((url: string) => this.localName(url));
     } else {
-      return this.localName(value);
+      return [this.localName(value)];
     }
   }
 

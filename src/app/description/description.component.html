@@ -6,7 +6,8 @@
     <p class="card-text">
       <b *ngIf="description['@id']">{{description.label || description['@id']}}</b>
       <span *ngIf="!description['@id']" class="fa fa-minus-circle ml-1"></span>
-      <span class="badge badge-secondary badge-pill float-right">{{description['@type']}}</span>
+      <span *ngFor="let type of description['@type']"
+            class="badge badge-secondary badge-pill float-right">{{type}}</span>
     </p>
   </div>
   <ul class="list-group list-group-flush">
