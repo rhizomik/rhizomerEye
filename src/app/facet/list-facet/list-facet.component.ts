@@ -23,7 +23,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   datasetId: string;
   classId: string;
   facets: Facet[] = [];
-  totalFacets = 0;
+  retrievedFacets = 0;
+  relevance = 0.2;
   totalInstances = 0;
   filteredInstances = 0;
   datasetClass: Class = new Class();
@@ -42,20 +43,29 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did');
     this.classId = this.route.snapshot.paramMap.get('cid');
+    this.loadFacetClass();
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
+    this.refreshFacets(this.relevance);
+  }
+
+  loadFacetClass() {
     this.classService.get(this.datasetId, this.classId).subscribe(
       (datasetClass: Class) => {
         this.datasetClass = datasetClass;
         this.totalInstances = datasetClass.instanceCount;
-    });
-    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
-    this.facetService.getAll(this.datasetId, this.classId).subscribe(
+      });
+  }
+
+  refreshFacets(relevance: number) {
+    this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe(
       (facets: Facet[]) => {
         this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
-        this.totalFacets = facets.length;
+        this.retrievedFacets = facets.length;
+        this.loadFacetClass();
         this.facets.map(facet =>
-            this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
-              ranges => facet.ranges = ranges)
+          this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
+            ranges => facet.ranges = ranges)
         );
       });
   }
@@ -114,5 +124,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
+  }
+
+  loadAllFacets() {
+    this.refreshFacets(0);
   }
 }

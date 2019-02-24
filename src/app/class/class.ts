@@ -3,6 +3,7 @@ export class Class {
   uri: string;
   label: string;
   instanceCount: number;
+  facetsCount: number;
   curie: string;
 
   constructor(values: Object = {}) {
