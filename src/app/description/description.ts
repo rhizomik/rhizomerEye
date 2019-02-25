@@ -28,6 +28,7 @@ export class Description {
         }
       }
     );
+    this.properties = this.properties.sort((a, b) => a.label.localeCompare(b.label));
   }
 
   static expandUri(input: string, context: Object) {
