@@ -24,7 +24,7 @@ export class Description {
           case 'http://xmlns.com/foaf/0.1/depiction': {
             if (value['@id']) { this.depiction = value['@id']; } else { this.depiction = value; }
             break; }
-          default: this.properties.push(new Property(expandedUri, value));
+          default: if (expandedUri.indexOf('wikiPage') < 0) { this.properties.push(new Property(expandedUri, value)); }
         }
       }
     );
