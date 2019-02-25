@@ -16,6 +16,8 @@ export class Property {
   processPropertyValue(value: any): any {
     if (value['@language']) {
       return value['@value'];
+    } else if (value['@type']) {
+      return value['@value'];
     } else if (value['@id']) {
       return value['@id'];
     } else {
