@@ -35,7 +35,7 @@ export class Description {
       return input;
     } else if (input.split(':').length === 2) {
       const ns = input.split(':')[0];
-      const base = context[ns];
+      const base = context[ns]['@id'] ? context[ns]['@id'] : context[ns];
       return base + input.split(':').slice(1);
     } else if (context[input]) {
       return context[input]['@id'];
