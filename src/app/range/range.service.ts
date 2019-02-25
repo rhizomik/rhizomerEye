@@ -19,8 +19,7 @@ export class RangeService extends Rest4Service<Range> {
   getValues(did: string, cid: string, fid: string, rid: string, filters: Filter[]): Observable<Value[]> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri,
-        (filter.value ? filter.value.value : null)));
+      params = params.append(filter.facet.uri, filter.value));
     return this.http.get<Value[]>(
       `${environment.API}/datasets/${did}/classes/${cid}/facets/${fid}/ranges/${rid}/values`,
       {params: params});

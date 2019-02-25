@@ -18,8 +18,7 @@ export class ClassService extends Rest2Service<Class> {
   getInstances(did: string, cid: string, filters: Filter[]): Observable<any> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri,
-        (filter.value ? filter.value.value : null)));
+      params = params.append(filter.facet.uri, filter.value));
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/classes/${cid}/instances`, {params: params});
   }
@@ -27,8 +26,7 @@ export class ClassService extends Rest2Service<Class> {
   getInstancesCount(did: string, cid: string, filters: Filter[]): Observable<number> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri,
-        (filter.value ? filter.value.value : null)));
+      params = params.append(filter.facet.uri, filter.value));
     return this.http.get<number>(
       `${environment.API}/datasets/${did}/classes/${cid}/count`, {params: params});
   }

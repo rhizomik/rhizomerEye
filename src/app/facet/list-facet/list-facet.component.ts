@@ -104,16 +104,26 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   filterValue(facet: Facet, value: Value) {
     if (!value.selected) {
-      this.breadcrumbService.addFacetFilter(this.classId, facet, value);
+      this.breadcrumbService.addFacetFilter(this.classId, facet, value.value);
       value.selected = true;
     } else {
-      this.breadcrumbService.removeFacetFilter(this.classId, facet, value);
+      this.breadcrumbService.removeFacetFilter(this.classId, facet, value.value);
       value.selected = false;
     }
   }
 
   filterAll(facet: Facet) {
-    this.breadcrumbService.addFacetFilter(this.classId, facet, null);
+    if (!facet.selected) {
+      this.breadcrumbService.addFacetFilter(this.classId, facet, null);
+      facet.selected = true;
+    } else {
+      this.breadcrumbService.removeFacetFilter(this.classId, facet, null);
+      facet.selected = false;
+    }
+  }
+
+  loadAllFacets() {
+    this.refreshFacets(0);
   }
 
   showSearchResults(facets) {
@@ -124,9 +134,5 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
-  }
-
-  loadAllFacets() {
-    this.refreshFacets(0);
   }
 }

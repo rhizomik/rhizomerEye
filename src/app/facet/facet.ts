@@ -10,6 +10,7 @@ export class Facet {
   timesUsed: number;
   differentValues: number;
   ranges: Range[];
+  selected: boolean;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);

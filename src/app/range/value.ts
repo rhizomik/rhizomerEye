@@ -29,6 +29,6 @@ export class Value {
     }
 
     this.selected = filters.filter((filter: Filter) =>
-      (filter.facet.id === facet.id && filter.value && filter.value.value === this.value)).length > 0;
+      (filter.facet.id === facet.id && filter.value && filter.value === this.value)).length > 0;
   }
 }

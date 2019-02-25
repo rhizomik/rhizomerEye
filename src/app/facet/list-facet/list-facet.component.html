@@ -9,7 +9,7 @@
       </span>
       <span *ngIf="!retrievedFacets" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
-    <div class="card facet p-2 mb-2" *ngFor="let facet of facets">
+    <div class="card facet p-2 mb-2" *ngFor="let facet of facets" [class.bg-warning]="facet.selected">
       <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b>
         <span class="badge badge-primary badge-pill float-right" style="cursor: pointer"
               title="Filter all with {{facet.label}}" (click)="filterAll(facet)">
