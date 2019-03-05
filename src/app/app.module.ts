@@ -35,6 +35,7 @@ import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { DescriptionComponent } from './description/description.component';
+import { ResourceComponent } from './description/resource.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { DescriptionComponent } from './description/description.component';
     EditDatasetComponent,
     WordCloudComponent,
     DescriptionComponent,
+    ResourceComponent,
   ],
   imports: [
     AppRoutingModule,

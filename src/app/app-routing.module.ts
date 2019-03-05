@@ -14,9 +14,11 @@ import { ListFacetComponent } from './facet/list-facet/list-facet.component';
 import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
+import { ResourceComponent } from './description/resource.component';
 
 const routes: Routes = [
   { path: 'datasets/new', component: CreateDatasetComponent, canActivate: [LoggedInGuard] },
+  { path: 'datasets/:did/describe', component: ResourceComponent },
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
