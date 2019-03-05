@@ -8,7 +8,7 @@ import { Description } from './description';
 })
 export class DescriptionComponent implements OnInit {
   @Input()
-  description: Description;
+  description: Description = new Description();
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
   depictionExpanded = false;
