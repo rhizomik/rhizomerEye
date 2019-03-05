@@ -1,37 +1,18 @@
+import { UriUtils } from '../shared/uriutils';
+import { Value } from './value';
+
 export class Property {
   uri: string;
   label: string;
-  values: any[] = [];
+  values: Value[] = [];
 
-  constructor(uri: string, value: any) {
+  constructor(uri: string, value: any, context: Object = {}) {
     this.uri = uri;
-    this.label = this.localName(uri);
+    this.label = UriUtils.localName(uri);
     if (value instanceof Array) {
-      this.values = value.map(v => this.processPropertyValue(v));
+      this.values = value.map(v => new Value(v, context));
     } else {
-      this.values.push(this.processPropertyValue(value));
-    }
-  }
-
-  processPropertyValue(value: any): any {
-    if (value['@language']) {
-      return value['@value'];
-    } else if (value['@type']) {
-      return value['@value'];
-    } else if (value['@id']) {
-      return value['@id'];
-    } else {
-      return value;
-    }
-  }
-
-  localName(uri: string): string {
-    if (uri.indexOf('#') > 0) {
-      return uri.substring(uri.lastIndexOf('#') + 1);
-    } else if (uri.indexOf('/') > 0) {
-      return uri.substring(uri.lastIndexOf('/') + 1);
-    } else {
-      return uri;
+      this.values.push(new Value(value, context));
     }
   }
 }

@@ -1,4 +1,5 @@
 import { Property } from './property';
+import { UriUtils } from '../shared/uriutils';
 
 export class Description {
   '@id': string;
@@ -10,7 +11,7 @@ export class Description {
   constructor(values: Object = {}, context: Object = {}) {
     Object.entries(values).forEach(
       ([key, value]) => {
-        const expandedUri = Description.expandUri(key, context);
+        const expandedUri = UriUtils.expandUri(key, context);
         switch (expandedUri) {
           case '@id': {
             if ((<string>value).startsWith('_:')) { this['@id'] = null;
@@ -24,32 +25,20 @@ export class Description {
           case 'http://xmlns.com/foaf/0.1/depiction': {
             if (value['@id']) { this.depiction = value['@id']; } else { this.depiction = value; }
             break; }
-          default: if (expandedUri.indexOf('wikiPage') < 0) { this.properties.push(new Property(expandedUri, value)); }
+          default: if (expandedUri.indexOf('wikiPage') < 0) {
+            this.properties.push(new Property(expandedUri, value, context));
+          }
         }
       }
     );
     this.properties = this.properties.sort((a, b) => a.label.localeCompare(b.label));
   }
 
-  static expandUri(input: string, context: Object) {
-    if (input.startsWith('http:') || input.startsWith('urn:')) {
-      return input;
-    } else if (input.split(':').length === 2) {
-      const ns = input.split(':')[0];
-      const base = context[ns]['@id'] ? context[ns]['@id'] : context[ns];
-      return base + input.split(':').slice(1);
-    } else if (context[input]) {
-      return context[input]['@id'];
-    } else {
-      return input;
-    }
-  }
-
   static isOfType(types: any, classUri: string, context: Object): boolean {
     if (types instanceof Array) {
-      return (<Array<string>>types.map(value => this.expandUri(value, context))).includes(classUri);
+      return (<Array<string>>types.map(value => UriUtils.expandUri(value, context))).includes(classUri);
     } else {
-      return Description.expandUri(<string>types, context) === classUri;
+      return UriUtils.expandUri(<string>types, context) === classUri;
     }
   }
 
