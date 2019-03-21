@@ -15,7 +15,7 @@ export class Description {
         switch (expandedUri) {
           case '@id': {
             if ((<string>value).startsWith('_:')) { this['@id'] = null;
-            } else { this['@id'] = value; } break; }
+            } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
           case '@type': { this['@type'] = this.processTypes(value); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
