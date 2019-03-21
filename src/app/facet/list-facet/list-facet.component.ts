@@ -135,4 +135,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
   }
+
+  valueToolTip(value: Value) {
+    let text: string = value.value;
+    if (text.startsWith('"') && text.endsWith('"')) {
+      text = text.slice(1, text.length - 1);
+    }
+    if (text !== value.label) {
+      return text;
+    } else {
+      return '';
+    }
+  }
 }
