@@ -16,7 +16,7 @@ export class UriUtils {
   static expandUri(input: string, context: Object): string {
     if (this.isUrl(input) || input.startsWith('urn:')) {
       return input;
-    } else if (!input.startsWith('_:') && input.split(':').length === 2) {
+    } else if (!input.startsWith('_:') && input.match(/\S+:\S+/)) {
       const ns = input.split(':')[0];
       const base = context[ns]['@id'] ? context[ns]['@id'] : context[ns];
       return base + input.split(':').slice(1);
