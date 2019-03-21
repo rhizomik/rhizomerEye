@@ -9,10 +9,10 @@ import { Description } from './description';
   styleUrls: ['./resource.component.css']
 })
 export class ResourceComponent implements OnInit {
-  private datasetId: string;
-  private resourceUri: string;
-  private resource: Description = new Description();
-  private anonResources: Map<string, Description> = new Map<string, Description>();
+  datasetId: string;
+  resourceUri: string;
+  resource: Description = new Description();
+  anonResources: Map<string, Description> = new Map<string, Description>();
 
   constructor(private router: Router,
               private route: ActivatedRoute,
