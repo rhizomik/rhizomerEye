@@ -22,6 +22,7 @@ const routes: Routes = [
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
+  { path: 'datasets/:did/:cid/describe', component: ResourceComponent },
   { path: 'datasets/:did/:cid', component: ListFacetComponent },
   { path: 'datasets/:did', component: WordCloudComponent },
   { path: 'datasets', component: ListDatasetComponent, canActivate: [LoggedInGuard] },
