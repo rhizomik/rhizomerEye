@@ -19,11 +19,11 @@ export class DescriptionComponent implements OnInit {
   }
 
   isAnonResource(value: any) {
-    return typeof value === 'string' && value.startsWith('_:');
+    return value.value && typeof value.value === 'string' && value.value.startsWith('_:');
   }
 
   getAnonResource(value: any) {
-    return this.anonDescriptions.get(value);
+    return this.anonDescriptions.get(value.value);
   }
 
   switchExpansion() {
