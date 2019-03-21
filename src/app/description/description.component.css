@@ -6,3 +6,11 @@
 .expanded {
   height: auto;
 }
+
+.reverse-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  direction: rtl;
+}

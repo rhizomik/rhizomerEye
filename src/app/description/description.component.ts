@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Description } from './description';
+import { UriUtils } from '../shared/uriutils';
 
 @Component({
   selector: 'app-description',
@@ -28,5 +29,9 @@ export class DescriptionComponent implements OnInit {
 
   switchExpansion() {
     this.depictionExpanded = !this.depictionExpanded;
+  }
+
+  localName(uri: string): string {
+    return UriUtils.localName(uri);
   }
 }

@@ -3,11 +3,11 @@
        style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="switchExpansion()"
        [src]="description.depiction" alt="resource depiction">
   <div class="card-header">
-    <p class="card-text">
-      <b *ngIf="description['@id']">{{description.label || description['@id']}}</b>
+    <p class="card-text reverse-text-truncate">
+      <b *ngIf="description['@id']" [title]="description['@id']">{{description.label || description['@id']}}</b>
       <span *ngIf="!description['@id']" class="fa fa-minus-circle ml-1"></span>
-      <span *ngFor="let type of description['@type']"
-            class="badge badge-secondary badge-pill float-right">{{type}}</span>
+      <span *ngFor="let type of description['@type']" [title]="type"
+            class="badge badge-secondary badge-pill float-right">{{localName(type)}}</span>
     </p>
   </div>
   <ul class="list-group list-group-flush">

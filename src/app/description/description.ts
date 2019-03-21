@@ -16,7 +16,7 @@ export class Description {
           case '@id': {
             if ((<string>value).startsWith('_:')) { this['@id'] = null;
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
-          case '@type': { this['@type'] = this.processTypes(value); break; }
+          case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
             if (value['@language']) { this.label = value['@value']; } else { this.label = value; }
@@ -42,21 +42,11 @@ export class Description {
     }
   }
 
-  processTypes(value: any): string[] {
+  processTypes(value: any, context: Object): string[] {
     if (value instanceof Array) {
-      return value.map((url: string) => this.localName(url));
+      return value.map((url: string) => UriUtils.expandUri(url, context));
     } else {
-      return [this.localName(value)];
-    }
-  }
-
-  localName(url: string): string {
-    if (url.indexOf('#') > 0) {
-      return url.substring(url.lastIndexOf('#') + 1);
-    } else if (url.indexOf('/') > 0) {
-      return url.substring(url.lastIndexOf('/') + 1);
-    } else {
-      return url;
+      return [UriUtils.expandUri(value, context)];
     }
   }
 }
