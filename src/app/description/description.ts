@@ -19,7 +19,7 @@ export class Description {
           case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
-            if (value['@language']) { this.label = value['@value']; } else { this.label = value; }
+            this.label = this.pickLabel(value, 'en');
             break;
           }
           case 'http://xmlns.com/foaf/0.1/depiction': {
@@ -39,6 +39,20 @@ export class Description {
       return (<Array<string>>types.map(value => UriUtils.expandUri(value, context))).includes(classUri);
     } else {
       return UriUtils.expandUri(<string>types, context) === classUri;
+    }
+  }
+
+  pickLabel(value: any, prefLang: string): string {
+    if (value instanceof Array) {
+      return value
+        .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
+        .map(label => label['@value'])
+        .join(', ');
+    }
+    if (value['@language']) {
+      return value['@value'];
+    } else {
+      return value;
     }
   }
 
