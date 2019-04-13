@@ -12,6 +12,8 @@ export class DescriptionComponent implements OnInit {
   description: Description = new Description();
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
+  @Input()
+  describe = 'describe';
   depictionExpanded = false;
 
   constructor() { }

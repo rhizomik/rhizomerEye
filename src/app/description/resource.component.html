@@ -1,11 +1,15 @@
 <div id="describe" class="row">
 
-  <div id="facets" class="col-12 m-0">
-    <app-description [description]="resource" [anonDescriptions]="anonResources"></app-description>
-
+  <div class="col-12 m-0">
+    <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
   </div>
 
-  <div id="instances" class="col-0 m-0">
+  <div class="col-12 m-0">
+    <h3>Remote Data</h3>
+    <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
+  </div>
+
+  <div class="col-0 m-0">
     <!-- HTML template from the resource... -->
   </div>
 

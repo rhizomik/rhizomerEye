@@ -18,7 +18,7 @@
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>
         <span *ngIf="!isAnonResource(value)"><span *ngIf="!firstValue">, </span>
-          <span *ngIf="value.uri"><a [routerLink]="['describe']" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
+          <span *ngIf="value.uri"><a [routerLink]="[describe]" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
           <span *ngIf="value.value">{{value.value}}</span>
         </span>
       </span>

@@ -38,4 +38,11 @@ export class DatasetService extends RestService<Dataset> {
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/describe`, {params: params});
   }
+
+  browseUri(did: string, resource: string): Observable<string[]> {
+    let params = new HttpParams();
+    params = params.append('uri', resource);
+    return this.http.get<any>(
+      `${environment.API}/datasets/${did}/browse`, {params: params});
+  }
 }
