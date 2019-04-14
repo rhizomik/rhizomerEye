@@ -1,16 +1,17 @@
 <div id="describe" class="row">
 
-  <div class="col-12 m-0">
+  <p *ngIf="loading">Loading...</p>
+
+  <div id="local" class="col-12 m-0" *ngIf="!loading && resource['@id']">]
     <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
+    <div class="col-0 m-0">
+      <!-- HTML template from the resource... -->
+    </div>
   </div>
 
-  <div class="col-12 m-0">
-    <h3>Remote Data</h3>
+  <div id="remote" class="col-12 m-0" *ngIf="!loading && !resource['@id']">
+    <h5>Remote Data</h5>
     <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
-  </div>
-
-  <div class="col-0 m-0">
-    <!-- HTML template from the resource... -->
   </div>
 
 </div>

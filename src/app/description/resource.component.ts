@@ -16,6 +16,7 @@ export class ResourceComponent implements OnInit {
   anonResources: Map<string, Description> = new Map<string, Description>();
   remoteResource: Description = new Description();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
+  loading = true;
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -38,6 +39,7 @@ export class ResourceComponent implements OnInit {
         } else {
           this.resource = new Description(response, response['@context']);
         }
+        this.loading = false;
       });
     this.datasetService.browseUri(this.datasetId, this.resourceUri).subscribe(
       (response) => {
@@ -51,6 +53,7 @@ export class ResourceComponent implements OnInit {
         } else {
           this.remoteResource = new Description(response, response['@context']);
         }
+        this.loading = false;
       });
   }
 
