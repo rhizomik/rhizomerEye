@@ -15,8 +15,10 @@ export class ClassService extends Rest2Service<Class> {
     super('datasets', 'classes', http);
   }
 
-  getInstances(did: string, cid: string, filters: Filter[]): Observable<any> {
+  getInstances(did: string, cid: string, filters: Filter[], page: number, pageSize: number): Observable<any> {
     let params = new HttpParams();
+    params = params.append('page', (page - 1).toString());
+    params = params.append('size', pageSize.toString());
     filters.forEach((filter: Filter) =>
       params = params.append(filter.facet.uri, filter.value));
     return this.http.get<any>(

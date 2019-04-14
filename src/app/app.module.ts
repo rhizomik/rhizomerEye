@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgbCollapseModule, NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -66,6 +66,7 @@ import { ResourceComponent } from './description/resource.component';
     HttpClientModule,
     NgbCollapseModule,
     NgbDropdownModule,
+    NgbPaginationModule,
     LoginBasicModule,
     ErrorHandlerModule,
   ],

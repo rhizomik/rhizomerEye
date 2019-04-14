@@ -27,6 +27,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   relevance = 0.2;
   totalInstances = 0;
   filteredInstances = 0;
+  page = 1;
+  pageSize = 10;
   datasetClass: Class = new Class();
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
@@ -72,11 +74,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   refreshInstances(datasetId: string, classId: string, filters: Filter[]) {
     this.filteredInstances = 0;
-    forkJoin([
-      this.classService.getInstances(datasetId, classId, filters),
-      this.classService.getInstancesCount(datasetId, classId, filters)])
-    .subscribe(
-      ([instances, count]) => {
+    this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
+      count => {
+        this.filteredInstances = count;
+        this.loadInstances(datasetId, classId, filters, this.page);
+      });
+  }
+
+  loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
+    this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).subscribe(
+      instances => {
         if (instances['@graph']) {
           this.resources = instances['@graph']
             .filter(instance => instance['@type'] &&
@@ -90,8 +97,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         } else {
           this.resources = [];
         }
-        this.filteredInstances = count;
       });
+  }
+
+  goToPage(page: number) {
+    this.loadInstances(this.datasetId, this.classId, this.breadcrumbService.filters, page);
   }
 
   firstValues(facet: Facet, range: Range) {

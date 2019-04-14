@@ -38,6 +38,10 @@
     <div *ngFor="let resource of resources">
       <app-description [description]="resource" [anonDescriptions]="anonResources"></app-description>
     </div>
+    <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
+                    [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
+                    [directionLinks]="false" size="sm"
+                    (pageChange)="goToPage($event)"></ngb-pagination>
     <p i18n class="text-center">Showing {{resources?.length}} out of { filteredInstances, plural,
       =1 {1 instance}
       other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
