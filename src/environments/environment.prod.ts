@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  API: 'https://rhizomer-api.rhizomik.net'
+  API: '${BACKEND_API_URL}'
 };
