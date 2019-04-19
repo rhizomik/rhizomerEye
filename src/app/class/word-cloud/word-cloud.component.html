@@ -1,6 +1,7 @@
 <div class="row justify-content-between">
   <div class="col mb-3">
     <!-- app-class-search (emitResults)="showSearchResults($event)" [classes]="classes"></app-class-search -->
+    <p *ngIf="classes.length == topClasses">Showing top {{topClasses}} classes</p>
   </div>
 </div>
 <div *ngIf="classes.length == 0" id="loading" style="text-align: center;">

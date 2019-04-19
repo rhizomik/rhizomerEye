@@ -2,7 +2,7 @@
 
   <p *ngIf="loading">Loading...</p>
 
-  <div id="local" class="col-12 m-0" *ngIf="!loading && resource['@id']">]
+  <div id="local" class="col-12 m-0" *ngIf="!loading && resource['@id']">
     <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
     <div class="col-0 m-0">
       <!-- HTML template from the resource... -->

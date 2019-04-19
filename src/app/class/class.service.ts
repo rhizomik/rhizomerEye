@@ -32,4 +32,11 @@ export class ClassService extends Rest2Service<Class> {
     return this.http.get<number>(
       `${environment.API}/datasets/${did}/classes/${cid}/count`, {params: params});
   }
+
+  getTopClasses(did: string, top: number): Observable<Class[]> {
+    let params = new HttpParams();
+    params = params.append('top', top.toString());
+    return this.http.get<Class[]>(
+      `${environment.API}/datasets/${did}/classes`, {params: params});
+  }
 }

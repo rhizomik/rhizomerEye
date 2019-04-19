@@ -19,12 +19,13 @@ export class WordCloudComponent implements OnInit {
   datasetId: string;
   classes: Class[] = [];
 
-  private svg;
-  private width: number;
-  private height: number;
-  private fillScale;
-  private minFontSize = 12;
-  private maxFontSize = 36;
+  svg;
+  width: number;
+  height: number;
+  fillScale;
+  minFontSize = 12;
+  maxFontSize = 36;
+  topClasses = 300;
 
   constructor(
     private router: Router,
@@ -40,7 +41,7 @@ export class WordCloudComponent implements OnInit {
   }
 
   loadClassList() {
-    this.classService.getAll(this.datasetId).subscribe(
+    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe(
       (classes: Class[]) => {
         this.classes = classes;
         this.populate();
