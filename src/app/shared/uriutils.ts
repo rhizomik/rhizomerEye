@@ -18,13 +18,14 @@ export class UriUtils {
       return input;
     } else if (!input.startsWith('_:') && input.match(/\S+:\S+/)) {
       const ns = input.split(':')[0];
-      const base = context[ns]['@id'] ? context[ns]['@id'] : context[ns];
-      return base + input.split(':').slice(1);
+      if (context[ns]) {
+        const base = context[ns]['@id'] ? context[ns]['@id'] : context[ns];
+        return base + input.split(':').slice(1);
+      }
     } else if (context[input]) {
       return context[input]['@id'];
-    } else {
-      return input;
     }
+    return input;
   }
 
   static isUrl(str): boolean {
