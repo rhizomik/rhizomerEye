@@ -17,6 +17,11 @@ cache:
   directories:
     - node_modules
 
+before_install:
+  - docker run -d -p 8080:8080 rhizomik/rhizomer-api
+  - while ! nc -z localhost 8080; do sleep 10; done
+  - docker ps -a
+
 install:
   - npm install
 
@@ -25,7 +30,7 @@ before_script:
 
 script:
   - npm run lint
-#  - npm run e2e
+  - npm run e2e
   - npm run build
 
 after_success:
