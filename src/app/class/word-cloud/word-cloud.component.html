@@ -1,11 +1,23 @@
-<div class="row justify-content-between">
-  <div class="col mb-3">
-    <!-- app-class-search (emitResults)="showSearchResults($event)" [classes]="classes"></app-class-search -->
-    <p *ngIf="classes.length == topClasses">Showing top {{topClasses}} classes</p>
+<div class="row">
+  <div class="col">
+    <p class="small mt-3" *ngIf="classes.length == topClasses">
+      Showing top {{topClasses}} classes</p>
+  </div>
+  <div class="col form-group">
+    <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Search all classes"
+           [class.loading]="searching" (selectItem)="browse($event.item)"/>
+    <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
   </div>
 </div>
+
+<ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.label" [term]="t"></ngb-highlight>
+</ng-template>
+
 <div *ngIf="classes.length == 0" id="loading" style="text-align: center;">
   <div id="spinner"></div>
   <p>Analyzing all classes, this might require some time...</p>
 </div>
+
 <svg style="width: 100%; height: auto"></svg>

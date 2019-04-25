@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Class } from '../class';
+import { Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../../dataset/dataset.service';
 import { ClassService } from '../class.service';
+import { Class } from '../class';
 
 import * as d3 from 'd3-selection';
 import * as d3Cloud from 'd3-cloud';
@@ -26,6 +28,9 @@ export class WordCloudComponent implements OnInit {
   minFontSize = 12;
   maxFontSize = 36;
   topClasses = 300;
+  searching = false;
+  searchFailed = false;
+  model: any;
 
   constructor(
     private router: Router,
@@ -47,6 +52,21 @@ export class WordCloudComponent implements OnInit {
         this.populate();
       });
   }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      switchMap(term =>
+        this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
+          tap(() => this.searchFailed = false),
+          catchError(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      ),
+      tap(() => this.searching = false))
 
   private setup() {
     this.fillScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemeCategory10);

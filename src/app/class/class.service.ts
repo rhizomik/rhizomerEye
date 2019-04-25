@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Rest2Service } from '../shared/rest2.service';
 import { Class } from './class';
@@ -36,6 +36,14 @@ export class ClassService extends Rest2Service<Class> {
   getTopClasses(did: string, top: number): Observable<Class[]> {
     let params = new HttpParams();
     params = params.append('top', top.toString());
+    return this.http.get<Class[]>(
+      `${environment.API}/datasets/${did}/classes`, {params: params});
+  }
+
+  getTopClassesContaining(did: string, top: number, containing: string): Observable<Class[]> {
+    let params = new HttpParams();
+    params = params.append('top', top.toString());
+    params = params.append('containing', containing);
     return this.http.get<Class[]>(
       `${environment.API}/datasets/${did}/classes`, {params: params});
   }

@@ -11,6 +11,14 @@
   -webkit-animation: spin 1s ease-in-out infinite;
 }
 
+.loading {
+  background-origin: content-box;
+  background-image: url("assets/loading.svg");
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
 @keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
@@ -20,53 +28,4 @@
 
 .nav-link{
   cursor: pointer;
-}
-
-/* TagHierarchy CSS */
-
-.toggle-children {
-  z-index: 1;
-  background-image: url(/assets/arrow-circle-right-solid.svg);
-  width: .8em;
-  height: .8em;
-  margin-top: .52em;
-}
-
-.toggle-children-placeholder {
-  z-index: 1;
-  background-image: url(/assets/tag-solid.svg);
-}
-
-#overlay {
-  opacity:0.2;
-  filter: alpha(opacity=20);
-  background-color:#000;
-  width:100%;
-  height:100%;
-  z-index:10;
-  top:0;
-  left:0;
-  position:fixed;
-}
-
-.show {
-  display: block;
-}
-
-.hidden {
-  display: none;
-}
-
-#confirm-modal-container {
-  position:absolute;
-  min-height: 5em;
-  left:35%;
-  top:35%;
-  width: 30%;
-  max-width: 1000px;
-  background: white;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-  z-index: 100;
-  border-radius: 3px;
 }
