@@ -11,15 +11,15 @@
 
     <!-- Query Service input -->
     <div class="form-group" [class.was-validated]="query.dirty || query.touched">
-      <label class="control-label" for="query">Query Service*</label>
+      <label class="control-label" for="query">SPARQL Query Service URL*</label>
       <input id="query" name="query" type="url" class="form-control" required
              [(ngModel)]="dataset.sparqlEndPoint" #query="ngModel">
-      <div class="invalid-feedback">At least a SPARQL query endpoint is required</div>
+      <div class="invalid-feedback">A SPARQL query endpoint is required</div>
     </div>
 
     <!-- Update Service input -->
     <div class="form-group" [class.was-validated]="update.dirty || update.touched">
-      <label class="control-label" for="update">Update Service*</label>
+      <label class="control-label" for="update">SPARQL Update Service URL (optional)</label>
       <input id="update" name="update" type="url" class="form-control"
              [(ngModel)]="dataset.updateEndPoint" #update="ngModel">
     </div>
@@ -36,7 +36,7 @@
 
     <!-- Access Level input -->
     <div class="form-group">
-      <label class="control-label" for="queryType">Query Type</label>
+      <label class="control-label" for="queryType">Query Type (optimized is recommended for large datasets)</label>
       <select id="queryType" name="queryType" class="form-control" required
               [(ngModel)]="dataset.queryType">
         <option [value]="'OPTIMIZED'">Optimized</option>
