@@ -1,0 +1,9 @@
+version: '2'
+services:
+  rhizomer:
+    image: rhizomik/rhizomer-eye
+    container_name: rhizomer
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_API_URL=http://localhost:8080
