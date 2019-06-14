@@ -1,5 +1,7 @@
 <li class="nav-item" *ngIf="isLoggedIn()" id="currentUser">
-  <a class="nav-link"><span class="fa fa-user-circle-o"></span> {{getCurrentUserName()}}</a>
+  <a class="nav-link" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"
+     [routerLink]="['/users', getCurrentUserName()]">
+    <span class="fa fa-user-circle-o"></span> {{getCurrentUserName()}}</a>
 </li>
 
 <li class="nav-item" *ngIf="isLoggedIn()">

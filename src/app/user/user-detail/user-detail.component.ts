@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { User } from '../../login-basic/user';
+import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
 
 @Component({
   selector: 'app-linguist-detail',
@@ -12,6 +13,7 @@ export class UserDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private userService: UserService,
+              private authService: AuthenticationBasicService,
               private router: Router) {
   }
 
@@ -23,6 +25,13 @@ export class UserDetailComponent implements OnInit {
 
   public delete() {
     this.userService.delete(this.user).subscribe(
-      () => this.router.navigate(['users']));
+      () => {
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['users']);
+        } else {
+          this.authService.logout();
+          this.router.navigate(['/about']);
+        }
+      });
   }
 }
