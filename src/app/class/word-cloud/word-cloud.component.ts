@@ -25,8 +25,8 @@ export class WordCloudComponent implements OnInit {
   width: number;
   height: number;
   fillScale;
-  minFontSize = 12;
-  maxFontSize = 36;
+  minFontSize = 10;
+  maxFontSize = 40;
   topClasses = 300;
   searching = false;
   searchFailed = false;
