@@ -1,7 +1,8 @@
 <div class="row">
-  <div class="col">
-    <p class="small mt-3" *ngIf="classes.length == topClasses">
-      Showing top {{topClasses}} classes</p>
+  <div class="col form-group pull-left">
+    <button id="detailsBtn" type="button" [routerLink]="['/datasets', datasetId, 'details']"
+            class="btn btn-outline-primary">
+      <span class="fa fa-info-circle"></span> Details</button>
   </div>
   <div class="col form-group">
     <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
@@ -21,3 +22,8 @@
 </div>
 
 <svg style="width: 100%; height: auto"></svg>
+
+<div class="row">
+  <div class="col-12 small alert-warning ml-3 mb-3 text-center" *ngIf="classes.length == topClasses">
+    Warning: showing just top {{topClasses}} classes!</div>
+</div>
