@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Dataset } from '../dataset';
 import { DatasetService } from '../dataset.service';
-import { FileChangeEvent } from '@angular/compiler-cli/src/perform_watch';
 
 @Component({
   selector: 'app-dataset-form-modal',
@@ -13,6 +12,7 @@ export class DatasetFormModalComponent {
   @Input() graph: string;
   file: File = null;
   isLoading = false;
+  isReplacement = false;
 
   constructor(public activeModal: NgbActiveModal,
               private datasetService: DatasetService) {}
@@ -33,11 +33,24 @@ export class DatasetFormModalComponent {
   }
 
   onSubmit(): void {
-    this.datasetService.storeData(this.dataset.id, this.graph, this.file).subscribe( () => {
+    if (this.isReplacement) {
+      this.datasetService.replaceData(this.dataset.id, this.graph, this.file).subscribe( () => {
         this.isLoading = false;
         this.activeModal.close();
       }, error => {
-      console.log(error);
-    });
+        this.isLoading = false;
+        this.activeModal.close();
+        console.log(error);
+      });
+    } else {
+      this.datasetService.storeData(this.dataset.id, this.graph, this.file).subscribe(() => {
+        this.isLoading = false;
+        this.activeModal.close();
+      }, error => {
+        this.isLoading = false;
+        this.activeModal.close();
+        console.log(error);
+      });
+    }
   }
 }

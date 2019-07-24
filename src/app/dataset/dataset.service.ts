@@ -50,12 +50,21 @@ export class DatasetService extends RestService<Dataset> {
     let params = new HttpParams();
     params = params.append('graph', graph);
     let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', file['content-type']);
-
-    // const formData: FormData = new FormData();
-    // formData.append('fileKey', file, file.name);
+    headers = headers.append('content-type', file['content-type']);
 
     return this.http.post<number>(
+      `${environment.API}/datasets/${did}/server`, file,
+      { params: params, headers: headers });
+
+  }
+
+  replaceData(did: string, graph: string, file: File) {
+    let params = new HttpParams();
+    params = params.append('graph', graph);
+    let headers = new HttpHeaders();
+    headers = headers.append('content-type', file['content-type']);
+
+    return this.http.put<number>(
       `${environment.API}/datasets/${did}/server`, file,
       { params: params, headers: headers });
 
