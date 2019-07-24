@@ -34,7 +34,7 @@
       </select>
     </div>
 
-    <!-- Access Level input -->
+    <!-- Query Type input -->
     <div class="form-group">
       <label class="control-label" for="queryType">Query Type (optimized is recommended for large datasets)</label>
       <select id="queryType" name="queryType" class="form-control" required
@@ -45,12 +45,26 @@
     </div>
 
     <!-- Graphs checkboxes -->
-    <div class="row" *ngIf="this.dataset.serverGraphs && this.dataset.serverGraphs.length > 0">
+    <div class="row mb-3" *ngIf="isEditing">
       <label class="control-label col-12">Dataset Graphs</label>
+      <div class="form-check col-lg-5 ml-3 mr-3">
+        <input class="form-check-input" type="checkbox" value="Default Graph" [checked]="true" [disabled]="true">
+        <label class="form-check-label">Default Graph</label>
+      </div>
       <div *ngFor="let graph of dataset.serverGraphs" class="form-check col-lg-5 ml-3">
         <input class="form-check-input" type="checkbox" value="{{graph}}"
                (change)="graphChange(graph, $event.target.checked)" [checked]="isSelected(graph)">
         <label class="form-check-label">{{graph}}</label>
+        <span class="badge badge-pill badge-secondary pull-right" style="cursor: pointer"
+        (click)="loadModal(graph)">Load Data</span>
+      </div>
+      <div class="input-group input-group-sm mt-3 ml-3 mr-3" [class.was-validated]="newGraph.value">
+        <input id="newGraph" name="newGraph" type="url" class="form-control" placeholder="Graph URI"
+               ngModel #newGraph="ngModel">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" (click)="addGraph(newGraph)"
+                  [disabled]="!newGraph.value || newGraph.invalid">Add Graph</button>
+        </div>
       </div>
     </div>
 

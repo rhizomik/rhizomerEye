@@ -37,7 +37,7 @@
       <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id]"
               class="btn m-1 btn-outline-primary pull-right">
         <span class="fa fa-globe"></span> Explore</button>
-      <button id="editBtn" type="button" [routerLink]="['/datasets', dataset.id, 'edit']"
+      <button id="editBtn" type="button" (click)="editDataset()"
               class="btn m-1 btn-outline-success pull-right">
         <span class="fa fa-pencil"></span> Edit</button>
       <button id="updateBtn" type="button" (click)="reloadClassList()"

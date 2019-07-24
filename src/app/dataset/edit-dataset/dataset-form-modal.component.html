@@ -1,0 +1,30 @@
+<form id="dataset-form" (ngSubmit)="onSubmit()" #form="ngForm">
+  <fieldset>
+    <div class="modal-header">
+      <h4 class="modal-title">Load Data</h4>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="control-label" for="dataset">Destination Dataset</label>
+        <input id="dataset" name="dataset" class="form-control" value="{{dataset.id}}" readonly>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="graph">Destination Graph</label>
+        <input id="graph" name="graph" class="form-control" value="{{graph}}" readonly>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="file">Source File</label>
+        <input id="file" name="file" type="file" class="form-control" (change)="onFileChange($event)">
+      </div>
+  </div>
+  <div class="modal-footer">
+    <div class="form-group">
+      <button id="submit" type="submit" class="btn m-1 btn-success pull-right" [disabled]="!form.form.valid">Submit</button>
+      <button id="cancel" type="button" class="btn m-1 btn-outline-primary pull-right" (click)="activeModal.close('Close click')">Cancel</button>
+    </div>
+  </div>
+</fieldset>
+</form>

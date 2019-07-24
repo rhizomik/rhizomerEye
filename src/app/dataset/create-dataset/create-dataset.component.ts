@@ -10,6 +10,7 @@ import { DatasetService } from '../dataset.service';
 })
 export class CreateDatasetComponent implements OnInit {
   dataset: Dataset;
+  isEditing = false;
 
   constructor(private router: Router,
               private datasetService: DatasetService) {
@@ -21,6 +22,7 @@ export class CreateDatasetComponent implements OnInit {
 
   onSubmit(): void {
     this.datasetService.create(this.dataset).subscribe(
-      (dataset: Dataset) => this.router.navigate(['/datasets', dataset.id, 'edit']));
+      (dataset: Dataset) => this.router.navigate(['/datasets', dataset.id, 'edit'],
+        { state: { dataset: this.dataset } }));
   }
 }

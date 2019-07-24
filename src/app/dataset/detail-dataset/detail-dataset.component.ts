@@ -41,4 +41,9 @@ export class DetailDatasetComponent implements OnInit {
       () => this.router.navigate(['datasets'])
     );
   }
+
+  editDataset() {
+    this.router.navigate(['/datasets', this.dataset.id, 'edit'],
+      { state: { dataset: this.dataset } });
+  }
 }

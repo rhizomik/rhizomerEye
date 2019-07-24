@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {
-  NgbCollapseModule, NgbDropdownModule, NgbPaginationModule, NgbTypeaheadModule
+  NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbPaginationModule, NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -38,6 +38,7 @@ import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.compon
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { DescriptionComponent } from './description/description.component';
 import { ResourceComponent } from './description/resource.component';
+import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-modal.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { ResourceComponent } from './description/resource.component';
     WordCloudComponent,
     DescriptionComponent,
     ResourceComponent,
+    DatasetFormModalComponent
   ],
   imports: [
     AppRoutingModule,
@@ -70,6 +72,7 @@ import { ResourceComponent } from './description/resource.component';
     NgbDropdownModule,
     NgbPaginationModule,
     NgbTypeaheadModule,
+    NgbModalModule,
     LoginBasicModule,
     ErrorHandlerModule,
   ],
@@ -78,6 +81,7 @@ import { ResourceComponent } from './description/resource.component';
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     AuthenticationBasicService, LoggedInGuard, AdministratorGuard, AdminService, UserService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DatasetFormModalComponent],
 })
 export class AppModule { }

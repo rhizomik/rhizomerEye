@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RestService } from '../shared/rest.service';
 import { Dataset } from './dataset';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Class } from '../class/class';
@@ -44,5 +44,20 @@ export class DatasetService extends RestService<Dataset> {
     params = params.append('uri', resource);
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/browse`, {params: params});
+  }
+
+  storeData(did: string, graph: string, file: File) {
+    let params = new HttpParams();
+    params = params.append('graph', graph);
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', file['content-type']);
+
+    // const formData: FormData = new FormData();
+    // formData.append('fileKey', file, file.name);
+
+    return this.http.post<number>(
+      `${environment.API}/datasets/${did}/server`, file,
+      { params: params, headers: headers });
+
   }
 }

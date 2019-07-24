@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset.service';
 import { Dataset } from '../dataset';
 import { forkJoin } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DatasetFormModalComponent } from './dataset-form-modal.component';
 
 @Component({
   selector: 'app-edit-dataset',
@@ -11,20 +14,25 @@ import { forkJoin } from 'rxjs';
 })
 export class EditDatasetComponent implements OnInit {
   dataset: Dataset = new Dataset();
+  isEditing = true;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private datasetService: DatasetService) { }
+              private datasetService: DatasetService,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
     const datasetId = this.route.snapshot.paramMap.get('did');
+    if (!history.state.dataset) {
+      this.datasetService.get(datasetId).subscribe(dataset => this.dataset = dataset);
+    } else {
+      this.dataset = history.state.dataset;
+    }
     forkJoin([
-      this.datasetService.get(datasetId),
       this.datasetService.serverGraphs(datasetId),
       this.datasetService.datasetGraphs(datasetId)])
     .subscribe(
-      ([dataset, serverGraphs, datasetGraphs]) => {
-        this.dataset = dataset;
+      ([serverGraphs, datasetGraphs]) => {
         this.dataset.serverGraphs = serverGraphs;
         this.dataset.graphs = datasetGraphs;
       });
@@ -48,5 +56,21 @@ export class EditDatasetComponent implements OnInit {
 
   isSelected(graph: string): boolean {
     return this.dataset.graphs.includes(graph);
+  }
+
+  addGraph(newGraph: FormControl) {
+    if (!this.dataset.serverGraphs.includes(newGraph.value)) {
+      this.dataset.serverGraphs.push(newGraph.value);
+    }
+    if (!this.dataset.graphs.includes(newGraph.value)) {
+      this.dataset.graphs.push(newGraph.value);
+    }
+    newGraph.reset();
+  }
+
+  loadModal(graph: string) {
+    const modalRef = this.modalService.open(DatasetFormModalComponent);
+    modalRef.componentInstance.dataset = this.dataset;
+    modalRef.componentInstance.graph = graph;
   }
 }
