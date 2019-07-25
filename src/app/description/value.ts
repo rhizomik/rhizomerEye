@@ -4,6 +4,7 @@ export class Value {
   uri: string;
   label: string;
   value: string;
+  language: string;
 
   constructor(value: any, context: Object = {}) {
     if (value['@value']) {
@@ -24,6 +25,9 @@ export class Value {
       }
     } else {
       this.value = value;
+    }
+    if (value['@language']) {
+      this.language = value['@language'];
     }
   }
 }

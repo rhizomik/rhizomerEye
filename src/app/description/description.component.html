@@ -13,7 +13,7 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item small" *ngFor="let property of description.properties">
       <b title="{{property.uri}}">{{property.label}}</b>:
-      <span *ngFor="let value of property.values; let firstValue=first">
+      <span *ngFor="let value of property.filterLangValues('en'); let firstValue=first">
         <app-description *ngIf="isAnonResource(value)"
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>

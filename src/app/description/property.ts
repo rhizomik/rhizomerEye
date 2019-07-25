@@ -15,4 +15,9 @@ export class Property {
       this.values.push(new Value(value, context));
     }
   }
+
+  filterLangValues(lang: string): Value[] {
+    return this.values.filter(
+      value => !value.language || value.language.indexOf(lang) >= 0);
+  }
 }
