@@ -36,7 +36,8 @@ export class ResourceComponent implements OnInit {
           response['@graph']
             .filter(instance => (<string>instance['@id']).startsWith('_:'))
             .map(instance => this.anonResources.set(instance['@id'], new Description(instance, response['@context'])));
-        } else {
+        } else if (response['@id'] && response['@context'] &&
+                   UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
           this.resource = new Description(response, response['@context']);
         }
         this.loading = false;
