@@ -7,6 +7,6 @@ export class Breadcrumb {
     if (this.name.startsWith('describe?uri=')) {
       this.name = this.name.substring('describe?uri='.length);
     }
-    this.uri = url.substring(0, url.indexOf(step)) + step;
+    this.uri = decodeURI(url.substring(0, url.indexOf(step)) + step);
   }
 }
