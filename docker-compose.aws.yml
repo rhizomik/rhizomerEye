@@ -1,0 +1,17 @@
+version: '2'
+services:
+  rhizomer-api:
+    image: rhizomik/rhizomer-api
+    container_name: rhizomer-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ALLOWED_ORIGINS=http://${HOSTNAME}
+      - RHIZOMER_DEFAULT_PASSWORD=password
+  rhizomer:
+    image: rhizomik/rhizomer-eye
+    container_name: rhizomer
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_API_URL=http://${HOSTNAME}:8080
