@@ -12,7 +12,8 @@
     "e2e-local": "npm-run-all e2e-quick e2e-report --continue-on-error",
     "e2e-quick": "ng e2e --dev-server-target= --webdriver-update false",
     "e2e-report": "node e2e/generate-html-report.js",
-    "webdriver-update": "webdriver-manager update"
+    "webdriver-update": "webdriver-manager update",
+    "postinstall": "cd ./node_modules/protractor && npm i webdriver-manager@latest && cd ../.. && ./node_modules/.bin/webdriver-manager update"
   },
   "private": true,
   "dependencies": {
