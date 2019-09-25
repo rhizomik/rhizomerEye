@@ -21,7 +21,7 @@
              [routerLink]="['/datasets/new']"><span class="fa fa-save"></span> New</a>
         </div>
       </li>
-      <li class="nav-item dropdown" ngbDropdown>
+      <li class="nav-item dropdown" *ngIf="isAdmin()" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="adminDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>Administration</a>
         <div class="dropdown-menu" aria-labelledby="adminDropdown" ngbDropdownMenu>
