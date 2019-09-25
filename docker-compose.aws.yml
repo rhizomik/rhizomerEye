@@ -14,4 +14,4 @@ services:
     ports:
       - "80:80"
     environment:
-      - BACKEND_API_URL=http://${HOSTNAME}:8080
+      - API_URL=http://${HOSTNAME}:8080

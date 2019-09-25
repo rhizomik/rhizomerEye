@@ -6,4 +6,4 @@ services:
     ports:
       - "80:80"
     environment:
-      - BACKEND_API_URL=http://localhost:8080
+      - API_URL=${API_URL:-http://localhost:8080}
