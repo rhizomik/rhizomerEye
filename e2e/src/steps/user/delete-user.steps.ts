@@ -7,7 +7,7 @@ class DeleteUserSteps {
   private confirmForm = new ConfirmPage();
 
   @when(/^I confirm the deletion$/)
-  async iConfirmDeletion(): Promise<void> {
+  async iConfirmDeletion() {
     await this.confirmForm.clickConfirmButton();
   }
 }

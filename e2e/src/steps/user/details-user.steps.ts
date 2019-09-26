@@ -7,12 +7,12 @@ class DetailsUserSteps {
   private userDetails = new UserDetailsPage();
 
   @then(/^I see a user with name "([^"]*)"$/)
-  async iSeeUserWithName(name: string): Promise<void> {
+  async iSeeUserWithName(name: string) {
     expect(await this.userDetails.getUsername()).to.equal(name);
   }
 
   @then(/^I see a user with e-mail "([^"]*)"$/)
-  async iSeeUserWithEMail(email: string): Promise<void> {
+  async iSeeUserWithEMail(email: string) {
     expect(await this.userDetails.getEMail()).to.equal(email);
   }
 }
