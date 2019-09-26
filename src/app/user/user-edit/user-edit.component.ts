@@ -12,6 +12,8 @@ import { AuthenticationBasicService } from '../../login-basic/authentication-bas
 })
 export class UserEditComponent implements OnInit {
   public user: User = new User();
+  public isEditing = true;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private userService: UserService,

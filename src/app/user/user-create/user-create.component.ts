@@ -9,6 +9,7 @@ import { User } from '../../login-basic/user';
 })
 export class UserCreateComponent implements OnInit {
   public user: User;
+  public isEditing = false;
 
   constructor(private router: Router,
               private userService: UserService) {
