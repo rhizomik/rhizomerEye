@@ -10,13 +10,11 @@ export class ConfirmPage {
     this.cancelBtn = element(by.id('cancel'));
   }
 
-  async clickConfirmButton(): Promise<void> {
+  async clickConfirmButton() {
     await this.confirmBtn.click();
-    await browser.waitForAngular();
   }
 
-  async clickCancelButton(): Promise<void> {
+  async clickCancelButton() {
     await this.cancelBtn.click();
-    await browser.waitForAngular();
   }
 }

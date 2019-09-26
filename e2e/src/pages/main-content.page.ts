@@ -8,13 +8,11 @@ export class MainContentPage {
     this.mainContainer = element(by.css('main.container'));
   }
 
-  async clickLinkWithText(text: string): Promise<void> {
+  async clickLinkWithText(text: string) {
     await this.mainContainer.element(by.partialLinkText(text)).click();
-    await browser.waitForAngular();
   }
 
-  async clickButtonWithText(text: string): Promise<void> {
+  async clickButtonWithText(text: string) {
     await this.mainContainer.element(by.partialButtonText(text)).click();
-    await browser.waitForAngular();
   }
 }

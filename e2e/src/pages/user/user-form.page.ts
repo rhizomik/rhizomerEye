@@ -15,7 +15,6 @@ export class UserFormPage {
   async fillUserForm(username: string, password: string) {
     await this.username.sendKeys(username);
     await this.password.sendKeys(password);
-    return this.form.submit();
-    // await browser.waitForAngular();
+    await this.form.submit();
   }
 }

@@ -9,10 +9,10 @@ export class UserListPage {
   }
 
   async getUserInPosition(position: number): Promise<ElementArrayFinder> {
-    return await this.users.get(position - 1);
+    return this.users.get(position - 1);
   }
 
   async getUsersCount(): Promise<number> {
-    return await this.users.count();
+    return this.users.count();
   }
 }

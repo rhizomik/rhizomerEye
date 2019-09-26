@@ -10,11 +10,11 @@ export class ErrorAlert {
     this.errorAlertClose = this.errorAlert.element(by.css('button.close'));
   }
 
-  async getMessage(): Promise<string> {
-    return await this.errorAlert.getText();
+  async getMessage() {
+    return this.errorAlert.getText();
   }
 
-  async close(): Promise<void> {
+  async close() {
     await this.errorAlertClose.click();
   }
 }

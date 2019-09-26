@@ -23,29 +23,26 @@ export class UserDetailsPage {
   }
 
   async getUsername(): Promise<string> {
-    return await this.detailsUsername.getText();
+    return this.detailsUsername.getText();
   }
 
   async getEMail(): Promise<string> {
-    return await this.detailsEMail.getText();
+    return this.detailsEMail.getText();
   }
 
   async getRole(): Promise<string> {
-    return await this.detailsRole.getText();
+    return this.detailsRole.getText();
   }
 
-  async clickBackToListButton(): Promise<void> {
+  async clickBackToListButton() {
     await this.listBtn.click();
-    await browser.waitForAngular();
   }
 
-  async clickEditButton(): Promise<void> {
+  async clickEditButton() {
     await this.editBtn.click();
-    await browser.waitForAngular();
   }
 
-  async clickDeleteButton(): Promise<void> {
+  async clickDeleteButton() {
     await this.deleteBtn.click();
-    await browser.waitForAngular();
   }
 }
