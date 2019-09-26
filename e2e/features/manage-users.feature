@@ -11,16 +11,12 @@ Feature: Manage Users
 
   Scenario: No listed users when logged as user
     Given I'm on the home page and logged out
-    And I sign in as "user" with password "password"
-    When I click submenu option "Users" in menu "Administration"
-    Then I see error alert "You should be an administrator to perform this action" and close it
-    And I see 0 users
+    When I sign in as "user" with password "password"
+    Then The menu option "Administration" is not visible
 
   Scenario: No listed users when not logged in
     Given I'm on the home page and logged out
-    When I click submenu option "Users" in menu "Administration"
-    Then I see error alert "You should be an administrator to perform this action" and close it
-    And I see 0 users
+    Then The menu option "Administration" is not visible
 
   Scenario: Register new user and view details
     Given I'm on the home page and logged out
