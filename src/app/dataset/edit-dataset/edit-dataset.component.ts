@@ -15,6 +15,7 @@ import { DatasetFormModalComponent } from './dataset-form-modal.component';
 export class EditDatasetComponent implements OnInit {
   dataset: Dataset = new Dataset();
   isEditing = true;
+  changePassword = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -72,5 +73,10 @@ export class EditDatasetComponent implements OnInit {
     const modalRef = this.modalService.open(DatasetFormModalComponent);
     modalRef.componentInstance.dataset = this.dataset;
     modalRef.componentInstance.graph = graph;
+  }
+
+  switchChangePassword() {
+    this.changePassword = !this.changePassword;
+    this.dataset.password = null;
   }
 }

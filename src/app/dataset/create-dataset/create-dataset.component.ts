@@ -11,6 +11,7 @@ import { DatasetService } from '../dataset.service';
 export class CreateDatasetComponent implements OnInit {
   dataset: Dataset;
   isEditing = false;
+  changePassword = true;
 
   constructor(private router: Router,
               private datasetService: DatasetService) {

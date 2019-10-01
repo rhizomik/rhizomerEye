@@ -24,6 +24,25 @@
              [(ngModel)]="dataset.updateEndPoint" #update="ngModel">
     </div>
 
+    <!-- Update Service Username input -->
+    <div class="form-group" [class.was-validated]="username.dirty || username.touched">
+      <label class="control-label" for="username">SPARQL Update Username (optional)</label>
+      <input id="username" name="username" type="text" class="form-control"
+             [(ngModel)]="dataset.username" #username="ngModel">
+    </div>
+
+    <!-- Update Service Password input -->
+    <div class="form-group" [class.was-validated]="password.dirty || password.touched">
+      <label class="control-label" for="password">SPARQL Update Username (optional)</label>
+      <input id="password" name="password" type="password" class="form-control"
+             [readOnly]="!changePassword"
+             [(ngModel)]="dataset.password" #password="ngModel">
+      <div class="form-check" *ngIf="isEditing">
+        <input class="form-check-input" type="checkbox" [checked]="changePassword" (change)="switchChangePassword()">
+        <label class="form-check-label">Change password</label>
+      </div>
+    </div>
+
     <!-- Access Level input -->
     <div class="form-group">
       <label class="control-label" for="isPublic">Access</label>

@@ -9,6 +9,7 @@ export class Dataset {
   sampleSize: number;
   coverage: number;
   username: string;
+  password: string;
   graphs: string[];
   serverGraphs: string[];
 
