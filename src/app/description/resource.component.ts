@@ -14,6 +14,7 @@ export class ResourceComponent implements OnInit {
   resourceUri: string;
   resource: Description = new Description();
   anonResources: Map<string, Description> = new Map<string, Description>();
+  labels: Map<string, string> = new Map<string, string>();
   remoteResource: Description = new Description();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
@@ -30,15 +31,22 @@ export class ResourceComponent implements OnInit {
     this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
       (response) => {
         if (response['@graph']) {
-          this.resource = response['@graph']
-            .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
-            .map(instance => new Description(instance, response['@context']))[0];
           response['@graph']
             .filter(instance => (<string>instance['@id']).startsWith('_:'))
             .map(instance => this.anonResources.set(instance['@id'], new Description(instance, response['@context'])));
+          response['@graph']
+            .map(instance => Object.entries(instance)
+              .forEach(([key, value]) => {
+                if (key.includes('label')) {
+                  this.labels.set(UriUtils.expandUri(instance['@id'], response['@context']), <string>value);
+                }
+              }));
+          this.resource = response['@graph']
+            .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
+            .map(instance => new Description(instance, response['@context'], this.labels))[0];
         } else if (response['@id'] && response['@context'] &&
                    UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Description(response, response['@context']);
+          this.resource = new Description(response, response['@context'], this.labels);
         }
         this.loading = false;
       });

@@ -36,7 +36,8 @@
       <span *ngIf="!filteredInstances" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
     <div *ngFor="let resource of resources">
-      <app-description [description]="resource" [anonDescriptions]="anonResources"></app-description>
+      <app-description [description]="resource" [anonDescriptions]="anonResources"
+        [labels]="labels"></app-description>
     </div>
     <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
                     [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"

@@ -12,6 +12,7 @@ import { Value } from '../../range/value';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
+import { UriUtils } from '../../shared/uriutils';
 
 @Component({
   selector: 'app-list-facet',
@@ -32,6 +33,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   datasetClass: Class = new Class();
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
+  labels: Map<string, string> = new Map<string, string>();
 
   constructor(
     private router: Router,
@@ -85,15 +87,23 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).subscribe(
       instances => {
         if (instances['@graph']) {
+          instances['@graph']
+            .filter(instance => (<string>instance['@id']).startsWith('_:'))
+            .map(instance => this.anonResources.set(instance['@id'],
+              new Description(instance, instances['@context'], this.labels)));
+          instances['@graph']
+            .map(instance => Object.entries(instance)
+              .forEach(([key, value]) => {
+                if (key.includes('label')) {
+                  this.labels.set(UriUtils.expandUri(instance['@id'], instances['@context']), <string>value);
+                }
+              }));
           this.resources = instances['@graph']
             .filter(instance => instance['@type'] &&
               Description.isOfType(instance['@type'], this.datasetClass.uri, instances['@context']) )
-            .map(instance => new Description(instance, instances['@context']));
-          instances['@graph']
-            .filter(instance => (<string>instance['@id']).startsWith('_:'))
-            .map(instance => this.anonResources.set( instance['@id'], new Description(instance, instances['@context'])));
+            .map(instance => new Description(instance, instances['@context'], this.labels));
         } else if (instances['@type']) {
-          this.resources = [new Description(instances, instances['@context'])];
+          this.resources = [new Description(instances, instances['@context'], this.labels)];
         } else {
           this.resources = [];
         }

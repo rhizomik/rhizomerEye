@@ -13,6 +13,8 @@ export class DescriptionComponent implements OnInit {
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
   @Input()
+  labels: Map<string, string> = new Map<string, string>();
+  @Input()
   describe = 'describe';
   depictionExpanded = false;
 

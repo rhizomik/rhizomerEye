@@ -13,6 +13,28 @@ export class UriUtils {
     }
   }
 
+  static getLabel(uri: string, labels: Map<string, string>): string {
+    if (labels.has(uri)) {
+      return this.pickLabel(labels.get(uri), 'en');
+    } else {
+      return UriUtils.localName(uri);
+    }
+  }
+
+  static pickLabel(value: any, prefLang: string): string {
+    if (value instanceof Array) {
+      return value
+      .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
+      .map(label => label['@value'])
+      .join(', ');
+    }
+    if (value['@language']) {
+      return value['@value'];
+    } else {
+      return value;
+    }
+  }
+
   static expandUri(input: string, context: Object): string {
     if (this.isUrl(input) || input.startsWith('urn:')) {
       return input;

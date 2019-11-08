@@ -8,7 +8,7 @@ export class Description {
   label: string;
   properties: Property[] = [];
 
-  constructor(values: Object = {}, context: Object = {}) {
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, string> = new Map()) {
     Object.entries(values).forEach(
       ([key, value]) => {
         const expandedUri = UriUtils.expandUri(key, context);
@@ -19,14 +19,14 @@ export class Description {
           case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
-            this.label = this.pickLabel(value, 'en');
+            this.label = UriUtils.pickLabel(value, 'en');
             break;
           }
           case 'http://xmlns.com/foaf/0.1/depiction': {
             if (value['@id']) { this.depiction = value['@id']; } else { this.depiction = value; }
             break; }
           default: if (expandedUri.indexOf('wikiPage') < 0) {
-            this.properties.push(new Property(expandedUri, value, context));
+            this.properties.push(new Property(expandedUri, value, context, labels));
           }
         }
       }
@@ -39,20 +39,6 @@ export class Description {
       return (<Array<string>>types.map(value => UriUtils.expandUri(value, context))).includes(classUri);
     } else {
       return UriUtils.expandUri(<string>types, context) === classUri;
-    }
-  }
-
-  pickLabel(value: any, prefLang: string): string {
-    if (value instanceof Array) {
-      return value
-        .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
-        .map(label => label['@value'])
-        .join(', ');
-    }
-    if (value['@language']) {
-      return value['@value'];
-    } else {
-      return value;
     }
   }
 
