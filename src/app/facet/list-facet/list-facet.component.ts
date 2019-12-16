@@ -108,6 +108,18 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           this.resources = [];
         }
       });
+    this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize).subscribe(
+      labels => {
+        if (labels['@graph']) {
+          labels['@graph']
+            .map(instance => Object.entries(instance)
+              .forEach(([key, value]) => {
+                if (key.includes('label')) {
+                  this.labels.set(UriUtils.expandUri(instance['@id'], labels['@context']), <string>value);
+                }
+              }));
+        }
+      });
   }
 
   goToPage(page: number) {
