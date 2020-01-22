@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Subject } from 'rxjs';
+import {forkJoin, Observable, of, Subject} from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -11,8 +11,9 @@ import { Range } from '../../range/range';
 import { Value } from '../../range/value';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
-import { takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, flatMap, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { UriUtils } from '../../shared/uriutils';
+import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-list-facet',
@@ -34,6 +35,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, string> = new Map<string, string>();
+  searching = false;
+  searchFailed = false;
 
   constructor(
     private router: Router,
@@ -178,5 +181,30 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+
+  search(facet: Facet, range: Range): (text: Observable<string>) => Observable<Value[]> {
+    return (text$: Observable<string>) => text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      switchMap(term =>
+        this.rangeService.getValuesContaining(
+          this.datasetId, this.classId, facet.curie, range.curie, this.breadcrumbService.filters, 10, term).pipe(
+            map(values => values.map(value => new Value(value, facet, this.breadcrumbService.filters))),
+            tap(() => this.searchFailed = false),
+            catchError(() => {
+              this.searchFailed = true;
+              return of([]);
+            }))
+        ),
+      tap(() => this.searching = false)
+    );
+  }
+
+  selectItem(facet: Facet, $event: NgbTypeaheadSelectItemEvent, autocomplete) {
+    $event.preventDefault();
+    this.filterValue(facet, $event.item);
+    autocomplete.value = '';
   }
 }

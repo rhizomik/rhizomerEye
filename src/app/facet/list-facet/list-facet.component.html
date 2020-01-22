@@ -26,9 +26,20 @@
           <span [title]="valueToolTip(value)">{{value.label}}</span>
           <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
         </p>
+        <div *ngIf="range.values">
+          <input id="typeahead-http" type="text" class="pl-3 form-control form-control-sm"
+                 [resultTemplate]="rt" [editable]='false' #autocomplete
+                 [class.is-invalid]="searchFailed" [ngbTypeahead]="search(facet, range)" placeholder="Search all facet values"
+                 [class.loading]="searching" (selectItem)="selectItem(facet, $event, autocomplete)"/>
+          <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+        </div>
       </div>
     </div>
   </div>
+
+  <ng-template #rt let-r="result" let-t="term">
+    <ngb-highlight class="small" [result]="r.label" [term]="t"></ngb-highlight>
+  </ng-template>
 
   <div id="instances" class="col-8 m-0">
     <h5 class="p-1">Instances
