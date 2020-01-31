@@ -19,8 +19,7 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic';
 export class WordCloudComponent implements OnInit {
 
   datasetId: string;
-  classes: Class[] = [];
-
+  classes: Class[];
   svg;
   width: number;
   height: number;

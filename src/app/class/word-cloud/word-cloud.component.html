@@ -6,7 +6,7 @@
   </div>
   <div class="col form-group">
     <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
-           [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Search all classes"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="search()" placeholder="Search all classes"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
     <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
   </div>
@@ -16,14 +16,17 @@
   <ngb-highlight [result]="r.label" [term]="t"></ngb-highlight>
 </ng-template>
 
-<div *ngIf="classes.length == 0" id="loading" style="text-align: center;">
+<div *ngIf="classes == undefined" id="loading" style="text-align: center;">
   <div id="spinner"></div>
   <p>Analyzing all classes, this might require some time...</p>
+</div>
+<div *ngIf="classes?.length == 0" class="row">
+  <div class="col alert-danger m-3 text-center" >No class instances were found</div>
 </div>
 
 <svg style="width: 100%; height: auto"></svg>
 
 <div class="row">
-  <div class="col-12 small alert-warning ml-3 mb-3 text-center" *ngIf="classes.length == topClasses">
+  <div class="col small alert-warning m-3 text-center" *ngIf="classes?.length == topClasses">
     Warning: showing just top {{topClasses}} classes!</div>
 </div>
