@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {forkJoin, Observable, of, Subject} from 'rxjs';
+import { Observable, of, Subject} from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -11,7 +11,7 @@ import { Range } from '../../range/range';
 import { Value } from '../../range/value';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
-import { catchError, debounceTime, distinctUntilChanged, flatMap, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { UriUtils } from '../../shared/uriutils';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
@@ -25,7 +25,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   datasetId: string;
   classId: string;
   facets: Facet[] = [];
-  retrievedFacets = 0;
+  retrievedFacets;
   relevance = 0.2;
   totalInstances = 0;
   filteredInstances = 0;
@@ -159,10 +159,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   loadAllFacets() {
     this.refreshFacets(0);
-  }
-
-  showSearchResults(facets) {
-    this.facets = facets;
   }
 
   ngOnDestroy() {

@@ -2,18 +2,18 @@
 
   <div id="facets" class="col-4 m-0">
     <h5 class="p-1">Facets
-      <span *ngIf="retrievedFacets" class="badge badge-warning badge-pill">
-        {{retrievedFacets}}<span *ngIf="retrievedFacets < datasetClass.facetsCount"
-                                 (click)="loadAllFacets()" style="cursor: pointer"
-                                 title="Load all facets">/{{datasetClass.facetsCount}}</span>
+      <span *ngIf="retrievedFacets > 0">
+        <span class="badge badge-warning badge-pill">{{retrievedFacets}}</span>
+        <a *ngIf="retrievedFacets < datasetClass.facetsCount" class="badge" [routerLink]=""
+            (click)="loadAllFacets()" title="Load all facets"> of {{datasetClass.facetsCount}}</a>
       </span>
-      <span *ngIf="!retrievedFacets" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="retrievedFacets == 0" class="badge badge-danger badge-pill">No facets retrieved</span>
+      <span *ngIf="retrievedFacets == undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
     <div class="card facet p-2 mb-2" *ngFor="let facet of facets" [class.bg-warning]="facet.selected">
-      <h6 class="card-title p-1 mb-1"><b title="{{facet.uri}}">{{facet.label}}</b>
-        <span class="badge badge-primary badge-pill float-right" style="cursor: pointer"
-              title="Filter all with {{facet.label}}" (click)="filterAll(facet)">
-          {{facet.timesUsed}}</span>
+      <h6 class="card-title p-1 mb-1" (click)="filterAll(facet)" style="cursor: pointer" title="Filter all with {{facet.uri}}">
+        <b>{{facet.label}}</b>
+        <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span>
       </h6>
       <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
         <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
