@@ -28,7 +28,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   retrievedFacets;
   relevance = 0.2;
   totalInstances = 0;
-  filteredInstances = 0;
+  filteredInstances;
   page = 1;
   pageSize = 10;
   datasetClass: Class = new Class();
@@ -78,7 +78,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   refreshInstances(datasetId: string, classId: string, filters: Filter[]) {
-    this.filteredInstances = 0;
+    this.filteredInstances = undefined;
     this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
       count => {
         this.filteredInstances = count;

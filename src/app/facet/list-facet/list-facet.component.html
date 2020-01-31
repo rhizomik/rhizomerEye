@@ -43,8 +43,9 @@
 
   <div id="instances" class="col-8 m-0">
     <h5 class="p-1">Instances
-      <span *ngIf="filteredInstances" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-      <span *ngIf="!filteredInstances" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
+      <span *ngIf="filteredInstances == 0" class="badge badge-danger badge-pill">No instances retrieved</span>
+      <span *ngIf="filteredInstances == undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
     <div *ngFor="let resource of resources">
       <app-description [description]="resource" [anonDescriptions]="anonResources"
