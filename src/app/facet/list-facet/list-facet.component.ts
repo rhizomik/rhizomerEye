@@ -179,12 +179,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
-  search(facet: Facet, range: Range): (text: Observable<string>) => Observable<Value[]> {
+  search(facet: Facet, range: Range): (text$: Observable<string>) => Observable<Value[]> {
     return (text$: Observable<string>) => text$.pipe(
-      debounceTime(300),
+      debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
-      switchMap(term =>
+      switchMap(term => term.length < 3 ? of([]) :
         this.rangeService.getValuesContaining(
           this.datasetId, this.classId, facet.curie, range.curie, this.breadcrumbService.filters, 10, term).pipe(
             map(values => values.map(value => new Value(value, facet, this.breadcrumbService.filters))),
