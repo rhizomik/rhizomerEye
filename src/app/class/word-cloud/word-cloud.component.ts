@@ -30,7 +30,6 @@ export class WordCloudComponent implements OnInit {
   topClasses = 300;
   searching = false;
   searchFailed = false;
-  model: any;
 
   constructor(
     private router: Router,
@@ -53,20 +52,22 @@ export class WordCloudComponent implements OnInit {
       });
   }
 
-  search = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(300),
+  search(): (text$: Observable<string>) => Observable<any> {
+    return (text$: Observable<string>) => text$.pipe(
+      debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
-      switchMap(term =>
-        this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
+      switchMap(term => term.length < 3 ? of([]) :
+          this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
           tap(() => this.searchFailed = false),
           catchError(() => {
             this.searchFailed = true;
             return of([]);
           }))
       ),
-      tap(() => this.searching = false))
+      tap(() => this.searching = false)
+    );
+  }
 
   private setup() {
     this.fillScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemeCategory10);
