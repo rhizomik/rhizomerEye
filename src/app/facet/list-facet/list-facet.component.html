@@ -55,9 +55,9 @@
                     [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
                     [directionLinks]="false" size="sm"
                     (pageChange)="goToPage($event)"></ngb-pagination>
-    <p i18n class="text-center">Showing {{resources?.length}} out of { filteredInstances, plural,
-      =1 {1 instance}
-      other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
+    <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
+      Showing {{resources?.length}} out of { filteredInstances, plural,
+      =1 {1 instance} other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
   </div>
 
 </div>
