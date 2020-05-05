@@ -15,18 +15,6 @@ export class DatasetService extends RestService<Dataset> {
     super('datasets', http);
   }
 
-  datasetGraphs(did: string): Observable<string[]> {
-    return this.http.get<string[]>(`${environment.API}/datasets/${did}/graphs`);
-  }
-
-  updateGraphs(did: string, graphs: string[]): Observable<string[]> {
-    return this.http.put<string[]>(`${environment.API}/datasets/${did}/graphs`, graphs);
-  }
-
-  serverGraphs(did: string): Observable<string[]> {
-    return this.http.get<string[]>(`${environment.API}/datasets/${did}/server/graphs`);
-  }
-
   clearClasses(did: string): Observable<Class[]> {
     const body = JSON.stringify([]);
     return this.http.put<Class[]>(`${environment.API}/datasets/${did}/classes`, body, this.getHttpOptions());
@@ -44,29 +32,5 @@ export class DatasetService extends RestService<Dataset> {
     params = params.append('uri', resource);
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/browse`, {params: params});
-  }
-
-  storeData(did: string, graph: string, file: File) {
-    let params = new HttpParams();
-    params = params.append('graph', graph);
-    let headers = new HttpHeaders();
-    headers = headers.append('content-type', file['content-type']);
-
-    return this.http.post<number>(
-      `${environment.API}/datasets/${did}/server`, file,
-      { params: params, headers: headers });
-
-  }
-
-  replaceData(did: string, graph: string, file: File) {
-    let params = new HttpParams();
-    params = params.append('graph', graph);
-    let headers = new HttpHeaders();
-    headers = headers.append('content-type', file['content-type']);
-
-    return this.http.put<number>(
-      `${environment.API}/datasets/${did}/server`, file,
-      { params: params, headers: headers });
-
   }
 }

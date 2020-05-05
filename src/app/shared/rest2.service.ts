@@ -14,7 +14,7 @@ export class Rest2Service<T> {
     this.resource2 = resource2;
   }
 
-  private getHttpOptions() {
+  getHttpOptions() {
     return {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
