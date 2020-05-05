@@ -3,9 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset.service';
 import { Dataset } from '../dataset';
 import { forkJoin } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { NgModel } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatasetFormModalComponent } from './dataset-form-modal.component';
+import { Endpoint } from '../endpoint';
+import { EndpointService } from '../endpoint.service';
 
 @Component({
   selector: 'app-edit-dataset',
@@ -13,58 +15,100 @@ import { DatasetFormModalComponent } from './dataset-form-modal.component';
   styleUrls: ['../dataset-form/dataset-form.component.css']
 })
 export class EditDatasetComponent implements OnInit {
+  datasetId = '';
   dataset: Dataset = new Dataset();
+  endpoint: Endpoint = new Endpoint();
+  endpoints: Endpoint[] = [];
   isEditing = true;
-  changePassword = false;
+  passwordProtected = false;
+  changePassword = true;
+  graphsRetrieved = false;
+  active = 1;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private datasetService: DatasetService,
+              private endpointService: EndpointService,
               private modalService: NgbModal) { }
 
   ngOnInit() {
-    const datasetId = this.route.snapshot.paramMap.get('did');
+    this.datasetId = this.route.snapshot.paramMap.get('did');
     if (!history.state.dataset) {
-      this.datasetService.get(datasetId).subscribe(dataset => this.dataset = dataset);
+      this.datasetService.get(this.datasetId).subscribe(dataset => this.dataset = dataset);
+      this.endpointService.getAll(this.datasetId).subscribe(endpoints => {
+        this.endpoints = endpoints;
+        if (this.endpoints.length > 0) {
+          this.endpoint = this.endpoints[0];
+          this.changePassword = false;
+          this.passwordProtected = !!this.endpoint.queryUsername;
+          this.getGraphs();
+        }
+      });
     } else {
+      this.active = 2;
       this.dataset = history.state.dataset;
     }
+  }
+
+  saveDataset(): void {
+    this.datasetService.update(this.dataset).subscribe(
+      () => this.active = 2);
+  }
+
+  saveEndpoint(): void {
+    if (this.endpoints.length > 0) {
+      this.endpointService.updateEndpoint(this.datasetId, this.endpoint).subscribe(
+        () => {
+          this.active = 3;
+          this.getGraphs();
+        });
+    } else {
+      this.endpointService.create(this.datasetId, this.endpoint).subscribe(
+        (endpoint) => {
+          this.endpoint = endpoint;
+          this.endpoints.push(endpoint);
+          this.changePassword = false;
+          this.getGraphs();
+          this.active = 3;
+        });
+    }
+  }
+
+  getGraphs() {
     forkJoin([
-      this.datasetService.serverGraphs(datasetId),
-      this.datasetService.datasetGraphs(datasetId)])
+      this.endpointService.serverGraphs(this.datasetId, this.endpoint.id),
+      this.endpointService.datasetGraphs(this.datasetId, this.endpoint.id)])
     .subscribe(
       ([serverGraphs, datasetGraphs]) => {
-        this.dataset.serverGraphs = serverGraphs;
-        this.dataset.graphs = datasetGraphs;
+        this.graphsRetrieved = true;
+        this.endpoint.serverGraphs = serverGraphs;
+        this.endpoint.graphs = datasetGraphs;
       });
   }
 
   graphChange(graph: string, isChecked: boolean) {
     if (isChecked) {
-      this.dataset.graphs.push(graph);
+      this.endpoint.graphs.push(graph);
     } else {
-      this.dataset.graphs = this.dataset.graphs.filter(item => item !== graph);
+      this.endpoint.graphs = this.endpoint.graphs.filter(item => item !== graph);
     }
   }
 
-  onSubmit(): void {
-    forkJoin([
-      this.datasetService.update(this.dataset),
-      this.datasetService.updateGraphs(this.dataset.id, this.dataset.graphs)])
-    .subscribe(
+  setGraphs(): void {
+    this.endpointService.updateGraphs(this.dataset.id, this.endpoint.id, this.endpoint.graphs).subscribe(
       () => this.router.navigate(['/datasets', this.dataset.id, 'details']));
   }
 
   isSelected(graph: string): boolean {
-    return this.dataset.graphs.includes(graph);
+    return this.endpoint.graphs.includes(graph);
   }
 
-  addGraph(newGraph: FormControl) {
-    if (!this.dataset.serverGraphs.includes(newGraph.value)) {
-      this.dataset.serverGraphs.push(newGraph.value);
+  addGraph(newGraph: NgModel) {
+    if (!this.endpoint.serverGraphs.includes(newGraph.value)) {
+      this.endpoint.serverGraphs.push(newGraph.value);
     }
-    if (!this.dataset.graphs.includes(newGraph.value)) {
-      this.dataset.graphs.push(newGraph.value);
+    if (!this.endpoint.graphs.includes(newGraph.value)) {
+      this.endpoint.graphs.push(newGraph.value);
     }
     newGraph.reset();
   }
@@ -72,11 +116,32 @@ export class EditDatasetComponent implements OnInit {
   loadModal(graph: string) {
     const modalRef = this.modalService.open(DatasetFormModalComponent);
     modalRef.componentInstance.dataset = this.dataset;
+    modalRef.componentInstance.endpoint = this.endpoint;
     modalRef.componentInstance.graph = graph;
   }
 
   switchChangePassword() {
     this.changePassword = !this.changePassword;
-    this.dataset.password = null;
+    this.endpoint.updatePassword = null;
+  }
+
+  switchedWritable() {
+    if (!this.endpoint.writable) {
+      this.endpoint.updateEndPoint = null;
+      this.endpoint.updateUsername = null;
+      this.endpoint.updatePassword = null;
+    } else {
+      this.endpoint.updateEndPoint = this.endpoint.queryEndPoint;
+      this.endpoint.updateUsername = this.endpoint.queryUsername;
+      this.endpoint.updatePassword = this.endpoint.queryPassword;
+    }
+  }
+
+  switchPasswordProtected() {
+    this.passwordProtected = !this.passwordProtected;
+    if (!this.passwordProtected) {
+      this.endpoint.queryUsername = null;
+      this.endpoint.queryPassword = null;
+    }
   }
 }

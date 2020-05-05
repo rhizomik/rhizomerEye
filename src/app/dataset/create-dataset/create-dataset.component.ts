@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Dataset } from '../dataset';
 import { DatasetService } from '../dataset.service';
+import { Endpoint } from '../endpoint';
 
 @Component({
   selector: 'app-create-dataset',
@@ -10,8 +11,9 @@ import { DatasetService } from '../dataset.service';
 })
 export class CreateDatasetComponent implements OnInit {
   dataset: Dataset;
+  endpoint: Endpoint;
   isEditing = false;
-  changePassword = true;
+  active = 1;
 
   constructor(private router: Router,
               private datasetService: DatasetService) {
@@ -19,9 +21,10 @@ export class CreateDatasetComponent implements OnInit {
 
   ngOnInit() {
     this.dataset = new Dataset();
+    this.endpoint = new Endpoint();
   }
 
-  onSubmit(): void {
+  saveDataset(): void {
     this.datasetService.create(this.dataset).subscribe(
       (dataset: Dataset) => this.router.navigate(['/datasets', dataset.id, 'edit'],
         { state: { dataset: this.dataset } }));

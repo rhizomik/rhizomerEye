@@ -5,11 +5,11 @@
     </h4>
     <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Query Service</h6>
-      <p class="card-text">{{dataset.sparqlEndPoint}}</p>
+      <p class="card-text">{{endpoint.queryEndPoint}}</p>
     </div>
     <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Update Service</h6>
-      <p class="card-text">{{dataset.updateEndPoint}}</p>
+      <p class="card-text">{{endpoint.updateEndPoint}}</p>
     </div>
   </div>
   <div class="card-body row m-1">
@@ -28,8 +28,8 @@
     </div>
     <div class="col-md-6 p-1">
       <h6 class="card-subtitle text-muted">Dataset Graphs</h6>
-      <p *ngIf="!dataset.graphs?.length" class="card-text">Default graph</p>
-      <p *ngIf="dataset.graphs?.length" class="card-text">{{dataset.graphs}}</p>
+      <p *ngIf="!endpoint.graphs?.length" class="card-text">Default graph</p>
+      <p *ngIf="endpoint.graphs?.length" class="card-text">{{endpoint.graphs}}</p>
     </div>
   </div>
   <div class="card-footer text-right">

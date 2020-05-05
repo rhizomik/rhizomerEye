@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Dataset } from '../dataset';
-import { DatasetService } from '../dataset.service';
+import { Endpoint } from '../endpoint';
+import { EndpointService } from '../endpoint.service';
 
 @Component({
   selector: 'app-dataset-form-modal',
@@ -9,13 +10,14 @@ import { DatasetService } from '../dataset.service';
 })
 export class DatasetFormModalComponent {
   @Input() dataset: Dataset;
+  @Input() endpoint: Endpoint;
   @Input() graph: string;
   file: File = null;
   isLoading = false;
   isReplacement = false;
 
   constructor(public activeModal: NgbActiveModal,
-              private datasetService: DatasetService) {}
+              private endpointService: EndpointService) {}
 
   onFileChange(event) {
     this.file = event.target.files.item(0);
@@ -34,23 +36,25 @@ export class DatasetFormModalComponent {
 
   onSubmit(): void {
     if (this.isReplacement) {
-      this.datasetService.replaceData(this.dataset.id, this.graph, this.file).subscribe( () => {
-        this.isLoading = false;
-        this.activeModal.close();
-      }, error => {
-        this.isLoading = false;
-        this.activeModal.close();
-        console.log(error);
-      });
+      this.endpointService.replaceData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe(
+        () => {
+          this.isLoading = false;
+          this.activeModal.close();
+          }, error => {
+          this.isLoading = false;
+          this.activeModal.close();
+          console.log(error);
+        });
     } else {
-      this.datasetService.storeData(this.dataset.id, this.graph, this.file).subscribe(() => {
-        this.isLoading = false;
-        this.activeModal.close();
-      }, error => {
-        this.isLoading = false;
-        this.activeModal.close();
-        console.log(error);
-      });
+      this.endpointService.storeData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe(
+        () => {
+          this.isLoading = false;
+          this.activeModal.close();
+        }, error => {
+          this.isLoading = false;
+          this.activeModal.close();
+          console.log(error);
+        });
     }
   }
 }

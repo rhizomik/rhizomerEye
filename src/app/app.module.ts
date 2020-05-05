@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {
-  NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbPaginationModule, NgbTypeaheadModule
+  NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -73,6 +73,7 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
     NgbPaginationModule,
     NgbTypeaheadModule,
     NgbModalModule,
+    NgbNavModule,
     LoginBasicModule,
     ErrorHandlerModule,
   ],

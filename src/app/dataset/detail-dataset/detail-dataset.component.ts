@@ -3,6 +3,8 @@ import { Dataset } from '../dataset';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset.service';
 import { forkJoin } from 'rxjs';
+import { EndpointService } from '../endpoint.service';
+import { Endpoint } from '../endpoint';
 
 @Component({
   selector: 'app-detail-dataset',
@@ -11,22 +13,26 @@ import { forkJoin } from 'rxjs';
 })
 export class DetailDatasetComponent implements OnInit {
   dataset: Dataset = new Dataset();
+  endpoint: Endpoint = new Endpoint();
 
   constructor(
     public router: Router,
     private route: ActivatedRoute,
-    private datasetService: DatasetService) {
+    private datasetService: DatasetService,
+    private endpointService: EndpointService) {
   }
 
   ngOnInit() {
     const datasetId = this.route.snapshot.paramMap.get('did');
     forkJoin([
       this.datasetService.get(datasetId),
-      this.datasetService.datasetGraphs(datasetId)])
+      this.endpointService.getAll(datasetId)])
     .subscribe(
-      ([dataset, graphs]) => {
+      ([dataset, endpoints]) => {
           this.dataset = dataset;
-          this.dataset.graphs = graphs;
+          this.endpoint = endpoints[0];
+          this.endpointService.datasetGraphs(datasetId, this.endpoint.id).subscribe(
+            graphs => this.endpoint.graphs = graphs);
         });
   }
 
@@ -43,7 +49,6 @@ export class DetailDatasetComponent implements OnInit {
   }
 
   editDataset() {
-    this.router.navigate(['/datasets', this.dataset.id, 'edit'],
-      { state: { dataset: this.dataset } });
+    this.router.navigate(['/datasets', this.dataset.id, 'edit']);
   }
 }
