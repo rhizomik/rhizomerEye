@@ -13,11 +13,11 @@
     <h4 class="card-title col-md-12 p-1"><a [routerLink]="['/datasets', dataset.id]">{{dataset.id}}</a></h4>
     <div class="col-md-4 p-1">
       <h6 class="card-subtitle text-muted">Query Service</h6>
-      <p class="card-text">{{dataset.sparqlEndPoint}}</p>
+      <p class="card-text">{{dataset.endpoint?.queryEndPoint ? dataset.endpoint?.queryEndPoint : '-'}}</p>
     </div>
     <div class="col-md-4 p-1">
       <h6 class="card-subtitle text-muted">Update Service</h6>
-      <p class="card-text">{{dataset.updateEndPoint}}</p>
+      <p class="card-text">{{dataset.endpoint?.updateEndPoint ? dataset.endpoint.updateEndPoint : '-'}}</p>
     </div>
     <div class="col-md-4 p-1">
       <button id="exploreBtn" type="button" [routerLink]="['/datasets', dataset.id]"

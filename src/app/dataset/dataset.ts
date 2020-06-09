@@ -1,3 +1,5 @@
+import { Endpoint } from './endpoint';
+
 export class Dataset {
   id: string;
   public = false;
@@ -6,6 +8,7 @@ export class Dataset {
   inferenceEnabled = false;
   sampleSize: number;
   coverage: number;
+  endpoint: Endpoint;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
