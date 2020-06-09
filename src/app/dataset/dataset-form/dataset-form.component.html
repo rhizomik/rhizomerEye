@@ -9,7 +9,7 @@
           <div class="form-group" [class.was-validated]="name.dirty || name.touched">
             <label class="control-label" for="name">Name*</label>
             <input id="name" name="name" type="text" class="form-control" required
-                   [(ngModel)]="dataset.id" #name="ngModel">
+                   [(ngModel)]="dataset.id" #name="ngModel" [readOnly]="isEditing">
             <div class="invalid-feedback">A dataset name is required</div>
           </div>
 
