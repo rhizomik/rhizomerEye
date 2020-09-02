@@ -10,36 +10,11 @@
       <span *ngIf="retrievedFacets == 0" class="badge badge-danger badge-pill">No facets retrieved</span>
       <span *ngIf="retrievedFacets == undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
-    <div class="card facet p-2 mb-2" *ngFor="let facet of facets" [class.bg-warning]="facet.selected">
-      <h6 class="card-title p-1 mb-1" (click)="filterAll(facet)" style="cursor: pointer" title="Filter all with {{facet.uri}}">
-        <b>{{facet.label}}</b>
-        <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span>
-      </h6>
-      <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
-        <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
-          <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
-          <span class="fa fa-plus-circle ml-1" style="cursor: pointer" (click)="firstValues(facet, range)"></span>
-        </p>
-        <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
-           *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
-           (click)="filterValue(facet, value)" [class.bg-warning]="value.selected">
-          <span [title]="valueToolTip(value)">{{value.label}}</span>
-          <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
-        </p>
-        <div *ngIf="range.values">
-          <input id="typeahead-http" type="text" class="pl-3 form-control form-control-sm"
-                 [resultTemplate]="rt" [editable]='false' #autocomplete
-                 [class.is-invalid]="searchFailed" [ngbTypeahead]="search(facet, range)" placeholder="Search all facet values"
-                 [class.loading]="searching" (selectItem)="selectItem(facet, $event, autocomplete)"/>
-          <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
-        </div>
-      </div>
+    <div *ngFor="let facet of facets">
+      <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
+      </app-detail-facet>
     </div>
   </div>
-
-  <ng-template #rt let-r="result" let-t="term">
-    <ngb-highlight class="small" [result]="r.label" [term]="t"></ngb-highlight>
-  </ng-template>
 
   <div id="instances" class="col-8 m-0">
     <h5 class="p-1">Instances
@@ -48,8 +23,7 @@
       <span *ngIf="filteredInstances == undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
     <div *ngFor="let resource of resources">
-      <app-description [description]="resource" [anonDescriptions]="anonResources"
-        [labels]="labels"></app-description>
+      <app-description [description]="resource" [anonDescriptions]="anonResources" [labels]="labels"></app-description>
     </div>
     <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
                     [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
