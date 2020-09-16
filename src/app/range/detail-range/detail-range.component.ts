@@ -49,7 +49,7 @@ export class DetailRangeComponent implements OnInit, OnDestroy {
 
   clearValues(range: Range) {
     this.subscription.unsubscribe();
-    range.values = [];
+    range.values = undefined;
     this.status = RangeStatus.UNEXPANDED;
   }
 
