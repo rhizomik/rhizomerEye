@@ -34,6 +34,7 @@ import { ListFacetComponent } from './facet/list-facet/list-facet.component';
 import { DetailDatasetComponent } from './dataset/detail-dataset/detail-dataset.component';
 import { DetailClassComponent } from './class/detail-class/detail-class.component';
 import { DetailFacetComponent } from './facet/detail-facet/detail-facet.component';
+import { DetailRangeComponent } from './range/detail-range/detail-range.component';
 import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
@@ -58,6 +59,7 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
     DetailDatasetComponent,
     DetailClassComponent,
     DetailFacetComponent,
+    DetailRangeComponent,
     CreateDatasetComponent,
     EditDatasetComponent,
     WordCloudComponent,

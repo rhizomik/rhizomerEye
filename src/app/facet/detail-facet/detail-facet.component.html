@@ -3,31 +3,9 @@
     <b>{{facet.label}}</b>
     <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span>
   </h6>
-  <div class="card range p-2 mb-1" *ngFor="let range of facet.ranges">
-    <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
-      <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
-      <span *ngIf="status == facetStatus.UNEXPANDED" class="fa fa-plus-circle ml-1"
-            style="cursor: pointer" (click)="firstValues(range)"></span>
-      <span *ngIf="status == facetStatus.EXPANDED" class="fa fa-minus-circle ml-1"
-            style="cursor: pointer" (click)="clearValues(range)"></span>
-      <span *ngIf="status == facetStatus.LOADING" class="fa fa-circle-o-notch fa-spin ml-1"></span>
-    </p>
-    <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
-       *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
-       (click)="filterValue(value)" [class.bg-warning]="value.selected">
-      <span [title]="valueToolTip(value)">{{value.label}}</span>
-      <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
-    </p>
-    <div *ngIf="range.values">
-      <input id="typeahead-http" type="text" class="pl-3 form-control form-control-sm"
-             [resultTemplate]="rt" [editable]='false' #autocomplete
-             [class.is-invalid]="searchFailed" [ngbTypeahead]="search(range)" placeholder="Search all facet values"
-             [class.loading]="searching" (selectItem)="selectItem($event, autocomplete)"/>
-      <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
-    </div>
+  <div *ngFor="let range of facet.ranges">
+    <app-detail-range
+      [datasetId]="datasetId" [classId]="classId" [facet]="facet" [range]="range" [ngUnsubscribe]="ngUnsubscribe">
+    </app-detail-range>
   </div>
 </div>
-
-<ng-template #rt let-r="result" let-t="term">
-  <ngb-highlight class="small" [result]="r.label" [term]="t"></ngb-highlight>
-</ng-template>
