@@ -20,7 +20,7 @@ export class ClassService extends Rest2Service<Class> {
     params = params.append('page', (page - 1).toString());
     params = params.append('size', pageSize.toString());
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri, filter.value));
+      params = params.append(filter.facet.uri + ' ' + filter.range.uri, filter.value));
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/classes/${cid}/instances`, {params: params});
   }
@@ -30,7 +30,7 @@ export class ClassService extends Rest2Service<Class> {
     params = params.append('page', (page - 1).toString());
     params = params.append('size', pageSize.toString());
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri, filter.value));
+      params = params.append(filter.facet.uri + ' ' + filter.range.uri, filter.value));
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/classes/${cid}/instancesLabels`, {params: params});
   }
@@ -38,7 +38,7 @@ export class ClassService extends Rest2Service<Class> {
   getInstancesCount(did: string, cid: string, filters: Filter[]): Observable<number> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri, filter.value));
+      params = params.append(filter.facet.uri + ' ' + filter.range.uri, filter.value));
     return this.http.get<number>(
       `${environment.API}/datasets/${did}/classes/${cid}/count`, {params: params});
   }

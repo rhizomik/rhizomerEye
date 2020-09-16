@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Breadcrumb } from './breadcrumb';
 import { BehaviorSubject } from 'rxjs';
 import { Facet } from '../facet/facet';
+import { Range } from '../range/range';
 import { Filter } from './filter';
 
 @Injectable({
@@ -23,14 +24,14 @@ export class BreadcrumbService {
       .map(step => new Breadcrumb(step, url)));
   }
 
-  addFacetFilter(classId: string, facet: Facet, value: string) {
-    this.filters = this.filters.concat(new Filter(classId, facet, value));
+  addFacetFilter(classId: string, facet: Facet, range: Range, value: string) {
+    this.filters = this.filters.concat(new Filter(classId, facet, range, value));
     this.filtersSelection.next(this.filters);
   }
 
-  removeFacetFilter(classId: string, facet: Facet, value: string) {
+  removeFacetFilter(classId: string, facet: Facet, range: Range, value: string) {
     this.filters = this.filters.filter((filter: Filter) =>
-      (filter.classId !== classId || filter.facet.id !== facet.id || filter.value !== value));
+      (filter.classId !== classId || filter.facet.id !== facet.id || filter.range.id !== range.id || filter.value !== value));
     this.filtersSelection.next(this.filters);
   }
 
