@@ -25,8 +25,7 @@ export class UriUtils {
     if (value instanceof Array) {
       return value
       .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
-      .map(label => label['@value'] || label)
-      .join(', ');
+      .map(label => label['@value'] || label)[0];
     }
     if (value['@language']) {
       return value['@value'];
