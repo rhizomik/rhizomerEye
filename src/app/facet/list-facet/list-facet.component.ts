@@ -95,6 +95,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
                     this.labels.set(UriUtils.expandUri(instance['@id'], labels['@context']), <string>value);
                   }
                 }));
+          } else if (labels['label'] && labels['@id']) {
+            this.labels.set(UriUtils.expandUri(labels['@id'], labels['@context']), <string>labels['label']);
           }
           if (instances['@graph']) {
             instances['@graph']
