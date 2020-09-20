@@ -1,4 +1,4 @@
-<div class="card mb-2">
+<div class="card mb-2" *ngIf="description">
   <img *ngIf="description.depiction" class="card-img-top"
        style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="switchExpansion()"
        [src]="description.depiction" alt="resource depiction">
