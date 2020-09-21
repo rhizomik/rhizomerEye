@@ -82,7 +82,7 @@ export class EditDatasetComponent implements OnInit {
       ([serverGraphs, datasetGraphs]) => {
         this.graphsRetrieved = true;
         this.endpoint.serverGraphs = serverGraphs;
-        this.endpoint.graphs = datasetGraphs;
+        this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
       });
   }
 
