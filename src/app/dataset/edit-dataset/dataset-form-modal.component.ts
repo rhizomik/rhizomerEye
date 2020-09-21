@@ -25,6 +25,7 @@ export class DatasetFormModalComponent {
     switch (extension) {
       case 'ttl': this.file['content-type'] = 'text/turtle'; break;
       case 'rdf': this.file['content-type'] = 'application/rdf+xml'; break;
+      case 'owl': this.file['content-type'] = 'application/rdf+xml'; break;
       case 'n3': this.file['content-type'] = 'text/n3'; break;
       case 'nt': this.file['content-type'] = 'application/n-triples'; break;
       case 'nq': this.file['content-type'] = 'application/n-quads'; break;
