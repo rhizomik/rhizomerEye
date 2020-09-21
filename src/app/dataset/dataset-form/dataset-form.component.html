@@ -172,7 +172,8 @@
             <!-- Graphs checkboxes -->
             <label class="control-label">Dataset Graphs</label>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="Default Graph" [checked]="true" [disabled]="true">
+              <input class="form-check-input" type="checkbox" value="Default Graph" [disabled]="true"
+                     [checked]="this.endpoint.graphs.length == 0" >
               <label class="form-check-label">Default Graph</label>
             </div>
             <div *ngFor="let graph of endpoint.serverGraphs" class="dataset-graph form-check">
