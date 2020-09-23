@@ -11,6 +11,8 @@ export class Property {
     this.label = UriUtils.getLabel(this.uri, labels);
     if (value instanceof Array) {
       this.values = value.map(v => new Value(v, context, labels));
+    } else if (value['@list']) {
+      this.values = value['@list'].map(v => new Value(v, context, labels));
     } else {
       this.values.push(new Value(value, context, labels));
     }
