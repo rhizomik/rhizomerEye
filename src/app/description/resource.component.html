@@ -2,16 +2,23 @@
 
   <p *ngIf="loading">Loading...</p>
 
-  <div id="local" class="col-12 m-0" *ngIf="!loading && resource && resource['@id']">
+  <div id="localmetadata" *ngIf="!loading && resource && resource['@id']"
+       [ngClass]="{'col-4 m-0': resource.topicOf, 'col-12 m-0': !resource.topicOf}">
     <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
-    <div class="col-0 m-0">
-      <!-- HTML template from the resource... -->
-    </div>
   </div>
 
-  <div id="remote" class="col-12 m-0" *ngIf="!loading && (!resource || !resource['@id'])">
+  <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
+       [ngClass]="{'col-4 m-0': resource.topicOf, 'col-12 m-0': !resource.topicOf}">
     <h5>Remote Data</h5>
     <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
+  </div>
+
+  <div id="localcontent" *ngIf="resource.body" class="col-8 m-0">
+    <div class="col-0 m-0" [innerHTML]="resource.body"></div>
+  </div>
+
+  <div id="remotecontent" *ngIf="!resource.body && resource.topicOf" class="col-8 m-0">
+    <div class="col-0 m-0" [innerHTML]="content"></div>
   </div>
 
 </div>

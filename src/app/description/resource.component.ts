@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
+import { Resource } from './resource';
 
 @Component({
   selector: 'app-resource',
@@ -12,7 +13,8 @@ import { UriUtils } from '../shared/uriutils';
 export class ResourceComponent implements OnInit {
   datasetId: string;
   resourceUri: string;
-  resource: Description = new Description();
+  resource: Resource = new Resource();
+  content: string;
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, string> = new Map<string, string>();
   remoteResource: Description = new Description();
@@ -31,39 +33,55 @@ export class ResourceComponent implements OnInit {
     this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
       (response) => {
         if (response['@graph']) {
-          response['@graph']
-            .filter(instance => (<string>instance['@id']).startsWith('_:'))
-            .map(instance => this.anonResources.set(instance['@id'], new Description(instance, response['@context'])));
-          response['@graph']
-            .map(instance => Object.entries(instance)
-              .forEach(([key, value]) => {
-                if (key.includes('label')) {
-                  this.labels.set(UriUtils.expandUri(instance['@id'], response['@context']), <string>value);
-                }
-              }));
+          this.labels = Description.getLabels(response);
+          this.anonResources = Description.getAnonResources(response, this.labels);
           this.resource = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
-            .map(instance => new Description(instance, response['@context'], this.labels))[0];
+            .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
+          if (!this.resource.body) {
+            this.browseRemoteContent(this.datasetId, this.resource.topicOf);
+          } else {
+            this.loading = false;
+          }
         } else if (response['@id'] && response['@context'] &&
                    UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Description(response, response['@context'], this.labels);
-        }
-        this.loading = false;
-      });
-    this.datasetService.browseUri(this.datasetId, this.resourceUri).subscribe(
-      (response) => {
-        if (response['@graph']) {
-          this.remoteResource = response['@graph']
-            .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
-            .map(instance => new Description(instance, response['@context']))[0];
-          response['@graph']
-            .filter(instance => (<string>instance['@id']).startsWith('_:'))
-            .map(instance => this.remoteAnonResources.set(instance['@id'], new Description(instance, response['@context'])));
+          this.resource = new Resource(response, response['@context'], this.labels, this.anonResources);
+          if (!this.resource.body) {
+            this.browseRemoteContent(this.datasetId, this.resource.topicOf);
+          } else {
+            this.loading = false;
+          }
         } else {
-          this.remoteResource = new Description(response, response['@context']);
+          this.browseRemoteData(this.datasetId, this.resourceUri);
         }
-        this.loading = false;
       });
   }
 
+  private browseRemoteContent(datasetId: string, url: string) {
+    if (url && UriUtils.isUrl(url)) {
+      this.datasetService.browseUriContent(datasetId, url).subscribe(content => {
+        this.content = content;
+        this.loading = false;
+      });
+    } else {
+      this.loading = false;
+    }
+  }
+
+  private browseRemoteData(datasetId: string, uri: string) {
+    this.datasetService.browseUriData(datasetId, uri).subscribe(
+      (remote) => {
+        if (remote['@graph']) {
+          this.remoteResource = remote['@graph']
+            .filter(instance => UriUtils.expandUri(instance['@id'], remote['@context']) === this.resourceUri)
+            .map(instance => new Description(instance, remote['@context']))[0];
+          remote['@graph']
+            .filter(instance => (<string>instance['@id']).startsWith('_:'))
+            .map(instance => this.remoteAnonResources.set(instance['@id'], new Description(instance, remote['@context'])));
+        } else {
+          this.remoteResource = new Description(remote, remote['@context']);
+        }
+        this.loading = false;
+      }, error => console.log(error));
+  }
 }
