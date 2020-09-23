@@ -10,7 +10,6 @@ import { Facet } from '../facet';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
-import { UriUtils } from '../../shared/uriutils';
 
 @Component({
   selector: 'app-list-facet',
@@ -87,33 +86,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize) ])
       .subscribe(
         ([instances, labels]) => {
-          if (labels['@graph']) {
-            labels['@graph']
-              .map(instance => Object.entries(instance)
-                .forEach(([key, value]) => {
-                  if (key.includes('label')) {
-                    this.labels.set(UriUtils.expandUri(instance['@id'], labels['@context']), <string>value);
-                  }
-                }));
-          } else if (labels['label'] && labels['@id']) {
-            this.labels.set(UriUtils.expandUri(labels['@id'], labels['@context']), <string>labels['label']);
-          }
+          const linkedResourcesLabels: Map<string, string> = Description.getLabels(labels);
           if (instances['@graph']) {
-            instances['@graph']
-              .filter(instance => (<string>instance['@id']).startsWith('_:'))
-              .map(instance => this.anonResources.set(instance['@id'],
-                new Description(instance, instances['@context'], this.labels)));
-            instances['@graph']
-              .map(instance => Object.entries(instance)
-                .forEach(([key, value]) => {
-                  if (key.includes('label')) {
-                    this.labels.set(UriUtils.expandUri(instance['@id'], instances['@context']), <string>value);
-                  }
-                }));
-            this.resources = instances['@graph']
-              .filter(instance => instance['@type'] &&
-                Description.isOfType(instance['@type'], this.datasetClass.uri, instances['@context']) )
-              .map(instance => new Description(instance, instances['@context'], this.labels));
+            this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
+            this.anonResources = Description.getAnonResources(instances, this.labels);
+            this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
           } else if (instances['@type']) {
             this.resources = [new Description(instances, instances['@context'], this.labels)];
           } else {
