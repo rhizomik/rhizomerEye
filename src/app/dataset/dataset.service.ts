@@ -20,17 +20,28 @@ export class DatasetService extends RestService<Dataset> {
     return this.http.put<Class[]>(`${environment.API}/datasets/${did}/classes`, body, this.getHttpOptions());
   }
 
-  describeDatasetResource(did: string, resource: string): Observable<string[]> {
+  describeDatasetResource(did: string, resource: string): Observable<any> {
     let params = new HttpParams();
     params = params.append('uri', resource);
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/describe`, {params: params});
   }
 
-  browseUri(did: string, resource: string): Observable<string[]> {
+  browseUriData(did: string, resource: string): Observable<any> {
     let params = new HttpParams();
     params = params.append('uri', resource);
+    let headers = new HttpHeaders();
+    headers = headers.append('Accept', 'application/json');
     return this.http.get<any>(
-      `${environment.API}/datasets/${did}/browse`, {params: params});
+      `${environment.API}/datasets/${did}/browse`, {params: params, headers: headers});
+  }
+
+  browseUriContent(did: string, resource: string): Observable<string> {
+    let params = new HttpParams();
+    params = params.append('uri', resource);
+    let headers = new HttpHeaders();
+    headers = headers.append('Accept', 'text/html');
+    return this.http.get(`${environment.API}/datasets/${did}/browse`,
+      { params: params, headers: headers, responseType: 'text' });
   }
 }
