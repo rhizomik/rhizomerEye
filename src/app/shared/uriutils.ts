@@ -50,7 +50,7 @@ export class UriUtils {
   }
 
   static isUrl(str): boolean {
-    const pattern = new RegExp('(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)' +
+    const pattern = new RegExp('^(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)' +
       '(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|' +
       '[-A-Z0-9+&@#\\/%=~_|$?!:,.])*(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|' +
       '[A-Z0-9+&@#\\/%=~_|$])', 'i');
