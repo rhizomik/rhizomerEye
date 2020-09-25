@@ -33,7 +33,7 @@ export class DatasetService extends RestService<Dataset> {
     let headers = new HttpHeaders();
     headers = headers.append('Accept', 'application/json');
     return this.http.get<any>(
-      `${environment.API}/datasets/${did}/browse`, {params: params, headers: headers});
+      `${environment.API}/datasets/${did}/browseData`, {params: params, headers: headers});
   }
 
   browseUriContent(did: string, resource: string): Observable<string> {
