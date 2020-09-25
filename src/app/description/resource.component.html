@@ -1,6 +1,8 @@
 <div id="describe" class="row">
 
-  <p *ngIf="loading">Loading...</p>
+  <div *ngIf="loading" class="col-12 m-0">
+    <h1 class="badge badge-warning badge-pill">Loading...</h1>
+  </div>
 
   <div id="localmetadata" *ngIf="!loading && resource && resource['@id']"
        [ngClass]="{'col-4 m-0': resource.topicOf, 'col-12 m-0': !resource.topicOf}">
@@ -14,11 +16,11 @@
   </div>
 
   <div id="localcontent" *ngIf="resource.body" class="col-8 m-0">
-    <div class="col-0 m-0" [innerHTML]="resource.body"></div>
+    <div [innerHTML]="resource.body"></div>
   </div>
 
   <div id="remotecontent" *ngIf="!resource.body && resource.topicOf" class="col-8 m-0">
-    <div class="col-0 m-0" [innerHTML]="content"></div>
+    <div [innerHTML]="content"></div>
   </div>
 
 </div>
