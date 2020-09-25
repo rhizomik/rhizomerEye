@@ -38,16 +38,16 @@ export class ResourceComponent implements OnInit {
           this.resource = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
             .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
-          if (!this.resource.body) {
-            this.browseRemoteContent(this.datasetId, this.resource.topicOf);
+          if (!this.resource.body && this.resource.topicOf) {
+            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
           } else {
             this.loading = false;
           }
         } else if (response['@id'] && response['@context'] &&
                    UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
           this.resource = new Resource(response, response['@context'], this.labels, this.anonResources);
-          if (!this.resource.body) {
-            this.browseRemoteContent(this.datasetId, this.resource.topicOf);
+          if (!this.resource.body && this.resource.topicOf) {
+            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
           } else {
             this.loading = false;
           }
