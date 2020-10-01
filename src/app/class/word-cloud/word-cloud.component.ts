@@ -124,7 +124,7 @@ export class WordCloudComponent implements OnInit {
     .on('click', this.browse.bind(this));
   }
 
-  browse(c) {
-    this.router.navigate(['/datasets', this.datasetId, c.curie]);
+  browse(event) {
+    this.router.navigate(['/datasets', this.datasetId, event.currentTarget.__data__.curie]);
   }
 }
