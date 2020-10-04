@@ -1,4 +1,5 @@
 import { Property } from './property';
+import { Value } from './value';
 import { UriUtils } from '../shared/uriutils';
 
 export class Description {
@@ -7,6 +8,7 @@ export class Description {
   depiction: string;
   topicOf: string;
   label: string;
+  labels: Value[] = [];
   properties: Property[] = [];
 
   constructor(values: Object = {}, context: Object = {}, labels: Map<string, string> = new Map()) {
@@ -15,19 +17,22 @@ export class Description {
         const expandedUri = UriUtils.expandUri(key, context);
         switch (expandedUri) {
           case '@id': {
-            if ((<string>value).startsWith('_:')) { this['@id'] = null;
+            if ((<string>value).startsWith('_:')) { this['@id'] = value;
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
           case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
+            this.labels = value instanceof Array ?
+              value.map(v => new Value(v, context, labels)) :
+              [new Value(value, context, labels)];
             this.label = UriUtils.pickLabel(value, 'en'); break; }
           case 'http://xmlns.com/foaf/0.1/depiction': {
             if (value['@id']) { this.depiction = value['@id']; } else { this.depiction = value; } break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
             if (value['@id']) { this.topicOf = value['@id']; } else { this.topicOf = value; } break; }
-          default: if (expandedUri.indexOf('wikiPage') < 0) {
+          default: // if (expandedUri.indexOf('wikiPage') < 0) {
             this.properties.push(new Property(expandedUri, value, context, labels));
-          }
+          // }
         }
       }
     );
@@ -76,5 +81,21 @@ export class Description {
     } else {
       return [UriUtils.expandUri(value, context)];
     }
+  }
+
+  asJsonLd(): string {
+    let jsonld = '{\n';
+    jsonld += '\t "@id": "' + this['@id'] + '"';
+    if (this['@type']) { jsonld += ',\n\t "@type": ["' + this['@type'].join('", "') + '"]'; }
+    if (this.labels.length) {
+      jsonld += ',\n\t "http://www.w3.org/2000/01/rdf-schema#label": [ ' +
+        this.labels.map(value => value.asJsonLd()).join(', ') + ' ]';
+    }
+    if (this.depiction) { jsonld += ',\n\t "http://xmlns.com/foaf/0.1/depiction": {"@id": "' + this.depiction + '"}'; }
+    if (this.topicOf) { jsonld += ',\n\t "http://xmlns.com/foaf/0.1/isPrimaryTopicOf": {"@id": "' + this.topicOf + '"}'; }
+    jsonld += this.properties.map(property =>
+      ',\n\t "' + property.uri + '": [' + property.values.map(value => value.asJsonLd()).join(', ') + ']'
+    ).join('');
+    return jsonld + '\n }';
   }
 }

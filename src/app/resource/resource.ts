@@ -23,4 +23,11 @@ export class Resource extends Description {
         });
     }
   }
+
+  asJsonLd(): string {
+    let jsonld = '{ "@graph": [\n';
+    jsonld += super.asJsonLd();
+    this.anonResources.forEach(anonResource => jsonld += ', ' + anonResource.asJsonLd());
+    return jsonld + '\n ] }';
+  }
 }
