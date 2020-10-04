@@ -24,7 +24,12 @@ export class DescriptionComponent implements OnInit {
   }
 
   isAnonResource(value: any) {
-    return value.value && typeof value.value === 'string' && value.value.startsWith('_:');
+    if (value.value && typeof value.value === 'string' && value.value.startsWith('_:')) {
+      return true;
+    } else if (value['@id'] && value['@id'].startsWith('_:')) {
+      return true;
+    }
+    return false;
   }
 
   getAnonResource(value: any) {
