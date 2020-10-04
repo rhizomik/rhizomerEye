@@ -28,6 +28,7 @@
     "@angular/router": "~9.1.12",
     "@ng-bootstrap/ng-bootstrap": "^6.2.0",
     "bootstrap-css-only": "^4.4.1",
+    "ckeditor4-angular": "^2.0.0",
     "core-js": "^2.5.4",
     "d3": "^6.2.0",
     "d3-cloud": "^1.2.5",

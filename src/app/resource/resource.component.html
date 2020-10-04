@@ -15,8 +15,14 @@
     <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
   </div>
 
-  <div id="localcontent" *ngIf="resource.body" class="col-8 m-0">
+  <div id="localcontent-view" *ngIf="resource.body && !editing" class="col-8 m-0">
+    <div class="text-right"><i class="fa fa-pencil-square-o" style="cursor: pointer" (click)="editing = true"></i></div>
     <div [innerHTML]="resource.body"></div>
+  </div>
+
+  <div id="localcontent-edit" *ngIf="resource.body && editing" class="col-8 m-0">
+    <div class="text-right"><i class="fa fa-save" style="cursor: pointer" (click)="saveContent()"></i></div>
+    <ckeditor [(data)]="resource.body" [config]="editorConfig"></ckeditor>
   </div>
 
   <div id="remotecontent" *ngIf="!resource.body && resource.topicOf" class="col-8 m-0">

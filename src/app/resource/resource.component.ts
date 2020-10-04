@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
-import { Description } from './description';
+import { Description } from '../description/description';
 import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
 
@@ -20,6 +20,8 @@ export class ResourceComponent implements OnInit {
   remoteResource: Description = new Description();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
+  editing = false;
+  editorConfig = { extraPlugins: 'autogrow', allowedContent: true };
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -44,7 +46,7 @@ export class ResourceComponent implements OnInit {
             this.loading = false;
           }
         } else if (response['@id'] && response['@context'] &&
-                   UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
+            UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
           this.resource = new Resource(response, response['@context'], this.labels, this.anonResources);
           if (!this.resource.body && this.resource.topicOf) {
             this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
@@ -55,6 +57,10 @@ export class ResourceComponent implements OnInit {
           this.browseRemoteData(this.datasetId, this.resourceUri);
         }
       });
+  }
+
+  public saveContent() {
+    this.editing = false;
   }
 
   private browseRemoteContent(datasetId: string, url: string) {
