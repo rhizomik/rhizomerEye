@@ -18,7 +18,7 @@ export class Value {
       this.label = UriUtils.getLabel(this.uri, labels);
     } else if (typeof value === 'string') {
       const uri = UriUtils.expandUri(value, context);
-      if (UriUtils.isUrl(uri) || uri.startsWith('urn:')) {
+      if (UriUtils.isUrl(uri) || uri.startsWith('urn:') || uri.startsWith('_:')) {
         this.uri = uri;
         this.label = UriUtils.getLabel(this.uri, labels);
       } else {
@@ -32,9 +32,26 @@ export class Value {
     }
   }
 
+  static getValues(input: any, context: Object = {}, labels: Map<string, string> = new Map()) {
+    return input instanceof Array ?
+      input.map(v => new Value(v, context, labels)) :
+      [new Value(input, context, labels)];
+  }
+
+  isAnon() {
+    if (this.asString().startsWith('_:')) {
+      return true;
+    }
+    return false;
+  }
+
+  asString(): string {
+    return this.value ? this.value : this.uri;
+  }
+
   asJsonLd(): string {
     if (this.value) {
-      return '{ "@value": "' + this.value + '"' +
+      return '{ "@value": ' + JSON.stringify(this.value) +
       (this.language ? ', "@language": "' + this.language + '"' : '') +
       (this.type ? ', "@type": "' + this.type + '"' : '') +
       ' }';

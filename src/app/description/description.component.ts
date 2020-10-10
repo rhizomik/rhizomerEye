@@ -23,17 +23,8 @@ export class DescriptionComponent implements OnInit {
   ngOnInit() {
   }
 
-  isAnonResource(value: any) {
-    if (value.value && typeof value.value === 'string' && value.value.startsWith('_:')) {
-      return true;
-    } else if (value['@id'] && value['@id'].startsWith('_:')) {
-      return true;
-    }
-    return false;
-  }
-
   getAnonResource(value: any) {
-    return this.anonDescriptions.get(value.value);
+    return this.anonDescriptions.get(value.asString());
   }
 
   switchExpansion() {
