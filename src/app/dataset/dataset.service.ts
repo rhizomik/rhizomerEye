@@ -27,6 +27,13 @@ export class DatasetService extends RestService<Dataset> {
       `${environment.API}/datasets/${did}/describe`, {params: params});
   }
 
+  updateDatasetResource(did: string, resource: string, updated: string): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('uri', resource);
+    return this.http.put<any>(`${environment.API}/datasets/${did}/update`, updated,
+      { params: params, headers: new HttpHeaders({'Content-Type': 'application/ld+json'}) });
+  }
+
   browseUriData(did: string, resource: string): Observable<any> {
     let params = new HttpParams();
     params = params.append('uri', resource);
