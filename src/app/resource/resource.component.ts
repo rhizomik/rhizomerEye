@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
 import { Description } from '../description/description';
@@ -22,6 +22,7 @@ export class ResourceComponent implements OnInit {
   loading = true;
   editing = false;
   editorConfig = { extraPlugins: 'autogrow', allowedContent: true };
+  jsonld = '';
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -40,19 +41,13 @@ export class ResourceComponent implements OnInit {
           this.resource = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
             .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
-          if (!this.resource.body && this.resource.topicOf) {
-            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
-          } else {
-            this.loading = false;
-          }
+          this.browseContent(response['@context']);
+          this.jsonld = this.resource.asJsonLd();
         } else if (response['@id'] && response['@context'] &&
             UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Resource(response, response['@context'], this.labels, this.anonResources);
-          if (!this.resource.body && this.resource.topicOf) {
-            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
-          } else {
-            this.loading = false;
-          }
+          this.resource = new Resource(response, response['@context'], this.labels);
+          this.browseContent(response['@context']);
+          this.jsonld = this.resource.asJsonLd();
         } else {
           this.browseRemoteData(this.datasetId, this.resourceUri);
         }
@@ -60,7 +55,17 @@ export class ResourceComponent implements OnInit {
   }
 
   public saveContent() {
-    this.editing = false;
+    this.datasetService.updateDatasetResource(this.datasetId, this.resourceUri, this.jsonld)
+      .subscribe(() => this.editing = false);
+  }
+
+  private browseContent(context: Object = {}) {
+    if (!this.resource.anonBody && this.resource.topicOf.length > 0) {
+      this.browseRemoteContent(this.datasetId,
+        UriUtils.expandUri(this.resource.topicOf[0].asString(), context));
+    } else {
+      this.loading = false;
+    }
   }
 
   private browseRemoteContent(datasetId: string, url: string) {
