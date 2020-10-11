@@ -40,6 +40,7 @@ import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { DescriptionComponent } from './description/description.component';
 import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-modal.component';
 import { DescriptionModule } from './description/description.module';
+import { ResourceComponent } from './resource/resource.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { DescriptionModule } from './description/description.module';
     CreateDatasetComponent,
     EditDatasetComponent,
     WordCloudComponent,
-    DatasetFormModalComponent
+    DatasetFormModalComponent,
+    ResourceComponent
   ],
   imports: [
     AppRoutingModule,

@@ -14,14 +14,19 @@ import { ListFacetComponent } from './facet/list-facet/list-facet.component';
 import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
+import { ResourceComponent } from './resource/resource.component';
 
 const routes: Routes = [
   { path: 'datasets/new', component: CreateDatasetComponent, canActivate: [LoggedInGuard] },
-  { path: 'datasets/:did/describe', loadChildren: () => import('./resource/resource.module').then(m => m.ResourceModule) },
+  { path: 'datasets/:did/resource', component: ResourceComponent },
+  { path: 'datasets/:did/edit-resource', loadChildren: () =>
+      import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
-  { path: 'datasets/:did/:cid/describe', loadChildren: () => import('./resource/resource.module').then(m => m.ResourceModule) },
+  { path: 'datasets/:did/:cid/resource', component: ResourceComponent },
+  { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>
+      import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'datasets/:did/:cid', component: ListFacetComponent },
   { path: 'datasets/:did', component: WordCloudComponent },
   { path: 'datasets', component: ListDatasetComponent, canActivate: [LoggedInGuard] },

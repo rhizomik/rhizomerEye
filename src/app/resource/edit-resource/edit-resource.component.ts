@@ -25,19 +25,24 @@ export class EditResourceComponent implements OnInit {
               private datasetService: DatasetService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     const navigation = this.router.getCurrentNavigation();
-    this.resource = navigation.extras.state.resource;
+    this.resource = navigation.extras.state && navigation.extras.state.resource;
   }
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did');
     this.resourceUri = this.route.snapshot.queryParamMap.get('uri');
-    this.jsonld = this.resource.asJsonLd();
+    if (!this.resource) {
+      this.router.navigate(['../resource'],
+        { relativeTo: this.route, queryParams: { uri: this.resourceUri } });
+    } else {
+      this.jsonld = this.resource.asJsonLd();
+    }
   }
 
   public saveContent() {
     this.datasetService.updateDatasetResource(this.datasetId, this.resourceUri, this.jsonld)
       .subscribe(() =>
-        this.router.navigate(['..'],
+        this.router.navigate(['../resource'],
           { relativeTo: this.route, queryParams: { uri: this.resourceUri } }));
   }
 }

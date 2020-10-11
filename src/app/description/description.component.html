@@ -5,7 +5,7 @@
   <div class="card-header">
     <p class="card-text" [class.reverse-text-truncate]="!description.label">
       <b *ngIf="!description.isAnon()" [title]="description['@id']">
-        <a [routerLink]="[describe]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
+        <a [routerLink]="[resource]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
       </b>
       <span *ngFor="let type of description['@type']" [title]="type"
             class="badge badge-secondary badge-pill float-right">{{localName(type)}}</span>
@@ -19,7 +19,7 @@
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>
         <span *ngIf="!value.isAnon()"><span *ngIf="!firstValue">, </span>
-          <span *ngIf="value.uri"><a [routerLink]="[describe]" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
+          <span *ngIf="value.uri"><a [routerLink]="[resource]" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
           <span *ngIf="value.value">{{value.value}}</span>
         </span>
       </span>

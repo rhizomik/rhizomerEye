@@ -7,21 +7,21 @@
   <div id="localmetadata" *ngIf="!loading && resource && resource['@id']"
        [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf.length}">
     <div class="text-right" *ngIf="!resource.topicOf.length">
-      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
     </div>
-    <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
+    <app-description [description]="resource" [anonDescriptions]="anonResources" [resource]="'.'"></app-description>
   </div>
 
   <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
        [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf}">
     <h5>Remote Data</h5>
-    <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
+    <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [resource]="'.'"></app-description>
   </div>
 
   <div id="localcontent-view" *ngIf="resource.anonBody" class="col-8 m-0">
     <div class="text-right">
-      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
     </div>
     <div [innerHTML]="resource.anonBody.values[0].value"></div>
@@ -29,7 +29,7 @@
 
   <div id="remotecontent" *ngIf="!resource.anonBody && resource.topicOf.length" class="col-8 m-0">
     <div class="text-right">
-      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
     </div>
     <div [innerHTML]="content"></div>

@@ -15,7 +15,7 @@ export class DescriptionComponent implements OnInit {
   @Input()
   labels: Map<string, string> = new Map<string, string>();
   @Input()
-  describe = 'describe';
+  resource = 'resource';
   depictionExpanded = false;
 
   constructor() { }
