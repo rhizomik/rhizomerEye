@@ -4,21 +4,13 @@
     <h1 class="badge badge-warning badge-pill">Loading...</h1>
   </div>
 
-  <div id="localmetadata" *ngIf="!loading && resource && resource['@id'] && !editing"
+  <div id="localmetadata" *ngIf="!loading && resource && resource['@id']"
        [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf.length}">
     <div class="text-right" *ngIf="!resource.topicOf.length">
-      <i class="resource-btn fa fa-pencil-square-o" (click)="editing = true"></i>
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+         [state]="{ 'resource': resource }"></i>
     </div>
     <app-description [description]="resource" [anonDescriptions]="anonResources" [describe]="'.'"></app-description>
-  </div>
-
-  <div id="localmetadata-edit" *ngIf="!loading && resource && resource['@id'] && editing"
-       [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf.length}">
-    <div class="text-right" *ngIf="!resource.topicOf.length">
-      <i class="resource-btn fa fa-close" (click)="editing = false"></i>
-      <i class="resource-btn fa fa-save" (click)="saveContent()"></i>
-    </div>
-    <textarea class="form-control" style="font-size: x-small" rows="64" [(ngModel)]="jsonld"></textarea>
   </div>
 
   <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
@@ -27,29 +19,18 @@
     <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [describe]="'.'"></app-description>
   </div>
 
-  <div id="localcontent-view" *ngIf="resource.anonBody && !editing" class="col-8 m-0">
+  <div id="localcontent-view" *ngIf="resource.anonBody" class="col-8 m-0">
     <div class="text-right">
-      <i class="resource-btn fa fa-pencil-square-o" (click)="editing = true"></i>
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+         [state]="{ 'resource': resource }"></i>
     </div>
     <div [innerHTML]="resource.anonBody.values[0].value"></div>
   </div>
 
-  <div id="localcontent-edit" *ngIf="resource.anonBody && editing" class="col-8 m-0">
-    <div class="text-right">
-      <i class="resource-btn fa fa-refresh" (click)="jsonld = resource.asJsonLd()"></i>
-      <i class="resource-btn fa fa-close" (click)="editing = false"></i>
-      <i class="resource-btn fa fa-save" (click)="saveContent()"></i>
-    </div>
-    <ckeditor [(data)]="resource.anonBody.values[0].value" [config]="editorConfig"></ckeditor>
-  </div>
-
   <div id="remotecontent" *ngIf="!resource.anonBody && resource.topicOf.length" class="col-8 m-0">
-    <div class="text-right" *ngIf="!editing">
-      <i class="resource-btn fa fa-pencil-square-o" (click)="editing = true"></i>
-    </div>
-    <div class="text-right" *ngIf="editing">
-      <i class="resource-btn fa fa-close" (click)="editing = false"></i>
-      <i class="resource-btn fa fa-save" (click)="saveContent()"></i>
+    <div class="text-right">
+      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'edit'" [queryParams]="{uri: resourceUri}"
+         [state]="{ 'resource': resource }"></i>
     </div>
     <div [innerHTML]="content"></div>
   </div>

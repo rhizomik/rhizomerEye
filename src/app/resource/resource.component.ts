@@ -20,9 +20,6 @@ export class ResourceComponent implements OnInit {
   remoteResource: Description = new Description();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
-  editing = false;
-  editorConfig = { extraPlugins: 'autogrow', allowedContent: true };
-  jsonld = '';
 
   constructor(private router: Router,
               private route: ActivatedRoute,
@@ -42,21 +39,14 @@ export class ResourceComponent implements OnInit {
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
             .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
           this.browseContent(response['@context']);
-          this.jsonld = this.resource.asJsonLd();
         } else if (response['@id'] && response['@context'] &&
             UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
           this.resource = new Resource(response, response['@context'], this.labels);
           this.browseContent(response['@context']);
-          this.jsonld = this.resource.asJsonLd();
         } else {
           this.browseRemoteData(this.datasetId, this.resourceUri);
         }
       });
-  }
-
-  public saveContent() {
-    this.datasetService.updateDatasetResource(this.datasetId, this.resourceUri, this.jsonld)
-      .subscribe(() => this.editing = false);
   }
 
   private browseContent(context: Object = {}) {
