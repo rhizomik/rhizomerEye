@@ -42,7 +42,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.loadFacetClass();
     this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(

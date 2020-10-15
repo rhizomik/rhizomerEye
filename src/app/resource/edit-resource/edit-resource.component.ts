@@ -5,7 +5,7 @@ import { Description } from '../../description/description';
 import { Resource } from '../resource';
 
 @Component({
-  selector: 'app-resource',
+  selector: 'app-edit-resource',
   templateUrl: './edit-resource.component.html',
   styleUrls: ['./edit-resource.component.css']
 })
@@ -29,7 +29,7 @@ export class EditResourceComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.resourceUri = this.route.snapshot.queryParamMap.get('uri');
     if (!this.resource) {
       this.router.navigate(['../resource'],

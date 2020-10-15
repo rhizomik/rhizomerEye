@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
 import { Description } from '../description/description';
@@ -23,13 +24,14 @@ export class ResourceComponent implements OnInit {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private datasetService: DatasetService) {
+              private datasetService: DatasetService,
+              @Inject(DOCUMENT) private document: any) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
-    this.resourceUri = this.route.snapshot.queryParamMap.get('uri');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
+    this.resourceUri = this.route.snapshot.queryParamMap.get('uri') || this.document.location.href;
     this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
       (response) => {
         if (response['@graph']) {
@@ -46,7 +48,8 @@ export class ResourceComponent implements OnInit {
         } else {
           this.browseRemoteData(this.datasetId, this.resourceUri);
         }
-      });
+      },
+      error => this.router.navigate(['/about']));
   }
 
   private browseContent(context: Object = {}) {
