@@ -11,7 +11,7 @@
          [state]="{ 'resource': resource }"></i>
     </div>
     <app-description [datasetId]="datasetId" [description]="resource"
-                     [anonDescriptions]="anonResources" [resource]="'.'"></app-description>
+                     [anonDescriptions]="anonResources" [resource]="'../resource'"></app-description>
   </div>
 
   <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
