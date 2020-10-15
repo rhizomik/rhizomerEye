@@ -9,12 +9,15 @@ export class Filter {
   facet: Facet;
   range: Range;
   value: string;
+  label: string;
 
   constructor(classId: string, facet: Facet, range: Range, value: string) {
     this.classId = classId;
     this.facet = facet;
     this.range = range;
     this.value = value;
+    this.label = value.startsWith('<') && value.endsWith('>') ?
+      UriUtils.localName(value.substring(1, value.length - 1)) : value;
   }
 
   static toParam(filters: Filter[]): HttpParams {

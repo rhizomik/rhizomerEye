@@ -2,6 +2,7 @@ import { BreadcrumbService } from './breadcrumb.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Breadcrumb } from './breadcrumb';
+import { Filter } from './filter';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -10,6 +11,7 @@ import { Breadcrumb } from './breadcrumb';
 })
 export class BreadcrumbComponent implements OnInit {
   breadcrumbs: Breadcrumb[] = [];
+  filters: Filter[] = [];
 
   constructor(private router: Router,
               private breadService: BreadcrumbService) {
@@ -19,6 +21,11 @@ export class BreadcrumbComponent implements OnInit {
     this.breadService.breadcrumbs.subscribe(
       breadcrumbs => {
         this.breadcrumbs = breadcrumbs;
+      }
+    );
+    this.breadService.filtersSelection.subscribe(
+      filters => {
+        this.filters = filters;
       }
     );
   }
