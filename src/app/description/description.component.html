@@ -7,15 +7,17 @@
       <b *ngIf="!description.isAnon()" [title]="description['@id']">
         <a [routerLink]="[resource]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
       </b>
-      <span *ngFor="let type of description['@type']" [title]="type"
-            class="badge badge-secondary badge-pill float-right">{{localName(type)}}</span>
+      <span *ngFor="let type of description['@type']" [title]="type.uri"
+            class="badge badge-secondary badge-pill pull-right mt-1" (click)="browseClass(type.uri)" style="cursor: pointer">
+        {{localName(type.label)}}
+      </span>
     </p>
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item small" *ngFor="let property of description.properties">
       <b title="{{property.uri}}">{{property.label}}</b>:
       <span *ngFor="let value of property.filterLangValues('en'); let firstValue=first">
-        <app-description *ngIf="value.isAnon()"
+        <app-description *ngIf="value.isAnon()" [datasetId]="datasetId"
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>
         <span *ngIf="!value.isAnon()"><span *ngIf="!firstValue">, </span>

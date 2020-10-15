@@ -10,13 +10,15 @@
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
     </div>
-    <app-description [description]="resource" [anonDescriptions]="anonResources" [resource]="'.'"></app-description>
+    <app-description [datasetId]="datasetId" [description]="resource"
+                     [anonDescriptions]="anonResources" [resource]="'.'"></app-description>
   </div>
 
   <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
        [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf}">
     <h5>Remote Data</h5>
-    <app-description [description]="remoteResource" [anonDescriptions]="remoteAnonResources" [resource]="'.'"></app-description>
+    <app-description [datasetId]="datasetId" [description]="remoteResource"
+                     [anonDescriptions]="remoteAnonResources" [resource]="'.'"></app-description>
   </div>
 
   <div id="localcontent-view" *ngIf="resource.anonBody" class="col-8 m-0">

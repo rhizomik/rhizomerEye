@@ -4,7 +4,7 @@ import { UriUtils } from '../shared/uriutils';
 
 export class Description {
   '@id': string;
-  '@type': string[];
+  '@type': Value[] = [];
   properties: Property[] = [];
   label: string;
   labels: Value[] = [];
@@ -73,11 +73,11 @@ export class Description {
     return labels;
   }
 
-  processTypes(value: any, context: Object): string[] {
+  processTypes(value: any, context: Object = {}, labels: Map<string, string> = new Map()): Value[] {
     if (value instanceof Array) {
-      return value.map((url: string) => UriUtils.expandUri(url, context));
+      return value.map((url: string) => new Value(url, context, labels));
     } else {
-      return [UriUtils.expandUri(value, context)];
+      return [new Value(value, context, labels)];
     }
   }
 
@@ -91,7 +91,10 @@ export class Description {
   asJsonLd(): string {
     let jsonld = '{\n';
     jsonld += '\t "@id": "' + this['@id'] + '"';
-    if (this['@type']) { jsonld += ',\n\t "@type": ["' + this['@type'].join('", "') + '"]'; }
+    if (this['@type']) {
+      jsonld += ',\n\t "@type": [' +
+        this['@type'].map(value => '"' + value.uri + '"').join('", "') + ']';
+    }
     if (this.labels.length) {
       jsonld += ',\n\t "http://www.w3.org/2000/01/rdf-schema#label": [ ' +
         this.labels.map(value => value.asJsonLd()).join(', ') + ' ]';

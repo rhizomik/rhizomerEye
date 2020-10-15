@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
+import { Router } from '@angular/router';
+import { ClassService } from '../class/class.service';
+import { Class } from '../class/class';
 
 @Component({
   selector: 'app-description',
@@ -8,6 +11,8 @@ import { UriUtils } from '../shared/uriutils';
   styleUrls: ['./description.component.css']
 })
 export class DescriptionComponent implements OnInit {
+  @Input()
+  datasetId: string;
   @Input()
   description: Description = new Description();
   @Input()
@@ -18,7 +23,8 @@ export class DescriptionComponent implements OnInit {
   resource = 'resource';
   depictionExpanded = false;
 
-  constructor() { }
+  constructor(private router: Router,
+              private classService: ClassService) { }
 
   ngOnInit() {
   }
@@ -33,5 +39,15 @@ export class DescriptionComponent implements OnInit {
 
   localName(uri: string): string {
     return UriUtils.localName(uri);
+  }
+
+  browseClass(uri: string): void {
+    this.classService.getClassCurie(this.datasetId, uri).subscribe((cls: Class) => {
+      if (this.datasetId === 'default') {
+        this.router.navigate(['/overview', cls.curie]);
+      } else {
+        this.router.navigate(['/datasets', this.datasetId, cls.curie]);
+      }
+    });
   }
 }

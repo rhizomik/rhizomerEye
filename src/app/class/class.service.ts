@@ -57,4 +57,10 @@ export class ClassService extends Rest2Service<Class> {
     return this.http.get<Class[]>(
       `${environment.API}/datasets/${did}/classes`, {params: params});
   }
+
+  getClassCurie(did: string, uri: string): Observable<Class> {
+    let params = new HttpParams();
+    params = params.append('uri', uri);
+    return this.http.get<Class>(`${environment.API}/datasets/${did}/classByUri`, { params: params });
+  }
 }
