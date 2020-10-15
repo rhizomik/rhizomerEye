@@ -11,7 +11,7 @@
       <li class="nav-item" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }">
         <a class="nav-link" [routerLink]="['/about']">About</a>
       </li>
-      <li class="nav-item dropdown" ngbDropdown>
+      <li class="nav-item dropdown" *ngIf="isLoggedIn()" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="samplesDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>Datasets</a>
         <div class="dropdown-menu" aria-labelledby="samplesDropdown" ngbDropdownMenu>
