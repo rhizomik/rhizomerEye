@@ -93,7 +93,7 @@ export class Description {
     jsonld += '\t "@id": "' + this['@id'] + '"';
     if (this['@type']) {
       jsonld += ',\n\t "@type": [' +
-        this['@type'].map(value => '"' + value.uri + '"').join('", "') + ']';
+        this['@type'].map(value => '"' + value.uri + '"').join(', ') + ']';
     }
     if (this.labels.length) {
       jsonld += ',\n\t "http://www.w3.org/2000/01/rdf-schema#label": [ ' +
