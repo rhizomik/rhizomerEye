@@ -125,10 +125,11 @@ export class WordCloudComponent implements OnInit {
   }
 
   browse(event) {
+    const curie = event.currentTarget ? event.currentTarget.__data__.curie : event.curie;
     if (this.datasetId === 'default') {
-      this.router.navigate(['/overview', event.currentTarget.__data__.curie]);
+      this.router.navigate(['/overview', curie]);
     } else {
-      this.router.navigate(['/datasets', this.datasetId, event.currentTarget.__data__.curie]);
+      this.router.navigate(['/datasets', this.datasetId, curie]);
     }
   }
 }
