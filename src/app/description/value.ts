@@ -42,6 +42,10 @@ export class Value {
     return this.asString().startsWith('_:');
   }
 
+  isUrlValue() {
+    return UriUtils.isUrl(this.asString());
+  }
+
   asString(): string {
     return this.value ? this.value : this.uri;
   }
