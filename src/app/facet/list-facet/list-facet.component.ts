@@ -101,6 +101,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           } else {
             this.resources = [];
           }
+          this.sortResource();
         });
   }
 
@@ -110,6 +111,20 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   loadAllFacets() {
     this.refreshFacets(0);
+  }
+
+  private sortResource() {
+    this.resources.sort((a, b) => {
+      if (a.label && b.label) {
+        return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+      } else if (!a.label && b.label) {
+        return -1;
+      } else if (a.label && !b.label) {
+        return 1;
+      } else {
+        return a['@id'].localeCompare(b['@id']);
+      }
+    });
   }
 
   ngOnDestroy() {
