@@ -22,14 +22,14 @@ export class Description {
           case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
           case 'http://www.w3.org/2000/01/rdf-schema#label': {
-            this.labels = Value.getValues(value, context, labels);
+            this.labels = Value.getValues(key, value, context, labels);
             this.label = UriUtils.pickLabel(value, 'en'); break; }
           case 'http://xmlns.com/foaf/0.1/depiction': {
-            this.depiction = Value.getValues(value, context, labels); break; }
+            this.depiction = Value.getValues(key, value, context, labels); break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
-            this.topicOf = Value.getValues(value, context, labels); break; }
+            this.topicOf = Value.getValues(key, value, context, labels); break; }
           default: // if (expandedUri.indexOf('wikiPage') < 0) {
-            this.properties.push(new Property(expandedUri, value, context, labels));
+            this.properties.push(new Property(key, value, context, labels));
           // }
         }
       }
@@ -75,9 +75,9 @@ export class Description {
 
   processTypes(value: any, context: Object = {}, labels: Map<string, string> = new Map()): Value[] {
     if (value instanceof Array) {
-      return value.map((url: string) => new Value(url, context, labels));
+      return value.map((url: string) => new Value('@type', url, context, labels));
     } else {
-      return [new Value(value, context, labels)];
+      return [new Value('@type', value, context, labels)];
     }
   }
 
