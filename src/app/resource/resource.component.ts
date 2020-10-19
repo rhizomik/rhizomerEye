@@ -85,7 +85,11 @@ export class ResourceComponent implements OnInit {
         } else {
           this.remoteResource = new Description(remote, remote['@context']);
         }
-        this.loading = false;
+        if (this.datasetId === 'default') {
+          this.router.navigate(['/overview']);
+        } else {
+          this.router.navigate(['/datasets', this.datasetId]);
+        }
       }, error => console.log(error));
   }
 }
