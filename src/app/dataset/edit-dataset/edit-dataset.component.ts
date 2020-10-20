@@ -81,7 +81,7 @@ export class EditDatasetComponent implements OnInit {
     .subscribe(
       ([serverGraphs, datasetGraphs]) => {
         this.graphsRetrieved = true;
-        this.endpoint.serverGraphs = serverGraphs;
+        this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
         this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
       });
   }
