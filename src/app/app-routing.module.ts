@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, UrlSegment } from '@angular/router';
 import { LoggedInGuard } from './login-basic/loggedin.guard';
 import { AdministratorGuard } from './login-basic/administrator.guard';
 import { UserCreateComponent } from './user/user-create/user-create.component';
@@ -41,8 +41,16 @@ const routes: Routes = [
       import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'overview', component: WordCloudComponent },
   { path: 'login', component: LoginFormComponent },
-  { path: '**', component: ResourceComponent }
+  { matcher: nonStaticFiles, component: ResourceComponent }
 ];
+
+export function nonStaticFiles(url: UrlSegment[]) {
+  return url.length === 0 ||
+         ( !(url[0].path === 'html') && !(url[0].path === 'images') &&
+           !(url[0].path === 'ontologies') ) ||
+         ( (url[0].path === 'ontologies') && !url[url.length - 1].path.includes('.')) ?
+         ({consumed: url}) : null;
+}
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
