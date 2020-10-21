@@ -1,27 +1,31 @@
 <div class="card mb-2" *ngIf="description">
-  <img *ngIf="description.depiction" class="card-img-top"
+  <img *ngIf="description.depiction.length > 0" class="card-img-top"
        style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="switchExpansion()"
-       [src]="description.depiction" alt="resource depiction">
+       [src]="description.depiction[0].asString()" alt="resource depiction">
   <div class="card-header">
     <p class="card-text" [class.reverse-text-truncate]="!description.label">
-      <b *ngIf="description['@id']" [title]="description['@id']">
-        <a [routerLink]="[describe]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
+      <b *ngIf="!description.isAnon()" [title]="description['@id']">
+        <a [routerLink]="[resource]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
       </b>
-      <span *ngIf="!description['@id']" class="fa fa-minus-circle ml-1"></span>
-      <span *ngFor="let type of description['@type']" [title]="type"
-            class="badge badge-secondary badge-pill float-right">{{localName(type)}}</span>
+      <b *ngIf="description.isAnon() && description.label">{{description.label}}</b>
+      <span *ngFor="let type of description['@type']" [title]="type.uri"
+            class="badge badge-secondary badge-pill pull-right mt-1" (click)="browseClass(type.uri)" style="cursor: pointer">
+        {{localName(type.label)}}
+      </span>
     </p>
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item small" *ngFor="let property of description.properties">
       <b title="{{property.uri}}">{{property.label}}</b>:
       <span *ngFor="let value of property.filterLangValues('en'); let firstValue=first">
-        <app-description *ngIf="isAnonResource(value)"
+        <app-description *ngIf="value.isAnon()" [datasetId]="datasetId"
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>
-        <span *ngIf="!isAnonResource(value)"><span *ngIf="!firstValue">, </span>
-          <span *ngIf="value.uri"><a [routerLink]="[describe]" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
-          <span *ngIf="value.value">{{value.value}}</span>
+        <span *ngIf="!value.isAnon()">
+          <span *ngIf="!firstValue">, </span>
+          <span *ngIf="value.uri"><a [routerLink]="[resource]" [queryParams]="{uri: value.uri}">{{value.label}}</a></span>
+          <span *ngIf="value.value && value?.isUrlValue()"><a [href]="value.value">{{value.value}}</a></span>
+          <span *ngIf="value.value && !value?.isUrlValue()">{{value.value}}</span>
         </span>
       </span>
     </li>

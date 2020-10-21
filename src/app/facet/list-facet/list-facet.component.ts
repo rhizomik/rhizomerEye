@@ -42,9 +42,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
-    this.loadFacetClass();
     this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
     this.refreshFacets(this.relevance);
@@ -64,9 +63,15 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
         this.retrievedFacets = facets.length;
         this.loadFacetClass();
-        this.facets.map(facet =>
-          this.rangeService.getAll(this.datasetId, this.classId, facet.curie).subscribe(
-            ranges => facet.ranges = ranges)
+        forkJoin(this.facets.map(facet =>
+            this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
+            facetsRanges => {
+              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
+              if (this.route.snapshot.queryParamMap) {
+                const filters = Filter.fromParam(this.classId, this.facets, this.route.snapshot.queryParamMap);
+                this.breadcrumbService.addFacetFilters(filters);
+              }
+            }
         );
       });
   }
@@ -96,6 +101,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           } else {
             this.resources = [];
           }
+          this.sortResource();
         });
   }
 
@@ -105,6 +111,20 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   loadAllFacets() {
     this.refreshFacets(0);
+  }
+
+  private sortResource() {
+    this.resources.sort((a, b) => {
+      if (a.label && b.label) {
+        return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+      } else if (!a.label && b.label) {
+        return -1;
+      } else if (a.label && !b.label) {
+        return 1;
+      } else {
+        return a['@id'].localeCompare(b['@id']);
+      }
+    });
   }
 
   ngOnDestroy() {

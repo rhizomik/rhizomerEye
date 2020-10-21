@@ -81,7 +81,7 @@ export class EditDatasetComponent implements OnInit {
     .subscribe(
       ([serverGraphs, datasetGraphs]) => {
         this.graphsRetrieved = true;
-        this.endpoint.serverGraphs = serverGraphs;
+        this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
         this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
       });
   }
@@ -95,8 +95,10 @@ export class EditDatasetComponent implements OnInit {
   }
 
   setGraphs(): void {
-    this.endpointService.updateGraphs(this.dataset.id, this.endpoint.id, this.endpoint.graphs).subscribe(
-      () => this.router.navigate(['/datasets', this.dataset.id, 'details']));
+    forkJoin([
+      this.endpointService.updateGraphs(this.dataset.id, this.endpoint.id, this.endpoint.graphs),
+      this.datasetService.clearClasses(this.dataset.id)])
+      .subscribe(() => this.router.navigate(['/datasets', this.dataset.id, 'details']));
   }
 
   isSelected(graph: string): boolean {

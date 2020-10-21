@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
+import { Router } from '@angular/router';
+import { ClassService } from '../class/class.service';
+import { Class } from '../class/class';
 
 @Component({
   selector: 'app-description',
@@ -9,26 +12,25 @@ import { UriUtils } from '../shared/uriutils';
 })
 export class DescriptionComponent implements OnInit {
   @Input()
+  datasetId: string;
+  @Input()
   description: Description = new Description();
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
   @Input()
   labels: Map<string, string> = new Map<string, string>();
   @Input()
-  describe = 'describe';
+  resource = 'resource';
   depictionExpanded = false;
 
-  constructor() { }
+  constructor(private router: Router,
+              private classService: ClassService) { }
 
   ngOnInit() {
   }
 
-  isAnonResource(value: any) {
-    return value.value && typeof value.value === 'string' && value.value.startsWith('_:');
-  }
-
   getAnonResource(value: any) {
-    return this.anonDescriptions.get(value.value);
+    return this.anonDescriptions.get(value.asString());
   }
 
   switchExpansion() {
@@ -37,5 +39,15 @@ export class DescriptionComponent implements OnInit {
 
   localName(uri: string): string {
     return UriUtils.localName(uri);
+  }
+
+  browseClass(uri: string): void {
+    this.classService.getClassCurie(this.datasetId, uri).subscribe((cls: Class) => {
+      if (this.datasetId === 'default') {
+        this.router.navigate(['/overview', cls.curie]);
+      } else {
+        this.router.navigate(['/datasets', this.datasetId, cls.curie]);
+      }
+    });
   }
 }

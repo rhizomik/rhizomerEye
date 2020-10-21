@@ -5,20 +5,21 @@ export class Value {
   label: string;
   value: string;
   language: string;
+  type: string;
 
-  constructor(value: any, context: Object = {}, labels: Map<string, string> = new Map()) {
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, string> = new Map()) {
     if (value['@value']) {
       this.value = value['@value'];
-    } else if (value['@type']) {
-      this.uri = UriUtils.expandUri(value['@value'], context);
-      this.label = UriUtils.getLabel(this.uri, labels);
+      if (value['@type']) {
+        this.type = UriUtils.expandUri(value['@type'], context);
+      }
     } else if (value['@id']) {
       this.uri = UriUtils.expandUri(value['@id'], context);
       this.label = UriUtils.getLabel(this.uri, labels);
     } else if (typeof value === 'string') {
-      const uri = UriUtils.expandUri(value, context);
-      if (UriUtils.isUrl(uri) || uri.startsWith('urn:')) {
-        this.uri = uri;
+      const isUri = context[key] && context[key]['@type'] ? context[key]['@type'] === '@id' : false;
+      if (isUri || key === '@type') {
+        this.uri = UriUtils.expandUri(value, context);
         this.label = UriUtils.getLabel(this.uri, labels);
       } else {
         this.value = value;
@@ -28,6 +29,35 @@ export class Value {
     }
     if (value['@language']) {
       this.language = value['@language'];
+    }
+  }
+
+  static getValues(key: string, input: any, context: Object = {}, labels: Map<string, string> = new Map()) {
+    return input instanceof Array ?
+      input.map(v => new Value(key, v, context, labels)) :
+      [new Value(key, input, context, labels)];
+  }
+
+  isAnon() {
+    return this.asString().startsWith('_:');
+  }
+
+  isUrlValue() {
+    return UriUtils.isUrl(this.asString());
+  }
+
+  asString(): string {
+    return this.value ? this.value : this.uri;
+  }
+
+  asJsonLd(): string {
+    if (this.value) {
+      return '{ "@value": ' + JSON.stringify(this.value) +
+      (this.language ? ', "@language": "' + this.language + '"' : '') +
+      (this.type ? ', "@type": "' + this.type + '"' : '') +
+      ' }';
+    } else {
+      return '{ "@id": "' + this.uri + '" }';
     }
   }
 }

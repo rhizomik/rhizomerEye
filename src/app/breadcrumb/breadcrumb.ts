@@ -4,8 +4,10 @@ export class Breadcrumb {
 
   constructor(step: string, url: string) {
     this.name = decodeURIComponent(step);
-    if (this.name.startsWith('describe?uri=')) {
-      this.name = this.name.substring('describe?uri='.length);
+    if (this.name.includes('?uri=')) {
+      this.name = this.name.split('?uri=')[1];
+    } else if (this.name.includes('?')) {
+      this.name = this.name.split('?')[0];
     }
     this.uri = decodeURI(url.substring(0, url.indexOf(step)) + step);
   }

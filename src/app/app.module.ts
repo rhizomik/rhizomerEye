@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {
-  NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule
+import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -39,8 +38,9 @@ import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { DescriptionComponent } from './description/description.component';
-import { ResourceComponent } from './description/resource.component';
 import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-modal.component';
+import { DescriptionModule } from './description/description.module';
+import { ResourceComponent } from './resource/resource.component';
 
 @NgModule({
   declarations: [
@@ -63,9 +63,8 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
     CreateDatasetComponent,
     EditDatasetComponent,
     WordCloudComponent,
-    DescriptionComponent,
-    ResourceComponent,
-    DatasetFormModalComponent
+    DatasetFormModalComponent,
+    ResourceComponent
   ],
   imports: [
     AppRoutingModule,
@@ -80,13 +79,14 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
     NgbNavModule,
     LoginBasicModule,
     ErrorHandlerModule,
+    DescriptionModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
     AuthenticationBasicService, LoggedInGuard, AdministratorGuard, AdminService, UserService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [DatasetFormModalComponent],
+  entryComponents: [DatasetFormModalComponent]
 })
 export class AppModule { }

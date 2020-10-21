@@ -14,15 +14,17 @@ import { ListFacetComponent } from './facet/list-facet/list-facet.component';
 import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
-import { ResourceComponent } from './description/resource.component';
+import { ResourceComponent } from './resource/resource.component';
+import { LoginFormComponent } from './login-basic/login-form.component';
 
 const routes: Routes = [
   { path: 'datasets/new', component: CreateDatasetComponent, canActivate: [LoggedInGuard] },
-  { path: 'datasets/:did/describe', component: ResourceComponent },
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
-  { path: 'datasets/:did/:cid/describe', component: ResourceComponent },
+  { path: 'datasets/:did/:cid/resource', component: ResourceComponent },
+  { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>
+      import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'datasets/:did/:cid', component: ListFacetComponent },
   { path: 'datasets/:did', component: WordCloudComponent },
   { path: 'datasets', component: ListDatasetComponent, canActivate: [LoggedInGuard] },
@@ -31,7 +33,15 @@ const routes: Routes = [
   { path: 'users/:id', component: UserDetailComponent, canActivate: [LoggedInGuard] },
   { path: 'users', component: UserListComponent, canActivate: [AdministratorGuard] },
   { path: 'about', component: AboutComponent },
-  { path: '', redirectTo: 'about', pathMatch: 'full' },
+  { path: 'overview/:cid', component: ListFacetComponent },
+  { path: 'overview/:cid/resource', component: ResourceComponent },
+  { path: 'overview/:cid/edit-resource', loadChildren: () =>
+      import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
+  { path: 'edit-resource', loadChildren: () =>
+      import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
+  { path: 'overview', component: WordCloudComponent },
+  { path: 'login', component: LoginFormComponent },
+  { path: '**', component: ResourceComponent }
 ];
 
 @NgModule({

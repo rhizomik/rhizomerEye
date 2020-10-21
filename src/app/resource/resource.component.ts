@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
-import { Description } from './description';
+import { Description } from '../description/description';
 import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
 
@@ -23,13 +24,14 @@ export class ResourceComponent implements OnInit {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private datasetService: DatasetService) {
+              private datasetService: DatasetService,
+              @Inject(DOCUMENT) private document: any) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
-    this.resourceUri = this.route.snapshot.queryParamMap.get('uri');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
+    this.resourceUri = this.route.snapshot.queryParamMap.get('uri') || this.document.location.href;
     this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
       (response) => {
         if (response['@graph']) {
@@ -38,23 +40,25 @@ export class ResourceComponent implements OnInit {
           this.resource = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
             .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
-          if (!this.resource.body && this.resource.topicOf) {
-            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
-          } else {
-            this.loading = false;
-          }
+          this.browseContent(response['@context']);
         } else if (response['@id'] && response['@context'] &&
-                   UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Resource(response, response['@context'], this.labels, this.anonResources);
-          if (!this.resource.body && this.resource.topicOf) {
-            this.browseRemoteContent(this.datasetId, UriUtils.expandUri(this.resource.topicOf, response['@context']));
-          } else {
-            this.loading = false;
-          }
+            UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
+          this.resource = new Resource(response, response['@context'], this.labels);
+          this.browseContent(response['@context']);
         } else {
           this.browseRemoteData(this.datasetId, this.resourceUri);
         }
-      });
+      },
+      error => this.router.navigate(['/about']));
+  }
+
+  private browseContent(context: Object = {}) {
+    if (!this.resource.anonBody && this.resource.topicOf.length > 0) {
+      this.browseRemoteContent(this.datasetId,
+        UriUtils.expandUri(this.resource.topicOf[0].asString(), context));
+    } else {
+      this.loading = false;
+    }
   }
 
   private browseRemoteContent(datasetId: string, url: string) {
@@ -81,7 +85,11 @@ export class ResourceComponent implements OnInit {
         } else {
           this.remoteResource = new Description(remote, remote['@context']);
         }
-        this.loading = false;
+        if (this.datasetId === 'default') {
+          this.router.navigate(['/overview']);
+        } else {
+          this.router.navigate(['/datasets', this.datasetId]);
+        }
       }, error => console.log(error));
   }
 }

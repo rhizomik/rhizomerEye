@@ -6,15 +6,15 @@ export class Property {
   label: string;
   values: Value[] = [];
 
-  constructor(uri: string, value: any, context: Object = {}, labels: Map<string, string>) {
-    this.uri = uri;
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, string>) {
+    this.uri = UriUtils.expandUri(key, context);
     this.label = UriUtils.getLabel(this.uri, labels);
     if (value instanceof Array) {
-      this.values = value.map(v => new Value(v, context, labels));
+      this.values = value.map(v => new Value(key, v, context, labels));
     } else if (value['@list']) {
-      this.values = value['@list'].map(v => new Value(v, context, labels));
+      this.values = value['@list'].map(v => new Value(key, v, context, labels));
     } else {
-      this.values.push(new Value(value, context, labels));
+      this.values.push(new Value(key, value, context, labels));
     }
   }
 

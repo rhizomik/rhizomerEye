@@ -38,7 +38,7 @@ export class WordCloudComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.datasetId = this.route.snapshot.paramMap.get('did');
+    this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.loadClassList();
     this.setup();
   }
@@ -124,7 +124,12 @@ export class WordCloudComponent implements OnInit {
     .on('click', this.browse.bind(this));
   }
 
-  browse(c) {
-    this.router.navigate(['/datasets', this.datasetId, c.curie]);
+  browse(event) {
+    const curie = event.currentTarget ? event.currentTarget.__data__.curie : event.curie;
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview', curie]);
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, curie]);
+    }
   }
 }

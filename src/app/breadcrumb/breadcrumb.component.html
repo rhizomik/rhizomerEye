@@ -5,5 +5,9 @@
       <a *ngIf="!isLast" [routerLink]="[page.uri]">{{page.name}}</a>
       <span *ngIf="isLast">{{page.name}}</span>
     </li>
+    <li *ngIf="filters.length" class="breadcrumb-item item"></li>
+    <li class="badge badge-warning badge-pill m-1" *ngFor="let filter of filters">
+      {{filter.facet.label}}: {{filter.label}}
+    </li>
   </ul>
 </nav>
