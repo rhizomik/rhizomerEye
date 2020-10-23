@@ -33,7 +33,11 @@ export class DetailRangeComponent implements OnInit, OnDestroy {
     private rangeService: RangeService) {
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.range.expanded) {
+      this.firstValues(this.range);
+    }
+  }
 
   firstValues(range: Range) {
     this.subscription = this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(

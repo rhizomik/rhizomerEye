@@ -69,6 +69,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
               if (this.route.snapshot.queryParamMap) {
                 const filters = Filter.fromParam(this.classId, this.facets, this.route.snapshot.queryParamMap);
+                filters.forEach((filter: Filter) => {
+                  if (!filter.value) {
+                    filter.facet.selected = true;
+                  } else {
+                    filter.range.expanded = true;
+                  }
+                });
                 this.breadcrumbService.addFacetFilters(filters);
               }
             }

@@ -16,7 +16,6 @@ export class EditResourceComponent implements OnInit {
   content: string;
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, string> = new Map<string, string>();
-  editing = true;
   editorConfig = { extraPlugins: 'autogrow', allowedContent: true };
   jsonld = '';
 

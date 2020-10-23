@@ -9,6 +9,7 @@ export class Range {
   curie: string;
   relation: boolean;
   values: Value[];
+  expanded: boolean;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
