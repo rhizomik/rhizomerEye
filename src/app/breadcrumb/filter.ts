@@ -15,9 +15,9 @@ export class Filter {
     this.classId = classId;
     this.facet = facet;
     this.range = range;
-    this.value = value;
-    this.label = value.startsWith('<') && value.endsWith('>') ?
-      UriUtils.localName(value.substring(1, value.length - 1)) : value;
+    this.value = value && value !== 'null' ? value : null;
+    this.label = this.value && this.value.startsWith('<') && this.value.endsWith('>') ?
+      UriUtils.localName(this.value.substring(1, this.value.length - 1)) : this.value;
   }
 
   static toParam(filters: Filter[]): HttpParams {
