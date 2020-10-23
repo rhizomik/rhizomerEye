@@ -47,7 +47,7 @@ export class Value {
   }
 
   asString(): string {
-    return this.value ? this.value : this.uri;
+    return this.value ? this.value.toString() : this.uri;
   }
 
   asJsonLd(): string {
