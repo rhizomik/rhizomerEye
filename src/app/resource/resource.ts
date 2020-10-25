@@ -24,4 +24,11 @@ export class Resource extends Description {
     this.anonResources.forEach(anonResource => jsonld += ', ' + anonResource.asJsonLd());
     return jsonld + '\n ] }';
   }
+
+  combine(addition: Resource) {
+    addition.anonResources.forEach((value, key) => this.anonResources.set(key, value));
+    this.depiction = this.depiction.concat(addition.depiction);
+    this.labels = this.labels.concat(addition.labels);
+    this.properties = this.properties.concat(addition.properties);
+  }
 }

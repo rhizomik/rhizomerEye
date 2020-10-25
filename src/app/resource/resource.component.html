@@ -4,9 +4,9 @@
     <h1 class="badge badge-warning badge-pill">Loading...</h1>
   </div>
 
-  <div id="localmetadata" *ngIf="!loading && resource && resource['@id']"
-       [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf.length}">
-    <div class="text-right" *ngIf="!resource.topicOf.length">
+  <div id="metadata" *ngIf="!loading && resource && resource['@id']"
+       [ngClass]="{'col-4 m-0': resource.anonBody || this.content, 'col-12 m-0': !resource.anonBody && !this.content}">
+    <div class="text-right" *ngIf="!resource.anonBody && !this.content">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
     </div>
@@ -14,14 +14,7 @@
                      [anonDescriptions]="anonResources" [resource]="'../resource'"></app-description>
   </div>
 
-  <div id="remotedata" *ngIf="!loading && (!resource || !resource['@id'])"
-       [ngClass]="{'col-4 m-0': resource.topicOf.length, 'col-12 m-0': !resource.topicOf}">
-    <h5>Remote Data</h5>
-    <app-description [datasetId]="datasetId" [description]="remoteResource"
-                     [anonDescriptions]="remoteAnonResources" [resource]="'.'"></app-description>
-  </div>
-
-  <div id="localcontent-view" *ngIf="resource.anonBody" class="col-8 m-0">
+  <div id="localcontent" *ngIf="!loading && resource.anonBody" class="col-8 m-0">
     <div class="text-right">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
@@ -29,7 +22,7 @@
     <div [innerHTML]="resource.anonBody.values[0].value"></div>
   </div>
 
-  <div id="remotecontent" *ngIf="!resource.anonBody && resource.topicOf.length" class="col-8 m-0">
+  <div id="remotecontent" *ngIf="!loading && this.content" class="col-8 m-0">
     <div class="text-right">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>

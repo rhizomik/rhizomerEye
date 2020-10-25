@@ -42,14 +42,19 @@ export class ResourceComponent implements OnInit {
             .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources))[0];
           this.browseContent(response['@context']);
         } else if (response['@id'] && response['@context'] &&
-            UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Resource(response, response['@context'], this.labels);
+          UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
+          this.resource = new Resource(response, response['@context']);
           this.browseContent(response['@context']);
-        } else {
-          this.browseRemoteData(this.datasetId, this.resourceUri);
         }
+        this.browseRemoteData(this.datasetId, this.resourceUri);
       },
-      error => this.router.navigate(['/about']));
+      error => {
+        if (this.datasetId === 'default') {
+          this.router.navigate(['/overview']);
+        } else {
+          this.router.navigate(['/datasets', this.datasetId]);
+        }
+      });
   }
 
   private browseContent(context: Object = {}) {
@@ -75,21 +80,19 @@ export class ResourceComponent implements OnInit {
   private browseRemoteData(datasetId: string, uri: string) {
     this.datasetService.browseUriData(datasetId, uri).subscribe(
       (remote) => {
+        let remoteResource;
         if (remote['@graph']) {
-          this.remoteResource = remote['@graph']
+          const labels = Description.getLabels(remote);
+          const anonResources = Description.getAnonResources(remote, this.labels);
+          remoteResource = remote['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], remote['@context']) === this.resourceUri)
-            .map(instance => new Description(instance, remote['@context']))[0];
-          remote['@graph']
-            .filter(instance => (<string>instance['@id']).startsWith('_:'))
-            .map(instance => this.remoteAnonResources.set(instance['@id'], new Description(instance, remote['@context'])));
+            .map(instance => new Resource(instance, remote['@context'], labels, anonResources))[0];
+
         } else {
-          this.remoteResource = new Description(remote, remote['@context']);
+          remoteResource = new Resource(remote, remote['@context']);
         }
-        if (this.datasetId === 'default') {
-          this.router.navigate(['/overview']);
-        } else {
-          this.router.navigate(['/datasets', this.datasetId]);
-        }
+        this.resource['@id'] ? this.resource.combine(remoteResource) : this.resource = remoteResource;
+        this.loading = false;
       }, error => console.log(error));
   }
 }
