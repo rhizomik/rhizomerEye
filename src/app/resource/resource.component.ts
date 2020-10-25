@@ -18,7 +18,6 @@ export class ResourceComponent implements OnInit {
   content: string;
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, string> = new Map<string, string>();
-  remoteResource: Description = new Description();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
 
@@ -49,11 +48,7 @@ export class ResourceComponent implements OnInit {
         this.browseRemoteData(this.datasetId, this.resourceUri);
       },
       error => {
-        if (this.datasetId === 'default') {
-          this.router.navigate(['/overview']);
-        } else {
-          this.router.navigate(['/datasets', this.datasetId]);
-        }
+        this.onNoData();
       });
   }
 
@@ -92,7 +87,18 @@ export class ResourceComponent implements OnInit {
           remoteResource = new Resource(remote, remote['@context']);
         }
         this.resource['@id'] ? this.resource.combine(remoteResource) : this.resource = remoteResource;
+        if (!this.resource['@id']) {
+          this.onNoData();
+        }
         this.loading = false;
       }, error => console.log(error));
+  }
+
+  private onNoData() {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview']);
+    } else {
+      this.router.navigate(['/datasets', this.datasetId]);
+    }
   }
 }
