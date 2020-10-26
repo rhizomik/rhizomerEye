@@ -11,4 +11,10 @@ export class Breadcrumb {
     }
     this.uri = decodeURI(url.substring(0, url.indexOf(step)) + step);
   }
+
+  static toString(breadcrumbs: Breadcrumb[]): string {
+    return breadcrumbs
+      .filter((breadcrumb: Breadcrumb) => breadcrumb.name !== 'datasets')
+      .map((breadcrumb: Breadcrumb) => breadcrumb.name).join(' / ');
+  }
 }

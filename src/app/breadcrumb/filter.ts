@@ -41,4 +41,10 @@ export class Filter {
       }
     }).filter(filter => !!filter);
   }
+
+  static toString(filters: Filter[]): string {
+    return filters
+      .map(filter => filter.facet.label + (filter.label ? ': ' + filter.label : ''))
+      .join(' & ');
+  }
 }
