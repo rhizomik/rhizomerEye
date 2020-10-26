@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
+import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +12,9 @@ export class AppComponent {
   title = 'rhizomerEye';
 
   constructor(router: Router,
-              breadService: BreadcrumbService) {
-    router.events.subscribe( val => {
-      breadService.navigateTo(router.url);
-    });
+              breadService: BreadcrumbService,
+              angulartics: Angulartics2GoogleGlobalSiteTag) {
+    router.events.subscribe(() => breadService.navigateTo(router.url));
+    angulartics.startTracking();
   }
 }
