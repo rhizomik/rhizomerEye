@@ -29,3 +29,7 @@
 .nav-link{
   cursor: pointer;
 }
+
+p {
+  text-align: justify !important
+}

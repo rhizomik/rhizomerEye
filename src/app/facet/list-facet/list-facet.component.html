@@ -1,6 +1,6 @@
 <div id="faceted" class="row">
 
-  <div id="facets" class="col-4 m-0">
+  <div id="facets" class="col-md-4 m-0">
     <h5 class="p-1">Facets
       <span *ngIf="retrievedFacets > 0">
         <span class="badge badge-warning badge-pill">{{retrievedFacets}}</span>
@@ -9,14 +9,19 @@
       </span>
       <span *ngIf="retrievedFacets == 0" class="badge badge-danger badge-pill">No facets retrieved</span>
       <span *ngIf="retrievedFacets == undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span class="d-block d-md-none d-lg-none d-xl-none float-right">
+        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-arrow-circle-down"></span></a>
+        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-arrow-circle-up"></span></a>
+      </span>
     </h5>
-    <div *ngFor="let facet of facets">
+    <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}"
+      class="" *ngFor="let facet of facets">
       <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
       </app-detail-facet>
     </div>
   </div>
 
-  <div id="instances" class="col-8 m-0">
+  <div id="instances" class="col-md-8 m-0">
     <h5 class="p-1">Instances
       <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
       <span *ngIf="filteredInstances == 0" class="badge badge-danger badge-pill">No instances retrieved</span>

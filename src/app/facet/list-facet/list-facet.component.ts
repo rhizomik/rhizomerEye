@@ -31,6 +31,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, string> = new Map<string, string>();
+  showFacets: boolean;
 
   constructor(
     private router: Router,

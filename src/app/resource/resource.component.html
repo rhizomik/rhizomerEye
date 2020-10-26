@@ -5,7 +5,7 @@
   </div>
 
   <div id="metadata" *ngIf="!loading && resource && resource['@id']"
-       [ngClass]="{'col-4 m-0': resource.anonBody || this.content, 'col-12 m-0': !resource.anonBody && !this.content}">
+       [ngClass]="{'col-md-4 m-0': resource.anonBody || this.content, 'col-12 m-0': !resource.anonBody && !this.content}">
     <div class="text-right" *ngIf="!resource.anonBody && !this.content">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
@@ -14,7 +14,7 @@
                      [anonDescriptions]="anonResources" [resource]="'../resource'"></app-description>
   </div>
 
-  <div id="localcontent" *ngIf="!loading && resource.anonBody" class="col-8 m-0">
+  <div id="localcontent" *ngIf="!loading && resource.anonBody" class="col-md-8 m-0">
     <div class="text-right">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
@@ -22,7 +22,7 @@
     <div [innerHTML]="resource.anonBody.values[0].value"></div>
   </div>
 
-  <div id="remotecontent" *ngIf="!loading && this.content" class="col-8 m-0">
+  <div id="remotecontent" *ngIf="!loading && this.content" class="col-md-8 m-0">
     <div class="text-right">
       <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
          [state]="{ 'resource': resource }"></i>
