@@ -5,6 +5,8 @@ import { Facet } from '../facet/facet';
 import { Range } from '../range/range';
 import { Filter } from './filter';
 import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
+import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,9 @@ export class BreadcrumbService {
   public filtersSelection: BehaviorSubject<Filter[]>;
   public filters: Filter[] = [];
 
-  constructor(private location: Location) {
+  constructor(private location: Location,
+              private titleService: Title,
+              private angularticsService: Angulartics2GoogleGlobalSiteTag) {
     this.breadcrumbs = new BehaviorSubject([]);
     this.filtersSelection = new BehaviorSubject([]);
   }
@@ -55,5 +59,6 @@ export class BreadcrumbService {
     const locationQuery = Filter.toParam(this.filters).toString();
     this.location.go(locationPath, locationQuery);
     this.navigateTo(this.location.path());
+    this.angularticsService.pageTrack(this.location.path());
   }
 }

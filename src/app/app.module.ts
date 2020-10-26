@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ErrorHandlerModule } from './error-handler/error-handler.module';
 import { HttpErrorInterceptor } from './error-handler/http-error-interceptor';
+import { Angulartics2Module } from 'angulartics2';
 
 import { LoginBasicModule } from './login-basic/login-basic.module';
 import { AuthenticationBasicService } from './login-basic/authentication-basic.service';
@@ -37,7 +38,6 @@ import { DetailRangeComponent } from './range/detail-range/detail-range.componen
 import { CreateDatasetComponent } from './dataset/create-dataset/create-dataset.component';
 import { EditDatasetComponent } from './dataset/edit-dataset/edit-dataset.component';
 import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
-import { DescriptionComponent } from './description/description.component';
 import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-modal.component';
 import { DescriptionModule } from './description/description.module';
 import { ResourceComponent } from './resource/resource.component';
@@ -77,6 +77,7 @@ import { ResourceComponent } from './resource/resource.component';
     NgbTypeaheadModule,
     NgbModalModule,
     NgbNavModule,
+    Angulartics2Module.forRoot(),
     LoginBasicModule,
     ErrorHandlerModule,
     DescriptionModule
