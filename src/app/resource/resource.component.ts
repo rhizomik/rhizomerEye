@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../dataset/dataset.service';
@@ -11,7 +11,7 @@ import { Resource } from './resource';
   templateUrl: './resource.component.html',
   styleUrls: ['./resource.component.css']
 })
-export class ResourceComponent implements OnInit {
+export class ResourceComponent implements OnInit, OnDestroy {
   datasetId: string;
   resourceUri: string;
   resource: Resource = new Resource();
@@ -45,6 +45,7 @@ export class ResourceComponent implements OnInit {
           this.resource = new Resource(response, response['@context']);
           this.browseContent(response['@context']);
         }
+        this.setPageJsonLd(this.resource);
         this.browseRemoteData(this.datasetId, this.resourceUri);
       },
       error => {
@@ -100,5 +101,22 @@ export class ResourceComponent implements OnInit {
     } else {
       this.router.navigate(['/datasets', this.datasetId]);
     }
+  }
+
+  private setPageJsonLd(resource: Resource): void {
+    this.removePageJsonLd();
+    const script = this.document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = resource.asJsonLd();
+    this.document.head.appendChild(script);
+  }
+
+  private removePageJsonLd() {
+    this.document.querySelectorAll('[type="application/ld+json"]')
+      .forEach(element => this.document.head.removeChild(element));
+  }
+
+  ngOnDestroy() {
+    this.removePageJsonLd();
   }
 }
