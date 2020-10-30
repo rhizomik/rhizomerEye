@@ -29,7 +29,7 @@ export class RangeService extends Rest4Service<Range> {
                       top: number, containing: string): Observable<Value[]> {
     let params = new HttpParams();
     filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : 'null'), filter.value));
+      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : ''), filter.value));
     params = params.append('top', top.toString());
     params = params.append('containing', containing);
     return this.http.get<Value[]>(
