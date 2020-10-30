@@ -48,7 +48,8 @@ export class WordCloudComponent implements OnInit {
       (classes: Class[]) => {
         this.classes = classes;
         this.populate();
-      });
+      },
+      () => this.router.navigate(['/about']));
   }
 
   search(): (text$: Observable<string>) => Observable<any> {
