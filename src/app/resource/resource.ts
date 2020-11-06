@@ -19,9 +19,10 @@ export class Resource extends Description {
   }
 
   asJsonLd(): string {
-    let jsonld = '{ "@graph": [\n';
+    let jsonld = '{ "@context": "https://schema.org", "@graph": [\n';
     jsonld += super.asJsonLd();
     this.anonResources.forEach(anonResource => jsonld += ', ' + anonResource.asJsonLd());
+    jsonld = jsonld.replace(/https?:\/\/schema\.org\//gi, '');
     return jsonld + '\n ] }';
   }
 
