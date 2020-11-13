@@ -107,7 +107,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.removePageJsonLd();
     const script = this.document.createElement('script');
     script.type = 'application/ld+json';
-    script.text = resource.asJsonLd();
+    script.text = resource.asSchemaOrgJsonLd();
     this.document.head.appendChild(script);
   }
 
