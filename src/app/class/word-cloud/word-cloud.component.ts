@@ -10,6 +10,7 @@ import * as d3 from 'd3-selection';
 import * as d3Cloud from 'd3-cloud';
 import * as d3Scale from 'd3-scale';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
+import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
 
 @Component({
   selector: 'app-word-cloud',
@@ -33,6 +34,7 @@ export class WordCloudComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private authService: AuthenticationBasicService,
     private datasetService: DatasetService,
     private classService: ClassService) {
   }
@@ -132,5 +134,9 @@ export class WordCloudComponent implements OnInit {
     } else {
       this.router.navigate(['/datasets', this.datasetId, curie]);
     }
+  }
+
+  isLoggedIn() {
+    return this.authService.isLoggedIn();
   }
 }
