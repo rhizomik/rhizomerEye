@@ -25,5 +25,19 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api",
+      "urls": [
+        "https://**/datasets/**", "http://**/datasets/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1d",
+        "timeout": "3s",
+        "strategy": "performance"
+      }
+    }
   ]
 }
