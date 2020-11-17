@@ -5,6 +5,7 @@ import { DatasetService } from '../dataset/dataset.service';
 import { Description } from '../description/description';
 import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
+import { Value } from '../description/value';
 
 @Component({
   selector: 'app-resource',
@@ -17,7 +18,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   resource: Resource = new Resource();
   content: string;
   anonResources: Map<string, Description> = new Map<string, Description>();
-  labels: Map<string, string> = new Map<string, string>();
+  labels: Map<string, Value> = new Map<string, Value>();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
 

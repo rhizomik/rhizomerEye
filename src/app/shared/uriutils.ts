@@ -1,3 +1,5 @@
+import { Value } from '../description/value';
+
 export class UriUtils {
 
   static localName(uri: string): string {
@@ -13,7 +15,7 @@ export class UriUtils {
     }
   }
 
-  static getLabel(uri: string, labels: Map<string, string>): string {
+  static getLabel(uri: string, labels: Map<string, Value>): string {
     if (labels.has(uri)) {
       return this.pickLabel(labels.get(uri), 'en');
     } else {

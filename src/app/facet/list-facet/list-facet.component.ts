@@ -10,6 +10,7 @@ import { Facet } from '../facet';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
+import { Value } from '../../description/value';
 
 @Component({
   selector: 'app-list-facet',
@@ -30,7 +31,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   datasetClass: Class = new Class();
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
-  labels: Map<string, string> = new Map<string, string>();
+  labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
 
   constructor(
@@ -99,7 +100,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize) ])
       .subscribe(
         ([instances, labels]) => {
-          const linkedResourcesLabels: Map<string, string> = Description.getLabels(labels);
+          const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
           if (instances['@graph']) {
             this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
             this.anonResources = Description.getAnonResources(instances, this.labels);

@@ -7,7 +7,7 @@ export class Value {
   language: string;
   type: string;
 
-  constructor(key: string, value: any, context: Object = {}, labels: Map<string, string> = new Map()) {
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, Value> = new Map()) {
     if (value['@value']) {
       this.value = value['@value'];
       if (value['@type']) {
@@ -32,7 +32,7 @@ export class Value {
     }
   }
 
-  static getValues(key: string, input: any, context: Object = {}, labels: Map<string, string> = new Map()) {
+  static getValues(key: string, input: any, context: Object = {}, labels: Map<string, Value> = new Map()) {
     return input instanceof Array ?
       input.map(v => new Value(key, v, context, labels)) :
       [new Value(key, input, context, labels)];

@@ -11,7 +11,7 @@ export class Description {
   depiction: Value[] = [];
   topicOf: Value[] = [];
 
-  constructor(values: Object = {}, context: Object = {}, labels: Map<string, string> = new Map()) {
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, Value> = new Map()) {
     Object.entries(values).forEach(
       ([key, value]) => {
         const expandedUri = UriUtils.expandUri(key, context);
@@ -45,35 +45,38 @@ export class Description {
     }
   }
 
-  static getAnonResources(jsonld: Object, labels: Map<string, string> = new Map()): Map<string, Description> {
+  static getAnonResources(jsonld: Object, labels: Map<string, Value> = new Map()): Map<string, Description> {
     const anonResources: Map<string, Description> = new Map<string, Description>();
     jsonld['@graph'].filter(instance => (<string>instance['@id']).startsWith('_:'))
       .map(instance => anonResources.set(instance['@id'], new Description(instance, jsonld['@context'], labels)));
     return anonResources;
   }
 
-  static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, string> = new Map()): Description[] {
+  static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, Value> = new Map()): Description[] {
     return jsonld['@graph']
       .filter(instance => instance['@type'] && Description.isOfType(instance['@type'], type, jsonld['@context']))
       .map(instance => new Description(instance, jsonld['@context'], labels));
   }
 
-  static getLabels(jsonld: Object): Map<string, string> {
-    const labels: Map<string, string> = new Map<string, string>();
+  static getLabels(jsonld: Object): Map<string, Value> {
+    const labels: Map<string, Value> = new Map<string, Value>();
     if (jsonld['@graph']) {
       jsonld['@graph'].map(instance =>
         Object.entries(instance).forEach(([key, value]) => {
           if (key.includes('label')) {
-            labels.set(UriUtils.expandUri(instance['@id'], jsonld['@context']), <string>value);
+            labels.set(
+              UriUtils.expandUri(instance['@id'], jsonld['@context']),
+              new Value(key, value, jsonld['@context'], new Map()));
           }
         }));
     } else if (jsonld['label'] && jsonld['@id']) {
-      labels.set(UriUtils.expandUri(jsonld['@id'], jsonld['@context']), <string>jsonld['label']);
+      labels.set(UriUtils.expandUri(jsonld['@id'], jsonld['@context']),
+        new Value('label', jsonld['label'], jsonld['@context'], new Map()));
     }
     return labels;
   }
 
-  processTypes(value: any, context: Object = {}, labels: Map<string, string> = new Map()): Value[] {
+  processTypes(value: any, context: Object = {}, labels: Map<string, Value> = new Map()): Value[] {
     if (value instanceof Array) {
       return value.map((url: string) => new Value('@type', url, context, labels));
     } else {

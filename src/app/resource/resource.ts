@@ -1,11 +1,12 @@
 import { Property } from '../description/property';
 import { Description } from '../description/description';
+import { Value } from '../description/value';
 
 export class Resource extends Description {
   anonResources: Map<string, Description>;
   anonBody: Property;
 
-  constructor(values: Object = {}, context: Object = {}, labels: Map<string, string> = new Map(),
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, Value> = new Map(),
               anonResources: Map<string, Description> = new Map()) {
     super(values, context, labels);
     this.anonResources = anonResources;
