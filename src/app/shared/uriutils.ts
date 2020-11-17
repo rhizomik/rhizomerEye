@@ -26,13 +26,10 @@ export class UriUtils {
   static pickLabel(value: any, prefLang: string): string {
     if (value instanceof Array) {
       return value
-      .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
-      .map(label => label['@value'] || label)[0];
-    }
-    if (value['@language']) {
-      return value['@value'];
+      .filter(label => label['language'] === prefLang || label['language'] === undefined)
+      .map(label => label['value'] || label)[0];
     } else {
-      return value;
+      return value['value'];
     }
   }
 

@@ -21,19 +21,16 @@ export class Description {
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
           case '@type': { this['@type'] = this.processTypes(value, context); break; }
           case '@context': { break; }
-          case 'http://www.w3.org/2000/01/rdf-schema#label': {
-            this.labels = Value.getValues(key, value, context, labels);
-            this.label = UriUtils.pickLabel(value, 'en'); break; }
           case 'http://xmlns.com/foaf/0.1/depiction': {
             this.depiction = Value.getValues(key, value, context, labels); break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
             this.topicOf = Value.getValues(key, value, context, labels); break; }
-          default: // if (expandedUri.indexOf('wikiPage') < 0) {
+          default:
             this.properties.push(new Property(key, value, context, labels));
-          // }
         }
       }
     );
+    this.label = this.pickLabel(this.properties, 'en');
     this.properties = this.properties.sort((a, b) => a.label.localeCompare(b.label));
   }
 
@@ -74,6 +71,20 @@ export class Description {
         new Value('label', jsonld['label'], jsonld['@context'], new Map()));
     }
     return labels;
+  }
+
+  private pickLabel(properties: Property[], prefLang: string): string {
+    let selection;
+    for (const option of [
+      'http://www.w3.org/2004/02/skos/core#prefLabel', 'http://www.w3.org/2000/01/rdf-schema#label',
+      'http://xmlns.com/foaf/0.1/name', 'https://schema.org/name',
+      'http://schema.org/name', 'http://purl.org/dc/terms/title', 'http://purl.org/dc/elements/1.1/title']) {
+      selection = properties.filter(p => p.uri === option);
+      if (selection.length) {
+        break;
+      }
+    }
+    return selection.length ? UriUtils.pickLabel(selection[0].values, prefLang) : undefined;
   }
 
   processTypes(value: any, context: Object = {}, labels: Map<string, Value> = new Map()): Value[] {
