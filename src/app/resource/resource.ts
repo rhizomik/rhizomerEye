@@ -38,6 +38,14 @@ export class Resource extends Description {
     addition.anonResources.forEach((value, key) => this.anonResources.set(key, value));
     this.depiction = this.depiction.concat(addition.depiction);
     this.labels = this.labels.concat(addition.labels);
-    this.properties = this.properties.concat(addition.properties);
+    addition.properties.forEach(property => {
+      const present = this.properties.filter(existing => existing.uri === property.uri);
+      if (present.length) {
+        present[0].values.concat(property.values);
+      } else {
+        this.properties.push(property);
+      }
+    });
+    this.properties = this.properties.sort((a, b) => a.label.localeCompare(b.label));
   }
 }
