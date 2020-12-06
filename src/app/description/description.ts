@@ -55,26 +55,24 @@ export class Description {
       .map(instance => new Description(instance, jsonld['@context'], labels));
   }
 
-  static getLabels(jsonld: Object): Map<string, Value> {
-    const labels: Map<string, Value> = new Map<string, Value>();
+  static getLabels(jsonld: Object): Map<string, any> {
+    const labels: Map<string, any> = new Map<string, any>();
     if (jsonld['@graph']) {
       jsonld['@graph'].map(instance =>
         Object.entries(instance).forEach(([key, value]) => {
           if (key.includes('label')) {
             labels.set(
-              UriUtils.expandUri(instance['@id'], jsonld['@context']),
-              new Value(key, value, jsonld['@context'], new Map()));
+              UriUtils.expandUri(instance['@id'], jsonld['@context']), value);
           }
         }));
     } else if (jsonld['label'] && jsonld['@id']) {
-      labels.set(UriUtils.expandUri(jsonld['@id'], jsonld['@context']),
-        new Value('label', jsonld['label'], jsonld['@context'], new Map()));
+      labels.set(UriUtils.expandUri(jsonld['@id'], jsonld['@context']), jsonld['label']);
     }
     return labels;
   }
 
   private pickLabel(properties: Property[], prefLang: string): string {
-    let selection;
+    let selection: Property[];
     for (const option of [
       'http://www.w3.org/2004/02/skos/core#prefLabel', 'http://www.w3.org/2000/01/rdf-schema#label',
       'http://xmlns.com/foaf/0.1/name', 'https://schema.org/name',
@@ -84,7 +82,10 @@ export class Description {
         break;
       }
     }
-    return selection.length ? UriUtils.pickLabel(selection[0].values, prefLang) : undefined;
+    return selection.length ?
+      UriUtils.pickLabel(selection[0].values.map(
+        value => ({'@language': value.language, '@value': value.value})), prefLang)
+      : undefined;
   }
 
   processTypes(value: any, context: Object = {}, labels: Map<string, Value> = new Map()): Value[] {
