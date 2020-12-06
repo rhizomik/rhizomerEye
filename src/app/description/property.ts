@@ -19,7 +19,8 @@ export class Property {
   }
 
   filterLangValues(lang: string): Value[] {
-    return this.values.filter(
-      value => !value.language || value.language.indexOf(lang) >= 0);
+    const selected = this.values.filter(
+      value => lang === 'any' || !value.language || value.language.indexOf(lang) >= 0);
+    return selected.length > 0 ? selected : this.values;
   }
 }
