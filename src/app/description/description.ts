@@ -11,7 +11,7 @@ export class Description {
   depiction: Value[] = [];
   topicOf: Value[] = [];
 
-  constructor(values: Object = {}, context: Object = {}, labels: Map<string, Value> = new Map()) {
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, any> = new Map()) {
     Object.entries(values).forEach(
       ([key, value]) => {
         const expandedUri = UriUtils.expandUri(key, context);

@@ -18,7 +18,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   resource: Resource = new Resource();
   content: string;
   anonResources: Map<string, Description> = new Map<string, Description>();
-  labels: Map<string, Value> = new Map<string, Value>();
+  labels: Map<string, any> = new Map<string, any>();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   loading = true;
 

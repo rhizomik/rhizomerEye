@@ -6,7 +6,7 @@ export class Property {
   label: string;
   values: Value[] = [];
 
-  constructor(key: string, value: any, context: Object = {}, labels: Map<string, Value>) {
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, any>) {
     this.uri = UriUtils.expandUri(key, context);
     this.label = UriUtils.getLabel(this.uri, labels);
     if (value instanceof Array) {

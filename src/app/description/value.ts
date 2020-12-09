@@ -7,7 +7,7 @@ export class Value {
   language: string;
   type: string;
 
-  constructor(key: string, value: any, context: Object = {}, labels: Map<string, Value> = new Map()) {
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, any> = new Map()) {
     if (value['@value']) {
       this.value = value['@value'];
       if (value['@type']) {

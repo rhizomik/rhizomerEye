@@ -6,7 +6,7 @@ export class Resource extends Description {
   anonResources: Map<string, Description>;
   anonBody: Property;
 
-  constructor(values: Object = {}, context: Object = {}, labels: Map<string, Value> = new Map(),
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, any> = new Map(),
               anonResources: Map<string, Description> = new Map()) {
     super(values, context, labels);
     this.anonResources = anonResources;

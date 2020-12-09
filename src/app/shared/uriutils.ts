@@ -15,7 +15,7 @@ export class UriUtils {
     }
   }
 
-  static getLabel(uri: string, labels: Map<string, Value>): string {
+  static getLabel(uri: string, labels: Map<string, any>): string {
     if (labels.has(uri)) {
       return this.pickLabel(labels.get(uri), 'en');
     } else {
@@ -28,8 +28,10 @@ export class UriUtils {
       return value
       .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
       .map(label => label['@value'] || label)[0];
-    } else {
+    } else if (value['@value']) {
       return value['@value'];
+    } else {
+      return value;
     }
   }
 
