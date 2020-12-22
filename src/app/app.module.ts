@@ -41,6 +41,7 @@ import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-modal.component';
 import { DescriptionModule } from './description/description.module';
 import { ResourceComponent } from './resource/resource.component';
+import { DetailIncomingFacetComponent } from './facet/detail-incoming-facet/detail-incoming-facet.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -66,7 +67,8 @@ import { environment } from '../environments/environment';
     EditDatasetComponent,
     WordCloudComponent,
     DatasetFormModalComponent,
-    ResourceComponent
+    ResourceComponent,
+    DetailIncomingFacetComponent
   ],
   imports: [
     AppRoutingModule,

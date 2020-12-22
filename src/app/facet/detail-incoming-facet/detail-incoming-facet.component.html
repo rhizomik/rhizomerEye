@@ -1,0 +1,15 @@
+<div class="card facet p-2 mb-2">
+  <h6 class="card-title p-1 mb-1">
+    <b title="{{facet.uri}}">is {{facet.label}} of</b>
+    <span class="badge badge-primary badge-pill float-right">{{facet.uses}}</span>
+  </h6>
+  <div *ngFor="let domain of facet.domains">
+    <div class="card range p-2 mb-1">
+      <p class="card-title p-1 m-0">
+        <b title="{{domain.uri}}">{{domain.label}}</b>
+        <span class="badge badge-light badge-pill"
+              (click)="browseIncoming(datasetId, domain.curie, facet.curie, resource)" style="cursor: pointer">{{domain.count}}</span>
+      </p>
+    </div>
+  </div>
+</div>

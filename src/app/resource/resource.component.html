@@ -11,7 +11,11 @@
          [state]="{ 'resource': resource }"></i>
     </div>
     <app-description [datasetId]="datasetId" [description]="resource"
-                     [anonDescriptions]="anonResources" [resource]="'../resource'"></app-description>
+                     [anonDescriptions]="anonResources" [resource]="'../resource'">
+    </app-description>
+    <app-detail-incoming-facet *ngFor="let incoming of incomings"
+                               [datasetId]="datasetId" [facet]="incoming" [resource]="resourceUri">
+    </app-detail-incoming-facet>
   </div>
 
   <div id="localcontent" *ngIf="!loading && resource.anonBody" class="col-md-8 m-0">

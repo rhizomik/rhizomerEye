@@ -5,7 +5,7 @@ import { DatasetService } from '../dataset/dataset.service';
 import { Description } from '../description/description';
 import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
-import { Value } from '../description/value';
+import { IncomingFacet } from '../facet/incomingFacet';
 
 @Component({
   selector: 'app-resource',
@@ -20,6 +20,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, any> = new Map<string, any>();
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
+  incomings: IncomingFacet[];
   loading = true;
 
   constructor(private router: Router,
@@ -49,8 +50,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
         this.setPageJsonLd(this.resource);
         this.browseRemoteData(this.datasetId, this.resourceUri);
       },
-      error => {
+      () => {
         this.onNoData();
+      });
+    this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe(
+      (incomings) => {
+        this.incomings = incomings;
       });
   }
 
