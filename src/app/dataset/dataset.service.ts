@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Class } from '../class/class';
+import { IncomingFacet } from '../facet/incomingFacet';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +51,14 @@ export class DatasetService extends RestService<Dataset> {
     headers = headers.append('Accept', 'text/html');
     return this.http.get(`${environment.API}/datasets/${did}/browse`,
       { params: params, headers: headers, responseType: 'text' });
+  }
+
+  resourceIncomingFacets(did: string, resource: string): Observable<IncomingFacet[]> {
+    let params = new HttpParams();
+    params = params.append('uri', resource);
+    let headers = new HttpHeaders();
+    headers = headers.append('Accept', 'application/json');
+    return this.http.get<IncomingFacet[]>(
+      `${environment.API}/datasets/${did}/incoming`, {params: params, headers: headers});
   }
 }
