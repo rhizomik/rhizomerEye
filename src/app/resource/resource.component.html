@@ -1,5 +1,4 @@
 <div id="describe" class="row">
-
   <div *ngIf="loading" class="col-12 m-0">
     <h1 class="badge badge-warning badge-pill">Loading...</h1>
   </div>
@@ -9,10 +8,6 @@
                    'col-md-4 m-0': (resource.anonBody || content) && !incomings.length,
                    'col-md-9 m-0': !resource.anonBody && !content && incomings.length,
                    'col-12 m-0': !resource.anonBody && !content && !incomings.length}">
-    <div class="text-right" *ngIf="!resource.anonBody && !content">
-      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
-         [state]="{ 'resource': resource }"></i>
-    </div>
     <app-description [datasetId]="datasetId" [description]="resource"
                      [anonDescriptions]="anonResources" [resource]="'../resource'">
     </app-description>
@@ -21,10 +16,6 @@
   <div id="localcontent" *ngIf="!loading && (resource.anonBody || content)" class="col-md-6 m-0"
        [ngClass]="{'col-md-6 m-0': incomings.length,
                    'col-md-8 m-0': !incomings.length}">
-    <div class="text-right">
-      <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
-         [state]="{ 'resource': resource }"></i>
-    </div>
     <div *ngIf="resource.anonBody" [innerHTML]="resource.anonBody.values[0].value"></div>
     <div *ngIf="content" [innerHTML]="content"></div>
   </div>
@@ -34,5 +25,11 @@
                                [dataset]="dataset" [facet]="incoming" [resource]="resourceUri">
     </app-detail-incoming-facet>
   </div>
+</div>
 
+<div id="edit" class="row">
+  <div class="col-12 text-right">
+    <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
+       [state]="{ 'resource': resource }"></i>
+  </div>
 </div>
