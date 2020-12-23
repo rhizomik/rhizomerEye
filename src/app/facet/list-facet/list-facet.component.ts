@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { forkJoin, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
@@ -46,20 +46,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
-    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
-    this.refreshFacets(this.relevance);
+    this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
   }
 
-  loadFacetClass() {
-    this.classService.get(this.datasetId, this.classId).subscribe(
-      (datasetClass: Class) => {
-        this.datasetClass = datasetClass;
-        this.totalInstances = datasetClass.instanceCount;
-      });
-  }
-
-  refreshFacets(relevance: number) {
+  refreshFacets(relevance: number, params: ParamMap) {
+    if (params.keys.length) {
+      relevance = 0;
+    }
     this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe(
       (facets: Facet[]) => {
         this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
@@ -69,19 +62,27 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
-              if (this.route.snapshot.queryParamMap) {
-                const filters = Filter.fromParam(this.classId, this.facets, this.route.snapshot.queryParamMap);
-                filters.forEach((filter: Filter) => {
-                  if (!filter.value) {
-                    filter.facet.selected = true;
-                  } else {
-                    filter.range.expanded = true;
-                  }
-                });
-                this.breadcrumbService.addFacetFilters(filters);
-              }
+              const paramFilters = Filter.fromParam(this.classId, this.facets, params);
+              paramFilters.forEach((filter: Filter) => {
+                if (!filter.value) {
+                  filter.facet.selected = true;
+                } else {
+                  filter.range.expanded = true;
+                }
+              });
+              this.breadcrumbService.addFacetFilters(paramFilters);
+              this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+                (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
             }
         );
+      });
+  }
+
+  loadFacetClass() {
+    this.classService.get(this.datasetId, this.classId).subscribe(
+      (datasetClass: Class) => {
+        this.datasetClass = datasetClass;
+        this.totalInstances = datasetClass.instanceCount;
       });
   }
 
@@ -119,7 +120,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   loadAllFacets() {
-    this.refreshFacets(0);
+    this.refreshFacets(0, this.route.snapshot.queryParamMap);
   }
 
   private sortResource() {
