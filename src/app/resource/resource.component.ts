@@ -6,6 +6,7 @@ import { Description } from '../description/description';
 import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
 import { IncomingFacet } from '../facet/incomingFacet';
+import { Dataset } from '../dataset/dataset';
 
 @Component({
   selector: 'app-resource',
@@ -14,6 +15,7 @@ import { IncomingFacet } from '../facet/incomingFacet';
 })
 export class ResourceComponent implements OnInit, OnDestroy {
   datasetId: string;
+  dataset: Dataset;
   resourceUri: string;
   resource: Resource = new Resource();
   content: string;
@@ -33,6 +35,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.resourceUri = this.route.snapshot.queryParamMap.get('uri') || this.document.location.href;
+    this.datasetService.get(this.datasetId).subscribe((dataset) => this.dataset = dataset);
     this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
       (response) => {
         if (response['@graph']) {
@@ -55,7 +58,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
     this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe(
       (incomings) => {
-        this.incomings = incomings;
+        this.incomings = incomings.sort((a, b) => a.label.localeCompare(b.label));
+        this.incomings.forEach(incoming =>
+          incoming.domains = incoming.domains.sort((a, b) => a.label.localeCompare(b.label)));
       });
   }
 
