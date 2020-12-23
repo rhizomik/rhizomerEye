@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IncomingFacet } from '../incomingFacet';
 import { Router } from '@angular/router';
+import { Dataset } from '../../dataset/dataset';
 
 @Component({
   selector: 'app-detail-incoming-facet',
@@ -8,19 +9,23 @@ import { Router } from '@angular/router';
   styleUrls: ['./detail-incoming-facet.component.css']
 })
 export class DetailIncomingFacetComponent {
-  @Input() datasetId: string;
+  @Input() dataset: Dataset;
   @Input() facet: IncomingFacet = new IncomingFacet();
   @Input() resource: string;
 
   constructor(private router: Router) {}
 
-  browseIncoming(datasetId: string, classCurie: string, propertyCurie: string, resource: string): void {
+  browseIncoming(domainCurie: string): void {
     const queryParams = {};
-    queryParams[propertyCurie + ' xsd:string'] = '"' + resource + '"';
-    if (this.datasetId === 'default') {
-      this.router.navigate(['/overview', classCurie], { queryParams: queryParams });
+    if (this.dataset.queryType === 'OPTIMIZED') {
+      queryParams[this.facet.curie + ' xsd:string'] = '"' + this.resource + '"';
     } else {
-      this.router.navigate(['/datasets', datasetId, classCurie], { queryParams: queryParams });
+      queryParams[this.facet.curie + ' ' + this.facet.rangeCurie] = '<' + this.resource + '>';
+    }
+    if (this.dataset.id === 'default') {
+      this.router.navigate(['/overview', domainCurie], { queryParams: queryParams });
+    } else {
+      this.router.navigate(['/datasets', this.dataset.id, domainCurie], { queryParams: queryParams });
     }
 
   }

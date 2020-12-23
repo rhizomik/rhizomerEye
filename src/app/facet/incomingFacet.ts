@@ -1,6 +1,8 @@
 import { FacetDomain } from './facetDomain';
 
 export class IncomingFacet {
+  rangeUri: string;
+  rangeCurie: string;
   uri: string;
   label: string;
   curie: string;
