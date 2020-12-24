@@ -18,7 +18,7 @@
 
 <div *ngIf="classes == undefined" id="loading" style="text-align: center;">
   <div id="spinner"></div>
-  <p>Analyzing all classes, this might require some time...</p>
+  <div>Analyzing all classes, this might require some time...</div>
 </div>
 <div *ngIf="classes?.length == 0" class="row">
   <div class="col alert-danger m-3 text-center" >No class instances were found</div>
