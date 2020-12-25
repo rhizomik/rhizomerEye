@@ -24,6 +24,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   remoteAnonResources: Map<string, Description> = new Map<string, Description>();
   incomings: IncomingFacet[];
   loading = true;
+  showFacets: boolean;
 
   constructor(private router: Router,
               private route: ActivatedRoute,

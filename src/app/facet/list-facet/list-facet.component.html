@@ -14,8 +14,7 @@
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-arrow-circle-up"></span></a>
       </span>
     </h5>
-    <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}"
-      class="" *ngFor="let facet of facets">
+    <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}" *ngFor="let facet of facets">
       <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
       </app-detail-facet>
     </div>
