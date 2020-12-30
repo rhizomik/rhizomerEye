@@ -63,7 +63,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
         this.incomings = incomings.sort((a, b) => a.label.localeCompare(b.label));
         this.incomings.forEach(incoming =>
           incoming.domains = incoming.domains.sort((a, b) => a.label.localeCompare(b.label)));
-      });
+      },
+      () => this.incomings = []);
   }
 
   private browseContent(context: Object = {}) {
