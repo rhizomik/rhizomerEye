@@ -102,8 +102,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       .subscribe(
         ([instances, labels]) => {
           const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
+          this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
           if (instances['@graph']) {
-            this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
             this.anonResources = Description.getAnonResources(instances, this.labels);
             this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
           } else if (instances['@type']) {
