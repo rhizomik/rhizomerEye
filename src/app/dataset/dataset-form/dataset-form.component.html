@@ -57,9 +57,10 @@
             <select id="serverType" name="serverType" class="form-control" required
                     [(ngModel)]="endpoint.type">
               <option [value]="'GENERIC'">Generic</option>
-              <option [value]="'VIRTUOSO'">Virtuoso</option>
               <option [value]="'MARKLOGIC'">MarkLogic</option>
-              <option [value]="'NEPTUNE'">Amazon Neptune</option>
+              <option [value]="'NEPTUNE'">Neptune</option>
+              <option [value]="'STARDOG'">Stardog</option>
+              <option [value]="'VIRTUOSO'">Virtuoso</option>
             </select>
           </div>
 
