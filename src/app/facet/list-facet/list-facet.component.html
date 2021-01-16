@@ -10,8 +10,8 @@
       <span *ngIf="retrievedFacets == 0" class="badge badge-danger badge-pill">No facets retrieved</span>
       <span *ngIf="retrievedFacets == undefined" class="badge badge-warning badge-pill">Loading...</span>
       <span class="d-block d-md-none d-lg-none d-xl-none float-right">
-        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-arrow-circle-down"></span></a>
-        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-arrow-circle-up"></span></a>
+        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
+        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
       </span>
     </h5>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}" *ngFor="let facet of facets">
