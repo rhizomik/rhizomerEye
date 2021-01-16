@@ -88,6 +88,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   refreshInstances(datasetId: string, classId: string, filters: Filter[]) {
     this.filteredInstances = undefined;
+    this.resources = undefined;
+    this.page = 1;
+    window.scrollTo(0, 0);
     this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
       count => {
         this.filteredInstances = count;
@@ -116,6 +119,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   goToPage(page: number) {
+    window.scrollTo(0, 0);
+    this.resources = undefined;
     this.loadInstances(this.datasetId, this.classId, this.breadcrumbService.filters, page);
   }
 
