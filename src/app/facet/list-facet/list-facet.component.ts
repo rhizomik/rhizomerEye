@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -9,7 +9,7 @@ import { Class } from '../../class/class';
 import { Facet } from '../facet';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
-import { takeUntil } from 'rxjs/operators';
+import { catchError, takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 
 @Component({
@@ -100,8 +100,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
     forkJoin([
-      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize),
-      this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize) ])
+      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).pipe(
+        catchError(err => of({})),
+      ),
+      this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize).pipe(
+        catchError(err => of({})),
+      ) ])
       .subscribe(
         ([instances, labels]) => {
           const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
