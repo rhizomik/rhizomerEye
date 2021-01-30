@@ -19,7 +19,7 @@ export class Description {
           case '@id': {
             if ((<string>value).startsWith('_:')) { this['@id'] = value;
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
-          case '@type': { this['@type'] = this.processTypes(value, context); break; }
+          case '@type': { this['@type'] = this.processTypes(value, context, labels); break; }
           case '@context': { break; }
           case 'http://xmlns.com/foaf/0.1/depiction': {
             this.depiction = Value.getValues(key, value, context, labels); break; }
