@@ -28,6 +28,7 @@
     "@angular/router": "~9.1.12",
     "@angular/service-worker": "~9.1.12",
     "@ng-bootstrap/ng-bootstrap": "^6.2.0",
+    "@types/d3": "^6.2.0",
     "angulartics2": "^10.0.0",
     "bootstrap-css-only": "^4.4.1",
     "ckeditor4-angular": "^2.0.0",
