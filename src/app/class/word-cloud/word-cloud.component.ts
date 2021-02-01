@@ -11,6 +11,7 @@ import * as d3Cloud from 'd3-cloud';
 import * as d3Scale from 'd3-scale';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
+import { Dataset } from '../../dataset/dataset';
 
 @Component({
   selector: 'app-word-cloud',
@@ -41,8 +42,18 @@ export class WordCloudComponent implements OnInit {
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
-    this.loadClassList();
-    this.setup();
+    this.datasetService.get(this.datasetId).subscribe((dataset: Dataset) => {
+      if (dataset.queryType === 'DETAILED') {
+        if (this.datasetId === 'default') {
+          this.router.navigate(['/network']);
+        } else {
+          this.router.navigate(['/datasets', this.datasetId, 'network']);
+        }
+      } else {
+        this.loadClassList();
+        this.setup();
+      }
+    });
   }
 
   loadClassList() {
