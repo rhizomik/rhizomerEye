@@ -11,6 +11,7 @@ export class Facet {
   differentValues: number;
   ranges: Range[];
   selected: boolean;
+  domainURI: string;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
