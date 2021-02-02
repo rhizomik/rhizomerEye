@@ -1,7 +1,7 @@
 path {
   fill: none;
   stroke: grey;
-  stroke-width: 1.5;
+  stroke-width: 1;
 }
 
 marker path {
@@ -10,12 +10,12 @@ marker path {
 
 .link-label {
   text-anchor: middle;
-  font: 10px sans-serif;
+  font: 1.1vmin sans-serif;
   fill: grey;
 }
 
 .link-label-outline {
-  font: 10px sans-serif;
+  font: 1.1vmin sans-serif;
   fill: none;
   stroke: white;
   stroke-width: 2;
@@ -32,13 +32,15 @@ circle {
 }
 
 .node-label {
-  font: 14px sans-serif;
+  font: 1.5vmin sans-serif;
+  font-weight: bold;
   text-transform: capitalize;
   cursor: pointer;
 }
 
 .node-label-outline {
-  font: 14px sans-serif;
+  font: 1.5vmin sans-serif;
+  font-weight: bold;
   text-transform: capitalize;
   fill: none;
   stroke: white;

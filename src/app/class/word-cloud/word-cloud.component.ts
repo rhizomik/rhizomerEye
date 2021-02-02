@@ -53,7 +53,8 @@ export class WordCloudComponent implements OnInit {
         this.loadClassList();
         this.setup();
       }
-    });
+    },
+    () => this.router.navigate(['/about']));
   }
 
   loadClassList() {

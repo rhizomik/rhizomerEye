@@ -23,8 +23,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
   facets: Facet[];
   topClasses = 30;
   facetRelevance = 0.2;
-  width: number;
-  height: number;
+  links: { id: string, label: string; source: string; target: string }[];
+  nodes: { id: string; label: string; curie: string; count: number }[];
   maxCount: number;
   minCount: number;
   maxNodeSize: number;
@@ -32,8 +32,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
   svg: any;
   colors = d3.scaleOrdinal(d3.schemeCategory10);
   simulation: any;
-  links: { label: string; source: string; target: string }[];
-  nodes: { curie: string; count: number; id: string; label: string }[];
   link: any;
   node: any;
   linkLabels: any;
@@ -69,6 +67,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
             classesFacets => {
               this.facets = classesFacets.reduce((acc, val) => acc.concat(val), []);
               this.links = this.facets.map((facet: Facet) => ({
+                id: facet.id,
                 label: facet.label,
                 source: facet.domainURI,
                 target: facet.range,
@@ -89,19 +88,21 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   setup() {
     this.svg = d3.select('svg');
-    this.width = this.svg.node().getBoundingClientRect().width;
-    this.height = window.innerHeight - this.svg.node().getBoundingClientRect().top - 50;
+    const width = this.svg.node().getBoundingClientRect().width;
+    const height = window.innerHeight - this.svg.node().getBoundingClientRect().top;
+    const vmin = Math.min(width, height);
+    const vmax = Math.max(width, height);
     this.svg = this.svg
-      .attr('viewBox', [(-this.width + 100) / 2, (-this.height + 100) / 2, this.width, this.height]);
+      .attr('viewBox', [-width / 2, -height / 2, width, height]);
 
     this.maxCount = Math.max(...this.nodes.map(c => c.count), 0);
-    this.minCount = Math.min(...this.nodes.map(c => c.count), 0);
-    this.maxNodeSize = this.width / 40;
-    this.minNodeSize = this.width / 80;
+    this.minCount = Math.min(...this.nodes.map(c => c.count), this.maxCount);
+    this.maxNodeSize = vmin / 30 + 5;
+    this.minNodeSize = vmin / 90 + 5;
 
     this.simulation = d3.forceSimulation(this.nodes as any[])
-      .force('link', d3.forceLink(this.links).id(d => d['id']).distance(150))
-      .force('charge', d3.forceManyBody().strength(-1 * this.width))
+      .force('link', d3.forceLink(this.links).id(d => d['id']).distance(vmin / 10))
+      .force('charge', d3.forceManyBody().strength(-vmax))
       .force('x', d3.forceX())
       .force('y', d3.forceY());
 
@@ -128,7 +129,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .attr('marker-end', 'url(#arrow-marker)');
 
     this.textPath = this.link.append('path')
-      .attr('id', d => d.source.id + '/' + d.target.id)
+      .attr('id', d => d.id)
       .attr('class', 'text-path');
 
     this.svg.append('g')
@@ -139,7 +140,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .append('textPath')
         .attr('startOffset', '50%')
         .attr('text-anchor', 'middle')
-        .attr('xlink:href', d => '#' + d.source.id + '/' + d.target.id)
+        .attr('xlink:href', d => '#' + d.id)
         .text(d => d.label)
       .clone(true).lower()
         .attr('class', 'link-label-outline');
@@ -191,7 +192,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   adjustMarker(isSweep, d, node) {
     const pl = node.getTotalLength(),
       // radius of circle plus marker head
-      r = this.nodeSize(d.target.count) + 7.07 + 2, // "size" of the marker Math.sqrt(5**2 + 5**2) plus stroke width
+      r = this.nodeSize(d.target.count) + 7, // "size" of the marker Math.sqrt(5**2 + 5**2)
       // position close to where path intercepts circle
       m = node.getPointAtLength(r);
 
