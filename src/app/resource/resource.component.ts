@@ -88,6 +88,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
 
   private browseRemoteData(datasetId: string, uri: string) {
+    if (!UriUtils.isUrl(uri)) {
+      this.loading = false;
+      return;
+    }
     this.datasetService.browseUriData(datasetId, uri).subscribe(
       (remote) => {
         let remoteResource;
