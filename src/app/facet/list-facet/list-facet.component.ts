@@ -75,7 +75,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
                 (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
             }
         );
-      });
+      }, () => this.router.navigate(['..'], {relativeTo: this.route}));
   }
 
   loadFacetClass() {
