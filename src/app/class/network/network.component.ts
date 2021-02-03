@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
@@ -19,6 +20,8 @@ import * as d3 from 'd3';
 })
 export class NetworkComponent implements OnInit, OnDestroy {
   datasetId: string;
+  searching = false;
+  searchFailed = false;
   classes: Class[];
   facets: Facet[];
   topClasses = 30;
@@ -228,6 +231,23 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .on('start', dragstarted)
       .on('drag', dragged)
       .on('end', dragended);
+  }
+
+  search(): (text$: Observable<string>) => Observable<any> {
+    return (text$: Observable<string>) => text$.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      switchMap(term => term.length < 3 ? of([]) :
+        this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
+          tap(() => this.searchFailed = false),
+          catchError(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      ),
+      tap(() => this.searching = false)
+    );
   }
 
   browse(event) {

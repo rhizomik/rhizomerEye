@@ -4,6 +4,12 @@
             class="btn btn-outline-primary">
       <span class="fa fa-info-circle"></span> Details</button>
   </div>
+  <div class="col form-group">
+    <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="search()" placeholder="Search all classes"
+           [class.loading]="searching" (selectItem)="browse($event.item)"/>
+    <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+  </div>
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
@@ -22,5 +28,5 @@
 
 <div class="row" *ngIf="classes?.length == topClasses">
   <div class="col small alert-warning m-3 text-center">
-    Warning: showing just top {{topClasses}} classes!</div>
+    Warning: showing top {{topClasses}} classes and relationships with frequency > {{facetRelevance * 100}}%!</div>
 </div>
