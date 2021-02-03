@@ -94,7 +94,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
     const width = this.svg.node().getBoundingClientRect().width;
     const height = window.innerHeight - this.svg.node().getBoundingClientRect().top;
     const vmin = Math.min(width, height);
-    const vmax = Math.max(width, height);
     this.svg = this.svg
       .attr('viewBox', [-width / 2, -height / 2, width, height]);
 
@@ -104,8 +103,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
     this.minNodeSize = vmin / 90 + 5;
 
     this.simulation = d3.forceSimulation(this.nodes as any[])
-      .force('link', d3.forceLink(this.links).id(d => d['id']).distance(vmin / 10))
-      .force('charge', d3.forceManyBody().strength(-vmax))
+      .force('link', d3.forceLink(this.links).id(d => d['id']).distance(d => d['label'].length * 10))
+      .force('charge', d3.forceManyBody().strength(-vmin))
       .force('x', d3.forceX())
       .force('y', d3.forceY());
 
@@ -193,10 +192,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   adjustMarker(isSweep, d, node) {
-    const pl = node.getTotalLength(),
-      // radius of circle plus marker head
-      r = this.nodeSize(d.target.count) + 7, // "size" of the marker Math.sqrt(5**2 + 5**2)
-      // position close to where path intercepts circle
+    const r = this.nodeSize(d.target.count) + 7, // "size" of the marker Math.sqrt(5**2 + 5**2)
       m = node.getPointAtLength(r);
 
     const start = isSweep ? d.source : d.target,
