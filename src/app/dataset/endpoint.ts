@@ -10,6 +10,7 @@ export class Endpoint {
   updatePassword: string;
   graphs: string[];
   serverGraphs: string[];
+  timeout = 300000;
 
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);

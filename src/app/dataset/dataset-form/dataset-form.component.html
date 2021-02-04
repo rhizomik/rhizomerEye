@@ -72,6 +72,15 @@
             <div class="invalid-feedback">A SPARQL query endpoint is required</div>
           </div>
 
+          <!-- Endpoint Timeout input -->
+          <div class="form-group" [class.was-validated]="query.dirty || query.touched">
+            <label class="control-label" for="query">SPARQL Service Timeout*</label>
+            <input id="timeout" name="timeout" type="number" class="form-control" required
+                   [(ngModel)]="endpoint.timeout" #query="ngModel">
+            <div class="invalid-feedback">A SPARQL service timeout is required</div>
+            <div class="small">Long timeouts recommended, in milliseconds. 300000 corresponds to 5 minutes.</div>
+          </div>
+
           <!-- Password protected checkbox -->
           <div class="form-group">
             <div class="form-check">
