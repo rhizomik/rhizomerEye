@@ -65,7 +65,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
           curie: cls.curie,
           count: cls.instanceCount
         }));
-        forkJoin(classes.map(cls => this.facetService.getAllRelevant(this.datasetId, cls.curie, this.facetRelevance)))
+        forkJoin(classes.map(cls => this.facetService.getAllRelevant(this.datasetId, cls.curie, this.facetRelevance))
+                        .map(o => o.pipe(catchError(err => of([])))))
           .subscribe(
             classesFacets => {
               this.facets = classesFacets.reduce((acc, val) => acc.concat(val), []);
