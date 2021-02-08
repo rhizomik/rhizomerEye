@@ -26,6 +26,11 @@
 
 <svg style="width: 100%; height: auto"></svg>
 
+<div *ngIf="links != undefined" style="margin-top: -50px">
+    <div class="fa fa-minus-square mr-1" (click)="contract()"></div>
+    <div class="fa fa-plus-square" (click)="expand()"></div>
+</div>
+
 <div class="row" *ngIf="classes?.length == topClasses">
   <div class="col small alert-warning m-3 text-center">
     Warning: showing top {{topClasses}} classes and relationships with frequency > {{facetRelevance * 100}}%!</div>

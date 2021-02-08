@@ -35,6 +35,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   svg: any;
   colors = d3.scaleOrdinal(d3.schemeCategory10);
   simulation: any;
+  force: number;
   link: any;
   node: any;
   linkLabels: any;
@@ -93,8 +94,9 @@ export class NetworkComponent implements OnInit, OnDestroy {
   setup() {
     this.svg = d3.select('svg');
     const width = this.svg.node().getBoundingClientRect().width;
-    const height = window.innerHeight - this.svg.node().getBoundingClientRect().top;
+    const height = window.innerHeight - this.svg.node().getBoundingClientRect().top + 50;
     const vmin = Math.min(width, height);
+    this.force = vmin;
     this.svg = this.svg
       .attr('viewBox', [-width / 2, -height / 2, width, height]);
 
@@ -105,7 +107,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
     this.simulation = d3.forceSimulation(this.nodes as any[])
       .force('link', d3.forceLink(this.links).id(d => d['id']).distance(d => d['label'].length * 10))
-      .force('charge', d3.forceManyBody().strength(-vmin))
+      .force('charge', d3.forceManyBody().strength(-this.force))
       .force('x', d3.forceX())
       .force('y', d3.forceY());
 
@@ -262,5 +264,17 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.simulation.stop();
+  }
+
+  expand() {
+    this.force = this.force * 1.5;
+    this.simulation.force('charge', d3.forceManyBody().strength(-this.force));
+    this.simulation.alpha(1).restart();
+  }
+
+  contract() {
+    this.force = this.force * 0.5;
+    this.simulation.force('charge', d3.forceManyBody().strength(-this.force));
+    this.simulation.alpha(1).restart();
   }
 }
