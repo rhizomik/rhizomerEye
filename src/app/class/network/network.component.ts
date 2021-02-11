@@ -90,6 +90,22 @@ export class NetworkComponent implements OnInit, OnDestroy {
               this.nodes = this.nodes.filter(node =>
                 this.links.find(link => node.id === link.target) ||
                 this.links.find(link => node.id === link.source));
+              const repetitions = this.links.reduce((acc, link) => {
+                const id = link.source + '/' + link.target;
+                acc[id] = acc[id] || [];
+                acc[id].push({ id: link.id, count: acc[id].length + 1 });
+                return acc;
+              }, Object.create(null));
+              Object.keys(repetitions).filter(key => repetitions[key].length > 1)
+                .forEach(key => {
+                  repetitions[key].forEach(repetition => {
+                      const repeatedLink = this.links.find(link => link.id === repetition.id);
+                      if (repeatedLink && repetition.count > 1) {
+                        repeatedLink['repetition'] = repetition.count;
+                      }
+                    }
+                  );
+                });
               this.setup();
             });
       },
@@ -192,7 +208,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
       end = leftHand ? d.target : d.source,
       dx = end.x - start.x,
       dy = end.y - start.y,
-      dr = Math.sqrt(dx * dx + dy * dy),
+      repetition = d.repetition ? 1 / 2 + 1 / (d.repetition * d.repetition) : 1,
+      dr = Math.sqrt(dx * dx + dy * dy) * repetition,
       sweep = leftHand ? 0 : 1;
     return 'M' + start.x + ',' + start.y + 'A' + dr + ',' + dr + ' 0 0,' + sweep + ' ' + end.x + ',' + end.y;
   }
@@ -204,7 +221,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
     const start = isSweep ? d.source : d.target,
       dx = m.x - start.x,
       dy = m.y - start.y,
-      dr = Math.sqrt(dx * dx + dy * dy),
+      repetition = d.repetition ? 1 / 2 + 1 / (d.repetition * d.repetition) : 1,
+      dr = Math.sqrt(dx * dx + dy * dy) * repetition,
       sweep = isSweep ? 0 : 1;
 
     return 'M' + start.x + ',' + start.y + 'A' + dr + ',' + dr + ' 0 0,' + sweep + ' ' + m.x + ',' + m.y;
