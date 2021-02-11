@@ -129,7 +129,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   loadAllFacets() {
-    this.refreshFacets(0, this.route.snapshot.queryParamMap);
+    this.refreshFacets(0, Filter.toParamMap(this.breadcrumbService.filters));
   }
 
   private sortResource() {

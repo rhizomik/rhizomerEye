@@ -1,7 +1,7 @@
 import { Facet } from '../facet/facet';
 import { Range } from '../range/range';
 import { HttpParams } from '@angular/common/http';
-import { ParamMap } from '@angular/router';
+import { convertToParamMap, ParamMap } from '@angular/router';
 import { UriUtils } from '../shared/uriutils';
 
 export class Filter {
@@ -25,6 +25,13 @@ export class Filter {
     filters.forEach((filter: Filter) =>
       params = params.append(filter.facet.curie + (filter.range ? ' ' + filter.range.curie : ''), filter.value));
     return params;
+  }
+
+  static toParamMap(filters: Filter[]): ParamMap {
+    const params = {};
+    filters.forEach((filter: Filter) =>
+      params[filter.facet.curie + (filter.range ? ' ' + filter.range.curie : '')] = filter.value);
+    return convertToParamMap(params);
   }
 
   static fromParam(classId: string, facets: Facet[], params: ParamMap): Filter[] {
