@@ -5,10 +5,9 @@
   </h6>
   <div *ngFor="let domain of facet.domains">
     <div class="card range p-2 mb-1">
-      <p class="card-title p-1 m-0">
+      <p class="card-title p-1 m-0" (click)="browseIncoming(domain.curie)" style="cursor: pointer">
         <b title="{{domain.uri}}">{{domain.label}}</b>
-        <span class="badge badge-light badge-pill"
-              (click)="browseIncoming(domain.curie)" style="cursor: pointer">{{domain.count}}</span>
+        <span class="badge badge-light badge-pill">{{domain.count}}</span>
       </p>
     </div>
   </div>
