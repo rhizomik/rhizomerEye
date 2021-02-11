@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Rest3Service } from '../shared/rest3.service';
 import { Facet } from './facet';
+import { Relation } from './relation';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +20,12 @@ export class FacetService extends Rest3Service<Facet> {
     params = params.append('relevance', relevance.toString());
     return this.http.get<Facet[]>(
       `${environment.API}/datasets/${did}/classes/${cid}/facets`, {params: params});
+  }
+
+  getRelevantRelations(did: string, cid: string, relevance: number): Observable<Relation[]> {
+    let params = new HttpParams();
+    params = params.append('relevance', relevance.toString());
+    return this.http.get<Relation[]>(
+      `${environment.API}/datasets/${did}/classes/${cid}/relations`, {params: params});
   }
 }

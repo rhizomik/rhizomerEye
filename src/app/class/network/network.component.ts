@@ -8,7 +8,7 @@ import { DatasetService } from '../../dataset/dataset.service';
 import { ClassService } from '../class.service';
 import { FacetService } from '../../facet/facet.service';
 import { Class } from '../class';
-import { Facet } from '../../facet/facet';
+import { Relation } from '../../facet/relation';
 
 import * as d3 from 'd3';
 
@@ -23,16 +23,18 @@ export class NetworkComponent implements OnInit, OnDestroy {
   searching = false;
   searchFailed = false;
   classes: Class[];
-  facets: Facet[];
+  relations: Relation[];
   topClasses = 30;
-  facetRelevance = 0.2;
+  facetRelevance = 0.3;
   links: { id: string, label: string; source: string; target: string }[];
-  nodes: { id: string; label: string; curie: string; count: number }[];
+  nodes: { id: string; label: string; uri: string; count: number }[];
   maxCount: number;
   minCount: number;
   maxNodeSize: number;
   minNodeSize: number;
   svg: any;
+  width: number;
+  height: number;
   colors = d3.scaleOrdinal(d3.schemeCategory10);
   simulation: any;
   force: number;
@@ -53,6 +55,9 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
+    this.svg = d3.select('svg');
+    this.width = this.svg.node().getBoundingClientRect().width;
+    this.height = window.innerHeight - this.svg.node().getBoundingClientRect().top - 60;
     this.loadClassList();
   }
 
@@ -61,22 +66,22 @@ export class NetworkComponent implements OnInit, OnDestroy {
       (classes: Class[]) => {
         this.classes = classes;
         this.nodes = this.classes.map((cls: Class) => ({
-          id: cls.uri,
+          id: cls.curie,
           label: cls.label,
-          curie: cls.curie,
+          uri: cls.uri,
           count: cls.instanceCount
         }));
-        forkJoin(classes.map(cls => this.facetService.getAllRelevant(this.datasetId, cls.curie, this.facetRelevance))
+        forkJoin(classes.map(cls => this.facetService.getRelevantRelations(this.datasetId, cls.curie, this.facetRelevance))
                         .map(o => o.pipe(catchError(err => of([])))))
           .subscribe(
             classesFacets => {
-              this.facets = classesFacets.reduce((acc, val) => acc.concat(val), []);
-              this.links = this.facets.map((facet: Facet) => ({
-                id: facet.id,
-                label: facet.label,
-                source: facet.domainURI,
-                target: facet.range,
-                count: facet.timesUsed
+              this.relations = classesFacets.reduce((acc, val) => acc.concat(val), []);
+              this.links = this.relations.map((relation: Relation) => ({
+                id: relation.classCurie + '/' + relation.propertyCurie + '/' + relation.rangeCurie,
+                label: relation.propertyLabel,
+                source: relation.classCurie,
+                target: relation.rangeCurie,
+                count: relation.uses
               }));
               this.links = this.links.filter(link =>
                   this.nodes.find(node => node.id === link.target) &&
@@ -92,13 +97,11 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   setup() {
-    this.svg = d3.select('svg');
-    const width = this.svg.node().getBoundingClientRect().width;
-    const height = window.innerHeight - this.svg.node().getBoundingClientRect().top + 50;
-    const vmin = Math.min(width, height);
+    this.svg.selectAll('*').remove();
+    const vmin = Math.min(this.width, this.height);
     this.force = vmin;
     this.svg = this.svg
-      .attr('viewBox', [-width / 2, -height / 2, width, height]);
+      .attr('viewBox', [-this.width / 2, -this.height / 2, this.width, this.height]);
 
     this.maxCount = Math.max(...this.nodes.map(c => c.count), 0);
     this.minCount = Math.min(...this.nodes.map(c => c.count), this.maxCount);
@@ -167,7 +170,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
         .attr('class', 'node-label-outline');
 
     this.node.append('circle').lower()
-      .attr('fill', d => this.colors(d.curie.split(':')[0]))
+      .attr('fill', d => this.colors(d.id.split(':')[0]))
       .attr('r', d => this.nodeSize(d.count));
 
     this.simulation.on('tick', () => this.ticked());
@@ -250,7 +253,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   browse(event) {
-    const curie = event.currentTarget ? event.currentTarget.__data__.curie : event.curie;
+    const curie = event.currentTarget ? event.currentTarget.__data__.id : event.id;
     if (this.datasetId === 'default') {
       this.router.navigate(['/overview', curie]);
     } else {
@@ -260,10 +263,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   isLoggedIn() {
     return this.authService.isLoggedIn();
-  }
-
-  ngOnDestroy(): void {
-    this.simulation.stop();
   }
 
   expand() {
@@ -276,5 +275,14 @@ export class NetworkComponent implements OnInit, OnDestroy {
     this.force = this.force * 0.5;
     this.simulation.force('charge', d3.forceManyBody().strength(-this.force));
     this.simulation.alpha(1).restart();
+  }
+
+  setFacetRelevance(relevance: number) {
+    this.facetRelevance = relevance;
+    this.loadClassList();
+  }
+
+  ngOnDestroy(): void {
+    this.simulation.stop();
   }
 }
