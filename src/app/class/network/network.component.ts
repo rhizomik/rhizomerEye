@@ -177,7 +177,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
         .call(this.drag(this.simulation));
 
     this.node.append('title')
-      .text(d => d.id);
+      .text(d => d.uri);
 
     this.node.append('text')
         .text(d => d.label)
