@@ -17,10 +17,12 @@ export class UriUtils {
 
   static getLabel(uri: string, labels: Map<string, any>): string {
     if (labels.has(uri)) {
-      return this.pickLabel(labels.get(uri), 'en');
-    } else {
-      return UriUtils.localName(uri);
+      const label = this.pickLabel(labels.get(uri), 'en');
+      if (label && label.length) {
+        return label;
+      }
     }
+    return UriUtils.localName(uri);
   }
 
   static pickLabel(value: any, prefLang: string): string {
