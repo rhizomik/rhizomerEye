@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthenticationBasicService} from './authentication-basic.service';
 import {Location} from '@angular/common';
 
@@ -7,13 +7,10 @@ import {Location} from '@angular/common';
   templateUrl: './login-form.component.html',
   styleUrls: [],
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent {
 
   constructor(private authenticationService: AuthenticationBasicService,
               private location: Location) {
-  }
-
-  ngOnInit() {
   }
 
   onSubmit(userInput: HTMLInputElement, passwordInput: HTMLInputElement): void {

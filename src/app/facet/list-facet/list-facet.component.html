@@ -7,8 +7,8 @@
         <a *ngIf="retrievedFacets < datasetClass.facetsCount" class="badge" [routerLink]=""
             (click)="loadAllFacets()" title="Load all facets"> of {{datasetClass.facetsCount}}</a>
       </span>
-      <span *ngIf="retrievedFacets == 0" class="badge badge-danger badge-pill">No facets retrieved</span>
-      <span *ngIf="retrievedFacets == undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">No facets retrieved</span>
+      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">Loading...</span>
       <span class="d-block d-md-none d-lg-none d-xl-none float-right">
         <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
@@ -23,10 +23,10 @@
   <div id="instances" class="col-md-8 m-0">
     <h5 class="p-1">Instances
       <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-      <span *ngIf="filteredInstances == 0" class="badge badge-danger badge-pill">No instances retrieved</span>
-      <span *ngIf="filteredInstances == undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
+      <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
-    <div *ngIf="resources == undefined" id="loading" class="text-center mb-3">
+    <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
       <div id="spinner"></div>
     </div>
     <div *ngFor="let resource of resources">

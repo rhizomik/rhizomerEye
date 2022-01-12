@@ -16,17 +16,17 @@
   <ngb-highlight [result]="r.label" [term]="t"></ngb-highlight>
 </ng-template>
 
-<div *ngIf="classes == undefined" id="loading" style="text-align: center;">
+<div *ngIf="classes === undefined" id="loading" style="text-align: center;">
   <div id="spinner"></div>
   <div>Analyzing all classes, this might require some time...</div>
 </div>
-<div *ngIf="classes?.length == 0" class="row">
+<div *ngIf="classes?.length === 0" class="row">
   <div class="col alert-danger m-3 text-center" >No class instances were found</div>
 </div>
 
 <svg style="width: 100%; height: auto"></svg>
 
 <div class="row">
-  <div class="col small alert-warning m-3 text-center" *ngIf="classes?.length == topClasses">
+  <div class="col small alert-warning m-3 text-center" *ngIf="classes?.length === topClasses">
     Warning: showing just top {{topClasses}} classes!</div>
 </div>

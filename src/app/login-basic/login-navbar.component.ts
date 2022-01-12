@@ -7,12 +7,9 @@ import {User} from './user';
   templateUrl: './login-navbar.component.html',
   styleUrls: [],
 })
-export class LoginNavbarComponent implements OnInit {
+export class LoginNavbarComponent {
 
   constructor(private authenticationService: AuthenticationBasicService) {
-  }
-
-  ngOnInit() {
   }
 
   logout(): void {
