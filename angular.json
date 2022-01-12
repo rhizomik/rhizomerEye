@@ -25,7 +25,7 @@
               "src/manifest.webmanifest"
             ],
             "styles": [
-              "node_modules/bootstrap-css-only/css/bootstrap.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "src/styles.css"
             ],
@@ -90,7 +90,7 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "src/styles.css",
-              "node_modules/bootstrap-css-only/css/bootstrap.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.css"
             ],
             "scripts": [],
