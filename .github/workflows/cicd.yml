@@ -24,11 +24,7 @@ jobs:
           node-version: '12.x'
       - name: Test with NPM
         run: |
-          docker run -d -p 8080:8080 rhizomik/rhizomer-api
-          while ! nc -z localhost 8080; do sleep 10; done
-          docker ps -a
           npm install
-          export CHROME_BIN=chromium-browser
           npm run lint
           npm run build
       - name: Set up QEMU
