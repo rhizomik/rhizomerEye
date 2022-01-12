@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { Facet } from '../facet';
@@ -8,7 +8,7 @@ import { Facet } from '../facet';
   templateUrl: './detail-facet.component.html',
   styleUrls: ['./detail-facet.component.css']
 })
-export class DetailFacetComponent implements OnInit, OnDestroy {
+export class DetailFacetComponent {
   @Input() facet: Facet = new Facet();
   @Input() datasetId: string;
   @Input() classId: string;
@@ -17,8 +17,6 @@ export class DetailFacetComponent implements OnInit, OnDestroy {
   constructor(
     private breadcrumbService: BreadcrumbService) {
   }
-
-  ngOnInit() {}
 
   filterAll() {
     if (!this.facet.selected) {
@@ -29,6 +27,4 @@ export class DetailFacetComponent implements OnInit, OnDestroy {
       this.facet.selected = false;
     }
   }
-
-  ngOnDestroy() {}
 }

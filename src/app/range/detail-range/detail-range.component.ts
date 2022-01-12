@@ -16,7 +16,7 @@ enum RangeStatus {UNEXPANDED, LOADING, EXPANDED}
   templateUrl: './detail-range.component.html',
   styleUrls: ['./detail-range.component.css']
 })
-export class DetailRangeComponent implements OnInit, OnDestroy {
+export class DetailRangeComponent implements OnInit {
   @Input() range: Range = new Range();
   @Input() facet: Facet = new Facet();
   @Input() datasetId: string;
@@ -103,6 +103,4 @@ export class DetailRangeComponent implements OnInit, OnDestroy {
     this.filterValue($event.item);
     autocomplete.value = '';
   }
-
-  ngOnDestroy() {}
 }

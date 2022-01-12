@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { Class } from '../class/class';
   templateUrl: './description.component.html',
   styleUrls: ['./description.component.css']
 })
-export class DescriptionComponent implements OnInit {
+export class DescriptionComponent {
   @Input()
   datasetId: string;
   @Input()
@@ -25,9 +25,6 @@ export class DescriptionComponent implements OnInit {
 
   constructor(private router: Router,
               private classService: ClassService) { }
-
-  ngOnInit() {
-  }
 
   getAnonResource(value: any) {
     return this.anonDescriptions.get(value.asString());

@@ -1,11 +1,11 @@
 <div class="card range p-2 mb-1">
   <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
     <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
-    <span *ngIf="status == rangeStatus.UNEXPANDED" class="fa fa-plus-circle ml-1"
+    <span *ngIf="status === rangeStatus.UNEXPANDED" class="fa fa-plus-circle ml-1"
           style="cursor: pointer" (click)="firstValues(range)"></span>
-    <span *ngIf="status == rangeStatus.EXPANDED" class="fa fa-minus-circle ml-1"
+    <span *ngIf="status === rangeStatus.EXPANDED" class="fa fa-minus-circle ml-1"
           style="cursor: pointer" (click)="clearValues(range)"></span>
-    <span *ngIf="status == rangeStatus.LOADING" class="fa fa-circle-o-notch fa-spin ml-1"></span>
+    <span *ngIf="status === rangeStatus.LOADING" class="fa fa-circle-o-notch fa-spin ml-1"></span>
   </p>
   <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
      *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
