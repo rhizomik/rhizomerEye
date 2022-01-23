@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, OperatorFunction } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../../dataset/dataset.service';
@@ -66,8 +66,8 @@ export class WordCloudComponent implements OnInit {
       () => this.router.navigate(['/about']));
   }
 
-  search(): (text$: Observable<string>) => Observable<any> {
-    return (text$: Observable<string>) => text$.pipe(
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
@@ -80,8 +80,7 @@ export class WordCloudComponent implements OnInit {
           }))
       ),
       tap(() => this.searching = false)
-    );
-  }
+    )
 
   private setup() {
     this.fillScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemeCategory10);

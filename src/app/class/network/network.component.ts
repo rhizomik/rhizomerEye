@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, OperatorFunction } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -72,7 +72,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
           count: cls.instanceCount
         }));
         forkJoin(classes.map(cls => this.facetService.getRelevantRelations(this.datasetId, cls.curie, this.facetRelevance))
-                        .map(o => o.pipe(catchError(err => of([])))))
+                        .map(o => o.pipe(catchError(() => of([])))))
           .subscribe(
             classesFacets => {
               this.relations = classesFacets.reduce((acc, val) => acc.concat(val), []);
@@ -253,8 +253,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .on('end', dragended);
   }
 
-  search(): (text$: Observable<string>) => Observable<any> {
-    return (text$: Observable<string>) => text$.pipe(
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
@@ -267,11 +267,10 @@ export class NetworkComponent implements OnInit, OnDestroy {
           }))
       ),
       tap(() => this.searching = false)
-    );
-  }
+    )
 
   browse(event) {
-    const curie = event.currentTarget ? event.currentTarget.__data__.id : event.id;
+    const curie = event.currentTarget ? event.currentTarget.__data__.id : event.curie;
     if (this.datasetId === 'default') {
       this.router.navigate(['/overview', curie]);
     } else {

@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, of, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { RangeService } from '../range.service';
 import { Facet } from '../../facet/facet';
@@ -79,13 +79,13 @@ export class DetailRangeComponent implements OnInit {
     }
   }
 
-  search(range: Range): (text$: Observable<string>) => Observable<Value[]> {
-    return (text$: Observable<string>) => text$.pipe(
+  search: OperatorFunction<string, readonly Value[]> = (text$: Observable<string>) =>
+    text$.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
-        this.rangeService.getValuesContaining(this.datasetId, this.classId, this.facet.curie, range.curie,
+        this.rangeService.getValuesContaining(this.datasetId, this.classId, this.facet.curie, this.range.curie,
           this.breadcrumbService.filters, 10, term).pipe(
             map(values => values.map(value => new Value(value, this.facet, this.breadcrumbService.filters))),
             tap(() => this.searchFailed = false),
@@ -96,7 +96,22 @@ export class DetailRangeComponent implements OnInit {
         ),
       tap(() => this.searching = false)
     );
-  }
+
+  // search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  //   text$.pipe(
+  //     debounceTime(500),
+  //     distinctUntilChanged(),
+  //     tap(() => this.searching = true),
+  //     switchMap(term => term.length < 3 ? of([]) :
+  //       this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
+  //         tap(() => this.searchFailed = false),
+  //         catchError(() => {
+  //           this.searchFailed = true;
+  //           return of([]);
+  //         }))
+  //     ),
+  //     tap(() => this.searching = false)
+  //   )
 
   selectItem($event: NgbTypeaheadSelectItemEvent, autocomplete) {
     $event.preventDefault();

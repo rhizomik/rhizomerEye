@@ -6,7 +6,7 @@
   </div>
   <div class="col form-group">
     <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
-           [class.is-invalid]="searchFailed" [ngbTypeahead]="search()" placeholder="Search all classes"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Search all classes"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
     <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
   </div>
