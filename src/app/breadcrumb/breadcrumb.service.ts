@@ -6,7 +6,7 @@ import { Range } from '../range/range';
 import { Filter } from './filter';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class BreadcrumbService {
 
   constructor(private location: Location,
               private titleService: Title,
-              private angularticsService: Angulartics2GoogleGlobalSiteTag) {
+              private angularticsService: Angulartics2GoogleAnalytics) {
     this.breadcrumbs = new BehaviorSubject([]);
     this.filtersSelection = new BehaviorSubject([]);
   }

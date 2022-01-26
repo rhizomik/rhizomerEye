@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
-import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2/gst';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ export class AppComponent {
 
   constructor(router: Router,
               breadService: BreadcrumbService,
-              angulartics: Angulartics2GoogleGlobalSiteTag) {
+              angulartics: Angulartics2GoogleAnalytics) {
     router.events.subscribe(() => breadService.navigateTo(router.url));
     angulartics.startTracking();
   }
