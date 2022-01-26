@@ -24,6 +24,7 @@ export class EditDatasetComponent implements OnInit {
   changePassword = true;
   graphsRetrieved = false;
   active = 1;
+  error = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -83,7 +84,8 @@ export class EditDatasetComponent implements OnInit {
         this.graphsRetrieved = true;
         this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
         this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
-      });
+      },
+      () => this.error = true);
   }
 
   graphChange(graph: string, isChecked: boolean) {

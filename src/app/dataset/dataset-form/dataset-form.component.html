@@ -174,9 +174,15 @@
       <form id="graphs-form" (ngSubmit)="setGraphs()" #graphsForm="ngForm">
         <fieldset>
 
-          <div *ngIf="!endpoint.serverGraphs" id="loading" style="text-align: center;">
+          <div *ngIf="!endpoint.serverGraphs && !error" id="loading" style="text-align: center;">
             <div id="spinner"></div>
             <div>Retrieving endpoint graphs...</div>
+          </div>
+
+          <div *ngIf="!endpoint.serverGraphs && error" id="errored" style="text-align: center;">
+            <div class="mt-3">Error retrieving endpoint graphs...</div>
+            <button id="backToConfig" type="button" (click)="active = 2; error = false"
+                    class="btn m-1 btn-warning">Review</button>
           </div>
 
           <div *ngIf="endpoint.serverGraphs">
