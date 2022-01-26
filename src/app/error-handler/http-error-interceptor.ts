@@ -34,15 +34,20 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       if (error.error.errors) {
         return error.error.errors.map(e => e.entity + ' ' + e.property + ': ' + e.message).join(', ');
       }
-      let cause = error.error;
-      while (cause.cause) {
-        cause = cause.cause;
+      if (error.error.cause || error.error.message) {
+        let cause = error.error;
+        while (cause.cause) {
+          cause = cause.cause;
+        }
+        return cause.message.split('?')[0];
       }
-      return cause.message;
-    } else if (error.message) {
-      return error.message;
-    } else {
-      return error.name;
+      if (typeof error.error.error === 'string') {
+        return error.error.error;
+      }
     }
+    if (error.message) {
+      return error.message;
+    }
+    return error.name;
   }
 }
