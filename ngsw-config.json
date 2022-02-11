@@ -33,9 +33,9 @@
         "https://**/datasets/**", "http://**/datasets/**"
       ],
       "cacheConfig": {
-        "maxSize": 100,
+        "maxSize": 250,
         "maxAge": "1d",
-        "timeout": "3s",
+        "timeout": "5m",
         "strategy": "performance"
       }
     }
