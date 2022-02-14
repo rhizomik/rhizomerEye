@@ -58,12 +58,12 @@ export class WordCloudComponent implements OnInit {
   }
 
   loadClassList() {
-    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe(
-      (classes: Class[]) => {
+    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe({
+      next: (classes: Class[]) => {
         this.classes = classes;
         this.populate();
       },
-      () => this.router.navigate(['/about']));
+      error: () => this.router.navigate(['/about'])});
   }
 
   search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>

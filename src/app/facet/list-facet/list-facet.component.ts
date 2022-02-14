@@ -53,8 +53,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     if (params.keys.length) {
       relevance = 0;
     }
-    this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe(
-      (facets: Facet[]) => {
+    this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
+      next: (facets: Facet[]) => {
         this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
         this.retrievedFacets = facets.length;
         this.loadFacetClass();
@@ -75,7 +75,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
                 (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
             }
         );
-      }, () => this.router.navigate(['..'], {relativeTo: this.route}));
+      },
+      error: () => this.router.navigate(['..'], {relativeTo: this.route})
+    });
   }
 
   loadFacetClass() {

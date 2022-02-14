@@ -37,25 +37,29 @@ export class DatasetFormModalComponent {
 
   onSubmit(): void {
     if (this.isReplacement) {
-      this.endpointService.replaceData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe(
-        () => {
+      this.endpointService.replaceData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe({
+        next: () => {
           this.isLoading = false;
           this.activeModal.close();
-          }, error => {
+        },
+        error: (error) => {
           this.isLoading = false;
           this.activeModal.close();
           console.log(error);
-        });
+        }
+      });
     } else {
-      this.endpointService.storeData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe(
-        () => {
+      this.endpointService.storeData(this.dataset.id, this.endpoint.id, this.graph, this.file).subscribe({
+        next: () => {
           this.isLoading = false;
           this.activeModal.close();
-        }, error => {
+        },
+        error: (error) => {
           this.isLoading = false;
           this.activeModal.close();
           console.log(error);
-        });
+        }
+      });
     }
   }
 }

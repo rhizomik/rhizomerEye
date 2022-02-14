@@ -40,7 +40,6 @@ export class NetworkComponent implements OnInit, OnDestroy {
   force: number;
   link: any;
   node: any;
-  linkLabels: any;
   linkPath: any;
   textPath: any;
 
@@ -62,8 +61,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   loadClassList() {
-    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe(
-      (classes: Class[]) => {
+    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe({
+      next: (classes: Class[]) => {
         this.classes = classes;
         this.nodes = this.classes.map((cls: Class) => ({
           id: cls.curie,
@@ -109,7 +108,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
               this.setup();
             });
       },
-      () => this.router.navigate(['/about']));
+      error: () => this.router.navigate(['/about'])
+    });
   }
 
   setup() {

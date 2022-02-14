@@ -79,13 +79,14 @@ export class EditDatasetComponent implements OnInit {
     forkJoin([
       this.endpointService.serverGraphs(this.datasetId, this.endpoint.id),
       this.endpointService.datasetGraphs(this.datasetId, this.endpoint.id)])
-    .subscribe(
-      ([serverGraphs, datasetGraphs]) => {
-        this.graphsRetrieved = true;
-        this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
-        this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
-      },
-      () => this.error = true);
+    .subscribe({
+        next: ([serverGraphs, datasetGraphs]) => {
+          this.graphsRetrieved = true;
+          this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
+          this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
+        },
+        error: () => this.error = true
+    });
   }
 
   graphChange(graph: string, isChecked: boolean) {

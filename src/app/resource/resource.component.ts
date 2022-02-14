@@ -37,8 +37,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.resourceUri = this.route.snapshot.queryParamMap.get('uri') || this.document.location.href;
     this.datasetService.get(this.datasetId).subscribe((dataset) => this.dataset = dataset);
-    this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
-      (response) => {
+    this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe({
+      next: (response) => {
         if (response['@graph']) {
           this.labels = Description.getLabels(response);
           this.anonResources = Description.getAnonResources(response, this.labels);
@@ -55,16 +55,18 @@ export class ResourceComponent implements OnInit, OnDestroy {
         this.setPageJsonLd(this.resource);
         this.browseRemoteData(this.datasetId, this.resourceUri);
       },
-      () => {
+      error: () => {
         this.onNoData();
-      });
-    this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe(
-      (incomings) => {
+      }
+    });
+    this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe({
+      next: (incomings) => {
         this.incomings = incomings.sort((a, b) => a.label.localeCompare(b.label));
         this.incomings.forEach(incoming =>
           incoming.domains = incoming.domains.sort((a, b) => a.label.localeCompare(b.label)));
       },
-      () => this.incomings = []);
+      error: () => this.incomings = []
+    });
   }
 
   private browseContent(context: Object = {}) {
@@ -92,8 +94,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    this.datasetService.browseUriData(datasetId, uri).subscribe(
-      (remote) => {
+    this.datasetService.browseUriData(datasetId, uri).subscribe({
+      next: (remote) => {
         let remoteResource;
         if (remote['@graph']) {
           const labels = Description.getLabels(remote);
@@ -110,7 +112,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
           this.onNoData();
         }
         this.loading = false;
-      }, error => console.log(error));
+      },
+      error: (error) => console.log(error)
+    });
   }
 
   private onNoData() {
