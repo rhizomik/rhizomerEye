@@ -68,15 +68,15 @@
           <div class="form-group" [class.was-validated]="query.dirty || query.touched">
             <label class="control-label" for="query">SPARQL Query Service URL*</label>
             <input id="query" name="query" type="url" class="form-control" required
-                   [(ngModel)]="endpoint.queryEndPoint" #query="ngModel">
+                   [(ngModel)]="endpoint.queryEndPoint" #query="ngModel" pattern="https?://.+">
             <div class="invalid-feedback">A SPARQL query endpoint is required</div>
           </div>
 
           <!-- Endpoint Timeout input -->
-          <div class="form-group" [class.was-validated]="query.dirty || query.touched">
+          <div class="form-group" [class.was-validated]="timeout.dirty || timeout.touched">
             <label class="control-label" for="query">SPARQL Service Timeout*</label>
             <input id="timeout" name="timeout" type="number" class="form-control" required
-                   [(ngModel)]="endpoint.timeout" #query="ngModel">
+                   [(ngModel)]="endpoint.timeout" #timeout="ngModel">
             <div class="invalid-feedback">A SPARQL service timeout is required</div>
             <div class="small">Long timeouts recommended, in milliseconds. 300000 corresponds to 5 minutes.</div>
           </div>
@@ -129,7 +129,7 @@
             <div class="form-group" [class.was-validated]="update.dirty || update.touched">
               <label class="control-label" for="update">SPARQL Update Service URL (optional)</label>
               <input id="update" name="update" type="url" class="form-control"
-                     [(ngModel)]="endpoint.updateEndPoint" #update="ngModel">
+                     [(ngModel)]="endpoint.updateEndPoint" #update="ngModel" pattern="https?://.+">
             </div>
 
             <div class="row">
