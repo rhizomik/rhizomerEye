@@ -12,7 +12,7 @@ export class Resource extends Description {
     this.anonResources = anonResources;
     if (this.topicOf.length > 0 && this.topicOf[0].asString().startsWith('_:')) {
       const anon: Description = anonResources.get(this.topicOf[0].asString());
-      anon.properties.filter(property => property.uri === 'http://www.w3.org/2005/Atom/body')
+      anon?.properties.filter(property => property.uri === 'http://www.w3.org/2005/Atom/body')
         .forEach(property => {
         this.anonBody  = property;
       });
