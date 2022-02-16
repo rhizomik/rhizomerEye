@@ -14,3 +14,7 @@
   text-align: left;
   direction: rtl;
 }
+
+.http\:\/\/www\.w3\.org\/2000\/01\/rdf-schema\#label {
+  display: none;
+}
