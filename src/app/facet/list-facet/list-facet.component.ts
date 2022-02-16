@@ -101,17 +101,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
-    forkJoin([
-      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).pipe(
-        catchError(err => of({})),
-      ),
-      this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize).pipe(
-        catchError(err => of({})),
-      ) ])
-      .subscribe(
-        ([instances, labels]) => {
-          const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
-          this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
+      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).subscribe(
+        (instances) => {
+          this.labels = new Map([...Description.getLabels(instances)]);
           if (instances['@graph']) {
             this.anonResources = Description.getAnonResources(instances, this.labels);
             this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
