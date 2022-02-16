@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from '../class/class.service';
 import { Class } from '../class/class';
 import { Value } from './value';
@@ -27,6 +27,7 @@ export class DescriptionComponent {
   depictionExpanded = false;
 
   constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
               private classService: ClassService) { }
 
   getAnonResource(value: any) {
@@ -37,7 +38,8 @@ export class DescriptionComponent {
     if (this.details) {
       this.depictionExpanded = !this.depictionExpanded;
     } else {
-      this.router.navigate([this.resource], { queryParams: { uri: this.description['@id'] }});
+      this.router.navigate([this.resource], { queryParams: { uri: this.description['@id'] },
+        relativeTo: this.activatedRoute });
     }
   }
 
