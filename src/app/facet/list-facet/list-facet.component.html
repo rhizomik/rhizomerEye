@@ -30,7 +30,7 @@
       <div id="spinner"></div>
     </div>
     <div *ngFor="let resource of resources">
-      <app-description [datasetId]="datasetId" [description]="resource"
+      <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                        [anonDescriptions]="anonResources" [labels]="labels"></app-description>
     </div>
     <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"

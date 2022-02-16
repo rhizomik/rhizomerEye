@@ -1,6 +1,6 @@
 <div class="card mb-2" *ngIf="description">
   <img *ngIf="description.depiction.length > 0" class="card-img-top"
-       style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="switchExpansion()"
+       style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="clickDescriptionDepiction()"
        [src]="description.depiction[0].asString()" alt="resource depiction">
   <div class="card-header">
     <p class="card-text" [class.reverse-text-truncate]="!description.label">

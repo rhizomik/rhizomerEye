@@ -8,7 +8,7 @@
                    'col-md-4 m-0': (resource.anonBody || content) && incomings && !incomings.length,
                    'col-md-9 m-0': !resource.anonBody && !content && incomings && incomings.length,
                    'col-12 m-0': !resource.anonBody && !content && incomings && !incomings.length}">
-    <app-description [datasetId]="datasetId" [description]="resource"
+    <app-description [datasetId]="datasetId" [description]="resource" [details]="true"
                      [anonDescriptions]="anonResources" [resource]="'../resource'">
     </app-description>
   </div>

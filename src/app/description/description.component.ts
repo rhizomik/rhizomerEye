@@ -4,6 +4,7 @@ import { UriUtils } from '../shared/uriutils';
 import { Router } from '@angular/router';
 import { ClassService } from '../class/class.service';
 import { Class } from '../class/class';
+import { Value } from './value';
 
 @Component({
   selector: 'app-description',
@@ -18,9 +19,11 @@ export class DescriptionComponent {
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
   @Input()
-  labels: Map<string, string> = new Map<string, string>();
+  labels: Map<string, Value> = new Map<string, Value>();
   @Input()
   resource = 'resource';
+  @Input()
+  details = false;
   depictionExpanded = false;
 
   constructor(private router: Router,
@@ -30,8 +33,12 @@ export class DescriptionComponent {
     return this.anonDescriptions.get(value.asString());
   }
 
-  switchExpansion() {
-    this.depictionExpanded = !this.depictionExpanded;
+  clickDescriptionDepiction() {
+    if (this.details) {
+      this.depictionExpanded = !this.depictionExpanded;
+    } else {
+      this.router.navigate([this.resource], { queryParams: { uri: this.description['@id'] }});
+    }
   }
 
   localName(uri: string): string {
