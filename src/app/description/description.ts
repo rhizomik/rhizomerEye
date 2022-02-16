@@ -20,6 +20,8 @@ export class Description {
             if ((<string>value).startsWith('_:')) { this['@id'] = value;
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
           case '@type': { this['@type'] = this.processTypes(value, context, labels); break; }
+          case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type': {
+            this['@type'] = this.processTypes(value, context, labels); break; }
           case '@context': { break; }
           case 'http://www.wikidata.org/prop/direct/P18':
           case 'http://xmlns.com/foaf/0.1/depiction': {
