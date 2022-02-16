@@ -13,15 +13,16 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(request).pipe(
-      tap(
-      () => {},
-      (error: any) => {
-        if (error instanceof HttpErrorResponse) {
-          console.log('HTTP Error Interceptor: ' + this.extractErrorMessage(error));
-          if (error.status !== 404) {
-            const errorMessage = this.extractErrorMessage(error);
-            if (errorMessage) {
-              this.errorMessageService.showErrorMessage(this.extractErrorMessage(error));
+      tap({
+        next: () => {},
+        error: (error: any) => {
+          if (error instanceof HttpErrorResponse) {
+            console.log('HTTP Error Interceptor: ' + this.extractErrorMessage(error));
+            if (error.status !== 404 && !request.url.includes('/browseData')) {
+              const errorMessage = this.extractErrorMessage(error);
+              if (errorMessage) {
+                this.errorMessageService.showErrorMessage(this.extractErrorMessage(error));
+              }
             }
           }
         }
