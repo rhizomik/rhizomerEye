@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { ErrorHandlerModule } from './error-handler/error-handler.module';
 import { HttpErrorInterceptor } from './error-handler/http-error-interceptor';
 import { Angulartics2Module } from 'angulartics2';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { LoginBasicModule } from './login-basic/login-basic.module';
 import { AuthenticationBasicService } from './login-basic/authentication-basic.service';
@@ -43,8 +44,10 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
 import { DescriptionModule } from './description/description.module';
 import { ResourceComponent } from './resource/resource.component';
 import { DetailIncomingFacetComponent } from './facet/detail-incoming-facet/detail-incoming-facet.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { SearchComponent } from './search/search.component';
 import { environment } from '../environments/environment';
+import { TypeFacetComponent } from './facet/type-facet/type-facet.component';
+import { TypeRangeComponent } from './range/type-range/type-range.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,10 @@ import { environment } from '../environments/environment';
     NetworkComponent,
     DatasetFormModalComponent,
     ResourceComponent,
-    DetailIncomingFacetComponent
+    DetailIncomingFacetComponent,
+    SearchComponent,
+    TypeFacetComponent,
+    TypeRangeComponent
   ],
   imports: [
     AppRoutingModule,

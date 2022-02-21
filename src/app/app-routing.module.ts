@@ -17,12 +17,14 @@ import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { NetworkComponent } from './class/network/network.component';
 import { ResourceComponent } from './resource/resource.component';
 import { LoginFormComponent } from './login-basic/login-form.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   { path: 'datasets/new', component: CreateDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/network', component: NetworkComponent },
+  { path: 'datasets/:did/search', component: SearchComponent },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/resource', component: ResourceComponent },
   { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>

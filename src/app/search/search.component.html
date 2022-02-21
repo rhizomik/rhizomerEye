@@ -1,0 +1,38 @@
+<div id="faceted" class="row">
+
+  <div id="facets" class="col-md-4 m-0">
+    <h5 class="p-1">Facets
+      <span class="badge badge-warning badge-pill">1</span>
+      <span class="d-block d-md-none d-lg-none d-xl-none float-right">
+        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
+        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
+      </span>
+    </h5>
+    <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}">
+      <app-type-facet [datasetId]="datasetId" [text]="text"></app-type-facet>
+    </div>
+  </div>
+
+  <div id="instances" class="col-md-8 m-0">
+    <h5 class="p-1">Instances
+      <span *ngIf="totalInstances > 0" class="badge badge-warning badge-pill">{{totalInstances}}</span>
+      <span *ngIf="totalInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
+      <span *ngIf="totalInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
+    </h5>
+    <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
+      <div id="spinner"></div>
+    </div>
+    <div *ngFor="let resource of resources">
+      <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
+                       [anonDescriptions]="anonResources" [labels]="labels"></app-description>
+    </div>
+    <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
+                    [collectionSize]="totalInstances" [rotate]="true" [maxSize]="5"
+                    [directionLinks]="false" size="sm"
+                    (pageChange)="goToPage($event)"></ngb-pagination>
+    <p *ngIf="totalInstances" i18n class="text-center">
+      Showing {{resources?.length}} out of { totalInstances, plural,
+      =1 {1 instance} other { {{totalInstances}} instances} }</p>
+  </div>
+
+</div>
