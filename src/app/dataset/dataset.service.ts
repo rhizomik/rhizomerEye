@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Class } from '../class/class';
 import { IncomingFacet } from '../facet/incomingFacet';
+import { Value } from '../range/value';
 
 @Injectable({
   providedIn: 'root'
@@ -60,5 +61,30 @@ export class DatasetService extends RestService<Dataset> {
     headers = headers.append('Accept', 'application/json');
     return this.http.get<IncomingFacet[]>(
       `${environment.API}/datasets/${did}/incoming`, {params: params, headers: headers});
+  }
+
+  searchInstances(did: string, text: string, page: number, pageSize: number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('text', text);
+    params = params.append('page', (page - 1).toString());
+    params = params.append('size', pageSize.toString());
+    return this.http.get<any>(
+      `${environment.API}/datasets/${did}/search`, {params: params});
+  }
+
+  getSearchInstancesCount(did: string, text: string): Observable<number> {
+    let params = new HttpParams();
+    params = params.append('text', text);
+    return this.http.get<number>(
+      `${environment.API}/datasets/${did}/searchCount`, {params: params});
+  }
+
+  searchTypesFacetValues(did: string, text: string): Observable<Value[]> {
+    let params = new HttpParams();
+    params = params.append('text', text);
+    params = params.append('page', '0');
+    params = params.append('size', '100');
+    return this.http.get<any>(
+      `${environment.API}/datasets/${did}/searchTypes`, {params: params});
   }
 }
