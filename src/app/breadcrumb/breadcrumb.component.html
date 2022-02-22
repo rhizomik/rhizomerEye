@@ -7,7 +7,9 @@
     </li>
     <li *ngIf="filters.length" class="breadcrumb-item item"></li>
     <li class="badge badge-warning badge-pill m-1" *ngFor="let filter of filters">
-      {{filter.facet.label}}<span *ngIf="filter.label">: {{filter.label}}</span>
+      <span class="fa fa-times-circle" (click)="removeFilter(filter)"></span>
+      {{filter.facet.label}}<span *ngIf="filter.label && filter.facet.label">: </span>
+      <span *ngIf="filter.label">{{filter.label}}</span>
     </li>
   </ul>
 </nav>
