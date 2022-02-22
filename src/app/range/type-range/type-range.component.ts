@@ -1,13 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, of, OperatorFunction, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
-import { RangeService } from '../range.service';
 import { Facet } from '../../facet/facet';
 import { Range } from '../range';
 import { Value } from '../value';
-import { Filter } from '../../breadcrumb/filter';
-import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { DatasetService } from '../../dataset/dataset.service';
 
 enum RangeStatus {UNEXPANDED, LOADING, EXPANDED}
@@ -21,7 +17,7 @@ export class TypeRangeComponent implements OnInit {
   @Input() range: Range = new Range();
   @Input() facet: Facet = new Facet();
   @Input() datasetId: string;
-  @Input() text: string;
+  @Input() text: BehaviorSubject<string>;
   @Input() ngUnsubscribe: Subject<void> = new Subject<void>();
   status = RangeStatus.EXPANDED;
   rangeStatus = RangeStatus;
@@ -33,12 +29,12 @@ export class TypeRangeComponent implements OnInit {
 
   ngOnInit() {
     this.range.expanded = true;
-    this.first100Values(this.range);
+    this.text.subscribe((text: string) => this.first100Values(this.range, text));
   }
 
-  first100Values(range: Range) {
+  first100Values(range: Range, text: string) {
     this.status = RangeStatus.LOADING;
-    this.datasetService.searchTypesFacetValues(this.datasetId, this.text).subscribe(
+    this.datasetService.searchTypesFacetValues(this.datasetId, text).subscribe(
       (values: Value[]) => {
         range.values = values.map(value => new Value(value, this.facet, []));
         this.status = RangeStatus.EXPANDED;

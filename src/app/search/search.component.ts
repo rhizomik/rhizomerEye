@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
 import { Class } from '../class/class';
 import { Description } from '../description/description';
 import { Value } from '../description/value';
 import { DatasetService } from '../dataset/dataset.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -14,7 +14,7 @@ import { DatasetService } from '../dataset/dataset.service';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   datasetId: string;
-  text: string;
+  text: BehaviorSubject<string> = new BehaviorSubject<string>('');
   totalInstances = 0;
   page = 1;
   pageSize = 10;
@@ -33,8 +33,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
-    this.text = this.route.snapshot.queryParamMap.get('text');
-    this.search(this.text);
+    this.route.queryParams.subscribe((params: Params) => this.text.next(params['text']));
+    this.text.subscribe((text: string) => this.search(text));
   }
 
   search(text: string) {
@@ -42,9 +42,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.totalInstances = undefined;
     this.page = 1;
     window.scrollTo(0, 0);
-    this.datasetService.getSearchInstancesCount(this.datasetId, this.text).subscribe({
+    this.datasetService.getSearchInstancesCount(this.datasetId, text).subscribe({
       next: count => this.totalInstances = count, error: () => { this.totalInstances = 0; this.resources = [] } });
-    this.loadInstances(this.datasetId, this.text, this.page);
+    this.loadInstances(this.datasetId, text, this.page);
   }
 
   loadInstances(datasetId: string, text: string, page: number) {
@@ -66,7 +66,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   goToPage(page: number) {
     window.scrollTo(0, 0);
     this.resources = undefined;
-    this.loadInstances(this.datasetId, this.text, page);
+    this.loadInstances(this.datasetId, this.text.getValue(), page);
   }
 
   private sortResource() {
@@ -81,6 +81,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         return a['@id'].localeCompare(b['@id']);
       }
     });
+  }
+
+  searchContains(text: string) {
+    this.router.navigate([], { queryParams: { 'text': text } });
+  }
+
+  currentText(): string {
+    return this.text.getValue()
   }
 
   ngOnDestroy() {

@@ -9,6 +9,17 @@
       </span>
     </h5>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}">
+      <div class="card facet p-2 mb-2">
+        <div class="input-group">
+          <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #inputText
+                 [ngModel]="currentText()" placeholder="Search all..." (keyup.enter)="searchContains(inputText.value)"/>
+          <div class="input-group-append">
+            <button class="btn btn-sm btn-secondary" type="button" (click)="searchContains(inputText.value)">
+              <span class="fa fa-search"></span>
+            </button>
+          </div>
+        </div>
+      </div>
       <app-type-facet [datasetId]="datasetId" [text]="text"></app-type-facet>
     </div>
   </div>
