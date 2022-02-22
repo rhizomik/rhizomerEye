@@ -5,6 +5,7 @@ import { Facet } from '../../facet/facet';
 import { Range } from '../range';
 import { Value } from '../value';
 import { DatasetService } from '../../dataset/dataset.service';
+import { Router } from '@angular/router';
 
 enum RangeStatus {UNEXPANDED, LOADING, EXPANDED}
 
@@ -23,6 +24,7 @@ export class TypeRangeComponent implements OnInit {
   rangeStatus = RangeStatus;
 
   constructor(
+    private router: Router,
     private breadcrumbService: BreadcrumbService,
     private datasetService: DatasetService) {
   }
@@ -54,5 +56,12 @@ export class TypeRangeComponent implements OnInit {
   }
 
   exploreType(value: Value) {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview', value.curie],
+        { queryParams: { 'rhz:contains xsd:string': '"' + this.text.getValue() + '"' } });
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, value.curie],
+        { queryParams: { 'rhz:contains xsd:string': '"' + this.text.getValue() + '"' } });
+    }
   }
 }
