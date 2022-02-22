@@ -1,14 +1,35 @@
 <div class="row">
-  <div *ngIf="isLoggedIn()" class="col form-group pull-left">
+  <div *ngIf="isLoggedIn()" class="col-lg-2 form-group pull-left">
     <button id="detailsBtn" type="button" [routerLink]="['/datasets', datasetId, 'details']"
             class="btn btn-outline-primary">
       <span class="fa fa-info-circle"></span> Details</button>
   </div>
-  <div class="col form-group">
-    <input id="typeahead-http" type="text" class="form-control" [resultTemplate]="rt"
-           [class.is-invalid]="searchFailed" [ngbTypeahead]="search" placeholder="Search all classes"
+  <div class="col-md form-group input-group">
+    <input id="search" type="text" class="form-control" #text placeholder="Search all..."
+           (keyup.enter)="search(text.value)"/>
+    <div class="input-group-append">
+      <button class="btn btn-sm btn-secondary" type="button" (click)="search(text.value)">
+        <span class="fa fa-search"></span>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-3 form-group">
+    <input id="typeahead" type="text" class="form-control" [resultTemplate]="rt" #typeahead
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete" placeholder="Browse all classes"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
     <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+  </div>
+</div>
+
+<div class="row" style="margin-top: -20px">
+  <div *ngIf="isLoggedIn()" class="col-sm-3 pull-left"></div>
+  <div class="col-sm">
+  </div>
+  <div class="col-sm-3">
+    <small class="form-text text-muted" *ngIf="typeahead.value.length > 0 && typeahead.value.length < 3">
+      Type 3 chars...</small>
+    <small class="form-text text-muted" *ngIf="typeahead.value.length > 2 && emptyAutocomplete && !searching">
+      No classes found</small>
   </div>
 </div>
 
@@ -24,7 +45,7 @@
   <div class="col alert-danger m-3 text-center" >No class instances were found</div>
 </div>
 
-<svg style="width: 100%; height: auto"></svg>
+<svg style="width: 100%; height: auto; margin-top: -33px"></svg>
 
 <div *ngIf="links !== undefined" style="margin-top: -50px">
     <div class="fa fa-minus-square mr-1" (click)="contract()"></div>

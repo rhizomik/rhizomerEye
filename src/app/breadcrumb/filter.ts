@@ -43,6 +43,8 @@ export class Filter {
       if (facet) {
         const range = facet.ranges.find(r => r.curie === rangeCurie);
         return new Filter(classId, facet, range, value);
+      } else if (facetCurie === 'rhz:contains') {
+        return new Filter(classId, Facet.searchFacet, Range.searchRange, value);
       } else {
         return null;
       }

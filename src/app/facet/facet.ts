@@ -16,4 +16,6 @@ export class Facet {
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
   }
+
+  static searchFacet = new Facet({ uri: 'urn:rhz:contains', label: '', curie: 'rhz:contains' });
 }

@@ -42,6 +42,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   node: any;
   linkPath: any;
   textPath: any;
+  emptyAutocomplete = false;
 
   constructor(
     private router: Router,
@@ -253,8 +254,9 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .on('end', dragended);
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  autocomplete: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
+      tap(() => this.emptyAutocomplete = false),
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
@@ -264,9 +266,10 @@ export class NetworkComponent implements OnInit, OnDestroy {
           catchError(() => {
             this.searchFailed = true;
             return of([]);
-          }))
+          })
+        )
       ),
-      tap(() => this.searching = false)
+      tap((results) => { this.searching = false; this.emptyAutocomplete = results.length < 1 })
     )
 
   browse(event) {
@@ -275,6 +278,16 @@ export class NetworkComponent implements OnInit, OnDestroy {
       this.router.navigate(['/overview', curie]);
     } else {
       this.router.navigate(['/datasets', this.datasetId, curie]);
+    }
+  }
+
+  search(text: string) {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview/search'],
+        { queryParams: { 'text': text } });
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, 'search'],
+        { queryParams: { 'text': text } });
     }
   }
 

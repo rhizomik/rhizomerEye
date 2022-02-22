@@ -52,6 +52,11 @@ export class Description {
     return anonResources;
   }
 
+  static getResources(jsonld: Object,labels: Map<string, Value> = new Map()): Description[] {
+    return jsonld['@graph']
+      .map(instance => new Description(instance, jsonld['@context'], labels));
+  }
+
   static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, Value> = new Map()): Description[] {
     return jsonld['@graph']
       .filter(instance => instance['@type'] && Description.isOfType(instance['@type'], type, jsonld['@context']))
