@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -9,8 +9,9 @@ import { Class } from '../../class/class';
 import { Facet } from '../facet';
 import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
-import { catchError, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
+import { Range } from '../../range/range';
 
 @Component({
   selector: 'app-list-facet',
@@ -138,6 +139,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         return a['@id'].localeCompare(b['@id']);
       }
     });
+  }
+
+  filterContains(searchText: HTMLInputElement) {
+    this.breadcrumbService.addFacetFilter(this.classId, Facet.searchFacet, Range.searchRange,
+      '"' + searchText.value + '"');
+    searchText.value = '';
   }
 
   ngOnDestroy() {

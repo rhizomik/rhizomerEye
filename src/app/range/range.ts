@@ -14,4 +14,6 @@ export class Range {
   constructor(values: Object = {}) {
     Object.assign(<any>this, values);
   }
+
+  static searchRange = new Range({ uri: 'http://www.w3.org/2001/XMLSchema#string', curie: 'xsd:string' });
 }
