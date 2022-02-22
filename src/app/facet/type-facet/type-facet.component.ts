@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Facet } from '../facet';
 import { Range } from '../../range/range';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-type-facet',
@@ -9,7 +10,7 @@ import { Range } from '../../range/range';
 })
 export class TypeFacetComponent implements OnInit {
   @Input() datasetId: string;
-  @Input() text: string;
+  @Input() text: BehaviorSubject<string>;
   facet: Facet;
   range: Range;
 

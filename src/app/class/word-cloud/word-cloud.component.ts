@@ -31,6 +31,7 @@ export class WordCloudComponent implements OnInit {
   topClasses = 300;
   searching = false;
   searchFailed = false;
+  emptyAutocomplete = false;
 
   constructor(
     private router: Router,
@@ -66,20 +67,22 @@ export class WordCloudComponent implements OnInit {
       error: () => this.router.navigate(['/about'])});
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  autocomplete: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
+      tap(() => this.emptyAutocomplete = false),
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
           this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
-          tap(() => this.searchFailed = false),
-          catchError(() => {
-            this.searchFailed = true;
-            return of([]);
-          }))
+            tap(() => this.searchFailed = false),
+            catchError(() => {
+              this.searchFailed = true;
+              return of([]);
+            })
+          )
       ),
-      tap(() => this.searching = false)
+      tap((results) => { this.searching = false; this.emptyAutocomplete = results.length < 1 })
     )
 
   private setup() {
@@ -138,8 +141,12 @@ export class WordCloudComponent implements OnInit {
     .on('click', this.browse.bind(this));
   }
 
-  browse(event) {
-    const curie = event.currentTarget ? event.currentTarget.__data__.curie : event.curie;
+  browse(item: any) {
+    const curie = item.currentTarget ? item.currentTarget.__data__?.curie : item?.curie;
+    if (!curie) {
+      item.preventDefault();
+      return;
+    }
     if (this.datasetId === 'default') {
       this.router.navigate(['/overview', curie]);
     } else {
@@ -149,5 +156,15 @@ export class WordCloudComponent implements OnInit {
 
   isLoggedIn() {
     return this.authService.isLoggedIn();
+  }
+
+  search(text: string) {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview/search'],
+        { queryParams: { 'text': text } });
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, 'search'],
+        { queryParams: { 'text': text } });
+    }
   }
 }
