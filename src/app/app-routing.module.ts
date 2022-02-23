@@ -37,6 +37,7 @@ const routes: Routes = [
   { path: 'users/:id', component: UserDetailComponent, canActivate: [LoggedInGuard] },
   { path: 'users', component: UserListComponent, canActivate: [AdministratorGuard] },
   { path: 'about', component: AboutComponent },
+  { path: 'overview/search', component: SearchComponent },
   { path: 'overview/:cid', component: ListFacetComponent },
   { path: 'overview/:cid/resource', component: ResourceComponent },
   { path: 'overview/:cid/edit-resource', loadChildren: () =>
