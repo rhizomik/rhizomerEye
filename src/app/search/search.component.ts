@@ -48,8 +48,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   loadInstances(datasetId: string, text: string, page: number) {
-    this.datasetService.searchInstances(datasetId, text, page, this.pageSize).subscribe(
-      (instances) => {
+    this.datasetService.searchInstances(datasetId, text, page, this.pageSize).subscribe({
+      next: (instances) => {
         this.labels = new Map([...Description.getLabels(instances)]);
         if (instances['@graph']) {
           this.anonResources = Description.getAnonResources(instances, this.labels);
@@ -60,7 +60,9 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.resources = [];
         }
         this.sortResource();
-      });
+      },
+      error: (error) => console.log(error)
+    });
   }
 
   goToPage(page: number) {

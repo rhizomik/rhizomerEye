@@ -30,20 +30,19 @@
       <span *ngIf="totalInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
       <span *ngIf="totalInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
     </h5>
-    <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
+    <div *ngIf="resources === undefined && totalInstances !== 0" id="loading" class="text-center mb-3">
       <div id="spinner"></div>
     </div>
     <div *ngFor="let resource of resources">
       <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                        [anonDescriptions]="anonResources" [labels]="labels"></app-description>
     </div>
-    <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
-                    [collectionSize]="totalInstances" [rotate]="true" [maxSize]="5"
-                    [directionLinks]="false" size="sm"
-                    (pageChange)="goToPage($event)"></ngb-pagination>
-    <p *ngIf="totalInstances" i18n class="text-center">
+    <p *ngIf="totalInstances && resources" i18n class="text-center mb-0">
       Showing {{resources?.length}} out of { totalInstances, plural,
-      =1 {1 instance} other { {{totalInstances}} instances} }</p>
+      =1 {1 match} other { {{totalInstances}} matches} }</p>
+    <div class="text-center mt-0 mb-3" *ngIf="totalInstances > resources?.length && resources">
+      <small class="alert-warning">Explore all matches using the Type facet</small>
+    </div>
   </div>
 
 </div>
