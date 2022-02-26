@@ -40,6 +40,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
   showCharts: boolean;
+  showDetails = true;
 
   constructor(
     private router: Router,
@@ -59,6 +60,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
 
   }
+
 
   refreshFacets(relevance: number, params: ParamMap) {
     if (params.keys.length) {
@@ -116,9 +118,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     console.log("SSSSS");
     console.log(page);
     console.log(this.page);
+    
+    //Depending on what we want to show.
+    if (this.showDetails){
+      var api_result = this.classService.getDetails(datasetId, classId, filters, page, this.pageSize);
+    }else {
+      var api_result = this.classService.getInstances(datasetId, classId, filters, page, this.pageSize);
+    }
 
     forkJoin([
-      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).pipe(
+      api_result.pipe(
         catchError(err => of({})),
       ),
       this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize).pipe(
@@ -195,9 +204,22 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
+  }
+
+
+  changeDetails() {
+    this.showDetails = !this.showDetails;
+    if (this.showDetails){
+      this.pageSize = 10;
+    }else{
+      this.pageSize = 40;
+    }
+    this.loadInstances(this.datasetId, this.classId, this.breadcrumbService.filters, this.page);
   }
 }
