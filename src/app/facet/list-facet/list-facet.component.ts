@@ -11,6 +11,12 @@ import { Description } from '../../description/description';
 import { Filter } from '../../breadcrumb/filter';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
+//---------------------------------------------------
+import { environment } from '../../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+
+
+
 
 @Component({
   selector: 'app-list-facet',
@@ -27,12 +33,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   totalInstances = 0;
   filteredInstances;
   page = 1;
-  pageSize = 10;
+  pageSize = 50;
   datasetClass: Class = new Class();
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
+  showCharts: boolean;
 
   constructor(
     private router: Router,
@@ -40,13 +47,17 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     private classService: ClassService,
     private facetService: FacetService,
-    private rangeService: RangeService) {
+    private rangeService: RangeService,
+    private http        : HttpClient) {
   }
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
+    console.log(this.datasetId);
+    console.log(this.classId);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
+
   }
 
   refreshFacets(relevance: number, params: ParamMap) {
@@ -99,6 +110,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
+    console.log(datasetId);
+    console.log(classId);
+    console.log(filters);
+    console.log("SSSSS");
+    console.log(page);
+    console.log(this.page);
+
     forkJoin([
       this.classService.getInstances(datasetId, classId, filters, page, this.pageSize).pipe(
         catchError(err => of({})),
@@ -118,8 +136,39 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           } else {
             this.resources = [];
           }
+          console.log(this.resources[0].asJsonLd());
+          console.log(this.resources.length);
           this.sortResource();
         });
+
+        this.isChartCompatible(filters);
+  }
+
+  isChartCompatible(filters: Filter[]){
+    var did = "datasetvisible2";
+    //We check if there is a numerical Observation/observation
+    var observation = this.classId.includes("bservation");
+    this.showCharts = observation;
+
+
+    var page = 1;
+    console.log("Prova GET");
+    let params = new HttpParams();
+    params = params.append('page', (page - 1).toString());
+    params = params.append('size', this.pageSize.toString());
+    filters.forEach((filter: Filter) =>
+      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : ''), filter.value));
+    var x = this.http.get<any>(
+      "https://rhizomer-api.dev.rhizomik.net/datasets/datasetvisible2/describe?uri=http://example.org/macroeconomicdata%23AT-2005",
+       {params: params});
+    
+       console.log(x);
+
+
+  }
+
+  isGeoCompatible(){
+      //return this.isChartCompatible() 
   }
 
   goToPage(page: number) {

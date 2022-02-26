@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API: 'http://localhost:8080'
+  API: 'https://rhizomer-api.dev.rhizomik.net'
+  //API: 'http://localhost:8080'
 };
 
 /*
