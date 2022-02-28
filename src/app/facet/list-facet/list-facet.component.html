@@ -14,7 +14,7 @@
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
       </span>
     </h5>
-    <div class="card facet p-2 mb-2">
+    <div class="card facet p-2 mb-2" id="facetsearchbar">
       <div class="input-group">
         <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #search
                placeholder="{{ 'search.facet-search' | translate }}" (keyup.enter)="filterContains(search)"/>

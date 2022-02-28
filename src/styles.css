@@ -35,4 +35,48 @@ p {
   text-align: justify !important
 }
 
+/*======================================================*/
+
+/*bg-light or navbar background cannot be changed. This may be due to boostrap styles overriding this stylesheet.*/
+.navbar .bg-light{
+  background-color:rgb(131, 0, 81);
+}
+
+
+.facet {
+  background-color: #f8f9fa;
+}
+
+/*Search bar from facet component*/
+/*GO TO list-facet.component.html and delete the id="facetsearchbar", this is temporary*/
+#facetsearchbar {
+  background-color:rgba(131, 0, 81);
+}
+
+h5 {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: rgb(131, 0, 81);
+}
+
+.facet {
+  background-color: #3333;
+  color: rgb(131, 0, 81);
+}
+
+.card-title{
+  color: rgb(29, 0, 18);
+  text-transform: capitalize;
+}
+
+.badge-primary{
+  color: #fff;
+  background-color: rgb(131, 0, 81);
+}
+
+.badge-light{
+  color:#fff;
+  background-color: rgb(160, 110, 139);
+}
+
 
