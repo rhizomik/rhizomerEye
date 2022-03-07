@@ -38,7 +38,7 @@ p {
 /*======================================================*/
 
 /*bg-light or navbar background cannot be changed. This may be due to boostrap styles overriding this stylesheet.*/
-.navbar .bg-light{
+.bg-light {
   background-color:rgb(131, 0, 81);
 }
 
@@ -69,6 +69,15 @@ h5 {
   text-transform: capitalize;
 }
 
+.card-title b {
+  /*Padding to the right so that badge.pill doesn't stick with card-title*/
+  margin: 0 0.3rem 0 0;
+}
+
+.card-title span.fa.fa-plus-circle.ml-1 {
+  color: rgb(131, 0, 81) !important;
+}
+
 .badge-primary{
   color: #fff;
   background-color: rgb(131, 0, 81);
@@ -77,6 +86,50 @@ h5 {
 .badge-light{
   color:#fff;
   background-color: rgb(160, 110, 139);
+}
+
+.badge-warning{
+  color:#fff;
+  background-color: #3366cc;
+}
+
+.bg-warning{
+  background-color: rgb(143, 192, 192) !important;
+}
+
+.bg-light{
+  background-color: rgb(131, 0, 81) !important;
+}
+
+nav a.navbar-brand {
+  visibility: hidden;
+}
+
+nav a.nav-link {
+  color: #fff !important;
+}
+
+nav a img {
+  /*Redundancy in case individual padding edit is needed.*/
+  padding: 1rem 1rem 1rem 1rem;
+  content: url("https://www.udl.cat/export/sites/universitat-lleida/.galleries/imagenes-estructura/logo-udl-cabecera.png_1747225888.png");
+  max-width: 250px !important;
+}
+
+/*This should link to main menu.*/
+/*It should also be implemented as an HTML element.*/
+nav a.navbar-brand:after {
+  visibility: visible;
+  display: block;
+  content: "UdL's Experts";
+  font-size: 26px;
+  color: white;
+  margin-left: 30px;
+  margin-top: -30px;
+}
+
+.nav-link, .navbar-toggler-icon {
+  display: none;
 }
 
 
