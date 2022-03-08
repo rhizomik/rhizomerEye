@@ -35,7 +35,7 @@ p {
   text-align: justify !important
 }
 
-/*======================================================*/
+/*==============================================================================================*/
 
 /*bg-light or navbar background cannot be changed. This may be due to boostrap styles overriding this stylesheet.*/
 .bg-light {
@@ -88,14 +88,18 @@ h5 {
   background-color: rgb(160, 110, 139);
 }
 
+/*==============================================================================================*/
+/*WARNING COLORS*/
+/*Changed warning color to something less vibrant.*/
 .badge-warning{
-  color:#fff;
-  background-color: #3366cc;
+  color:rgb(29, 0, 18);
+  background-color: #FFF176;
 }
 
 .bg-warning{
-  background-color: rgb(143, 192, 192) !important;
+  background-color: #FFF176 !important;
 }
+/*==============================================================================================*/
 
 .bg-light{
   background-color: rgb(131, 0, 81) !important;
