@@ -144,7 +144,7 @@ nav a.navbar-brand:after {
 }
 
 /*==========================================================*/
-
+/*pagination styles*/
 li.page-item.active a.page-link {
   background-color: rgb(131, 0, 81);
   border-bottom-color: rgb(131, 0, 81);
