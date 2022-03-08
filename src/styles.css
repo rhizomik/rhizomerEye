@@ -48,10 +48,17 @@ p {
 }
 
 /*Search bar from facet component*/
-/*GO TO list-facet.component.html and delete the id="facetsearchbar", this is temporary*/
+/*GO TO list-facet.component.html and search.component.html and delete the id="facetsearchbar", this is temporary*/
+
 #facetsearchbar {
   background-color:rgba(131, 0, 81);
 }
+
+/*
+.form-control {
+  border: 1px solid rgb(131, 0, 81);
+}
+*/
 
 h5 {
   font-size: 1.3em;
@@ -135,5 +142,20 @@ nav a.navbar-brand:after {
 .nav-link, .navbar-toggler-icon {
   display: none;
 }
+
+/*==========================================================*/
+
+li.page-item.active a.page-link {
+  background-color: rgb(131, 0, 81);
+  border-bottom-color: rgb(131, 0, 81);
+  border-left-color: rgb(131, 0, 81);
+  border-right-color: rgb(131, 0, 81);
+  border-top-color: rgb(131, 0, 81);
+}
+
+li.page-item a.page-link {
+  color: rgb(131, 0, 81);
+}
+
 
 

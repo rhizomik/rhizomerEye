@@ -9,7 +9,7 @@
       </span>
     </h5>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}">
-      <div class="card facet p-2 mb-2">
+      <div class="card facet p-2 mb-2" id="facetsearchbar">
         <div class="input-group">
           <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #inputText
                  [ngModel]="currentText()" placeholder="Search all..." (keyup.enter)="searchContains(inputText.value)"/>
