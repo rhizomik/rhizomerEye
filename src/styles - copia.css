@@ -36,6 +36,7 @@ p {
 }
 
 /*==============================================================================================*/
+
 /*bg-light or navbar background cannot be changed. This may be due to boostrap styles overriding this stylesheet.*/
 .bg-light {
   background-color:rgb(131, 0, 81);
@@ -155,62 +156,3 @@ li.page-item.active a.page-link {
 li.page-item a.page-link {
   color: rgb(131, 0, 81);
 }
-
-.card-header a {
-  color: #15597e;
-}
-
-*:focus {
-  outline: 3px solid #5b9dd9;
-  outline-offset: 2px;
-}
-
-/*=============================================================*/
-/*DARKO*/
-/*
-body {
-  background-color: #1e2124 !important;
-  color: #fff;
-}
-
-.facet {
-  background-color:#282b30;
-  border-color: #424549;
-}
-
-.card-title {
-  color: #fff;
-}
-
-.card.range.p-2.mb-1 {
-  background-color: #1e2124;
-}
-
-.badge-light{
-  color: #1e2124;
-}
-
-h5 {
-  color: #d888ce;
-}
-
-ul.breadcrumb {
-  background-color: #282b30 !important;
-  border-color: #424549;
-  color: #fff;
-}
-
-.card.mb-2 {
-  background-color: #282b30;
-  border-color: #424549;
-  color: #fff;
-}
-
-ul.list-group.list-group-flush li {
-  background-color: #1e2124;
-  border-color: #424549;
-  color: #fff;
-}
-*/
-
-
