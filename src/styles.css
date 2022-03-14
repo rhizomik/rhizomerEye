@@ -36,6 +36,17 @@ p {
 }
 
 /*==============================================================================================*/
+body {
+  font-family: "Open Sans", "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+h1,  h2, h3, h4, h5 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 /*bg-light or navbar background cannot be changed. This may be due to boostrap styles overriding this stylesheet.*/
 .bg-light {
   background-color:rgb(131, 0, 81);
