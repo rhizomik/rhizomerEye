@@ -14,8 +14,7 @@ import { Value } from '../../description/value';
 //---------------------------------------------------
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
-
+import { ChartRole } from './chartRoleClassifier';
 
 
 @Component({
@@ -40,7 +39,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
   showCharts: boolean;
-  showDetails = true;
+  showDetails = false;
+  chartRepresentation = false;
+  possibleaxes: String[] = [];
+  possiblevalues: String[] = [];
+  selectedAxe1: String;
+  selectedAxe2: String;
+  selectedValue: String;
 
   constructor(
     private router: Router,
@@ -55,10 +60,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
-    console.log(this.datasetId);
-    console.log(this.classId);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
-
+    this.isChartCompatible(this.datasetId, this.classId, [])
   }
 
 
@@ -111,14 +114,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       });
   }
 
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
   loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
-    console.log(datasetId);
-    console.log(classId);
-    console.log(filters);
-    console.log("SSSSS");
-    console.log(page);
-    console.log(this.page);
-    
+
     //Depending on what we want to show.
     if (this.showDetails){
       var api_result = this.classService.getDetails(datasetId, classId, filters, page, this.pageSize);
@@ -145,35 +146,152 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           } else {
             this.resources = [];
           }
-          console.log(this.resources[0].asJsonLd());
           console.log(this.resources.length);
           this.sortResource();
         });
-
-        this.isChartCompatible(filters);
   }
 
-  isChartCompatible(filters: Filter[]){
-    var did = "datasetvisible2";
+  isChartCompatible(datasetId: string, classId: string, filters: Filter[]) {
+    this.filteredInstances = undefined;
+    this.resources = undefined;
+    this.page = 1;
+    window.scrollTo(0, 0);
+    this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
+      count => {
+        this.filteredInstances = count;
+        this.getDetails(datasetId, classId, filters);
+      });
+  }
+
+  getDetails(datasetId: string, classId: string, filters: Filter[]){
     //We check if there is a numerical Observation/observation
     var observation = this.classId.includes("bservation");
     this.showCharts = observation;
+    var numerical_data = false;
+    var resources = null;
+    console.log("Crash here?")
+    if (observation){
+      forkJoin([
+          this.classService.getDetails(datasetId, classId, filters, 1, this.pageSize).pipe(
+          catchError(err => of({})),
+        ),
+        this.classService.getInstancesLabels(datasetId, classId, filters, 1, this.pageSize).pipe(
+          catchError(err => of({})),
+        ) ])
+        .subscribe(
+          ([instances, labels]) => {
+            const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
+            labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
+            console.log(instances);
+            if (instances['@graph']) {
+              console.log("arriba aqui");
+              var anonResources = Description.getAnonResources(instances, this.labels);
+              var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
+              console.log("Description First Element")
+              this.isChartRepresentable(resources);
+            } else if (instances['@type']) {
+              var resources = [new Description(instances, instances['@context'], this.labels)];
+            } else {
+              resources = [];
+              console.log("No s'ha llegit")
+            }
+          });
+    }
+    return numerical_data;
+  }
 
+  createDataFrame() {
+    if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
+      alert("Not OK!")
+    } else {
+      this.chartRepresentation = true; 
+    }
+  }
 
-    var page = 1;
-    console.log("Prova GET");
-    let params = new HttpParams();
-    params = params.append('page', (page - 1).toString());
-    params = params.append('size', this.pageSize.toString());
-    filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : ''), filter.value));
-    var x = this.http.get<any>(
-      "https://rhizomer-api.dev.rhizomik.net/datasets/datasetvisible2/describe?uri=http://example.org/macroeconomicdata%23AT-2005",
-       {params: params});
-    
-       console.log(x);
+  goToInstancesMode() {
+    this.chartRepresentation = false;
+  }
 
+  isChartRepresentable(descriptions: Description[]){
+    console.log(descriptions.length);
+    console.log(JSON.parse(descriptions[0].asJsonLd()));
+    console.log(JSON.parse(descriptions[1].asJsonLd()));
+    //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical data.
+    var axesClassification = {};
+    var numericalClassification = {};
+    var i = 0
+    for (i; i < descriptions.length; i++){
+      this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
+    }
 
+    this.possibleaxes   = this.detectAxes(i, axesClassification);
+    this.possiblevalues = this.detectNumericals(numericalClassification);
+
+  }
+
+  detectNumericals(numericalClassification){
+    var returnNums = [];
+    for (var attribute in numericalClassification){
+      if (numericalClassification[attribute] == ChartRole.NumericalValue){
+        returnNums.push([attribute, this.extractFromURI(attribute)]);
+      }
+    }
+    return returnNums;
+  }
+
+  detectAxes(top, axesClassification){
+    var returnAxes = [];
+    for (var attribute in axesClassification){
+      if (axesClassification[attribute] == top){
+        returnAxes.push([attribute, this.extractFromURI(attribute)]);
+      }
+    }
+    return returnAxes;
+  }
+
+  extractFromURI(uri){
+    var name = "";
+    for (var i = (uri.length - 1); i >= 0; i--){
+      if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#"){
+        break;
+      }
+      name = uri[i] + name;
+    }
+    return name;
+  }
+
+  chartRoleClassifier(json_input, background_axes, background_numerical){
+    var json_object = JSON.parse(json_input.asJsonLd()); 
+    for (var attribute in json_object){
+      if (!background_axes[attribute]){
+        background_axes[attribute] = 1;
+      } else if (background_axes[attribute]){
+        background_axes[attribute] += 1;
+      }
+      if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing){
+        background_numerical[attribute] = ChartRole.NumericalValue;
+      } else if (!this.isNumerical(json_object[attribute])){
+        background_numerical[attribute] = ChartRole.Nothing;
+      }
+    }
+
+  }
+
+  isNumerical(string){
+    return (!isNaN(Number(string[0]["@value"]).valueOf()) && string != null ) || string[0]["@value"] == ": ";
+  }
+
+  getValue(json_object){
+    if (json_object[0]["@value"]){
+      return json_object[0]["@value"];
+    }
+    if (json_object[0]["@id"]){
+      return json_object[0]["@id"];
+    }
+    if (json_object[0]){
+      return json_object[0];
+    }
+    return json_object;
   }
 
   isGeoCompatible(){

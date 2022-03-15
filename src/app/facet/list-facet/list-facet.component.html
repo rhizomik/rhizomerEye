@@ -14,6 +14,7 @@
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
       </span>
     </h5>
+    <div style="margin-bottom:1.3em"></div>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}" *ngFor="let facet of facets">
       <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
       </app-detail-facet>
@@ -21,36 +22,77 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <h5 class="p-1">The Instances
-      <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-      <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
-      <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
-        <div style="float: right" >
-          <span *ngIf="showCharts" style="margin-right: 00.5em;">
-            <button type="button" class="btn btn-primary btn-sm">Chart Mode</button>
-          </span>
-          <span *ngIf="!showDetails">
-            <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
-          </span>
-          <span *ngIf="showDetails">
-            <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Hide Details</button>
-          </span>
+    <span *ngIf="!chartRepresentation">
+      <h5 class="p-1">The Instances
+        <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
+        <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
+        <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span> 
+        <div style="float: right;">
+          <p>
+            <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Switch to Chart Mode
+            </button>
+            <span *ngIf="!showDetails">
+              <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
+            </span>
+            <span *ngIf="showDetails">
+              <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Hide Details</button>
+            </span>
+          </p>
+          
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                  <h6>Select the attributes that will work as axes or references:</h6>
+                  <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
+                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+                  </select>
+                  <div style="margin-bottom: 0.2em;"></div>
+                  <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
+                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+                  </select>
+                  <div style="margin-bottom: 0.5em;"></div>
+                  <h6>Select the attributes that will be the represented values:</h6>
+                  <select class="form-select" [(ngModel)]="selectedValue"aria-label="Default select example" id="select-algo">
+                    <option *ngFor="let value of possiblevalues" value="{{value[0]}}"> {{ value[1] }} </option>
+                  </select>
+                  <div style="margin-bottom: 0.4em;"></div>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a><button class="btn btn-primary" type="submit" (click)="createDataFrame()">Submit</button></a>
+                  </div>
+              </div>
+            </div>
+          </div>
+          
+      </h5>
+    
+      <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
+        <div id="spinner"></div>
+      </div>
+      <div style="margin-top: 1.3em;">
+      </div>
+      <div *ngFor="let resource of resources">
+        <app-description [datasetId]="datasetId" [description]="resource"
+                         [anonDescriptions]="anonResources" [labels]="labels"></app-description>
+      </div>
+  
+      <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
+                      [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
+                      [directionLinks]="false" size="sm"
+                      (pageChange)="goToPage($event)"></ngb-pagination>
+  
+      <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
+        Showing {{resources?.length}} out of { filteredInstances, plural,
+        =1 {1 instance} other { {{filteredInstances}} instances} } filtered from {{totalInstances}}
+      </p>
+    </span>
+    <span *ngIf="chartRepresentation">
+      <h5 class="p-1">Charts
+        <div style="float: right;">
+          <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
-    </h5>
-    <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
-      <div id="spinner"></div>
-    </div>
-    <div *ngFor="let resource of resources">
-      <app-description [datasetId]="datasetId" [description]="resource"
-                       [anonDescriptions]="anonResources" [labels]="labels"></app-description>
-    </div>
-    <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
-                    [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
-                    [directionLinks]="false" size="sm"
-                    (pageChange)="goToPage($event)"></ngb-pagination>
-    <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
-      Showing {{resources?.length}} out of { filteredInstances, plural,
-      =1 {1 instance} other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
+      </h5>
+      <app-chart-representation [datasetId]="datasetId" [rows]="selectedAxe1" [columns]="selectedAxe2"> </app-chart-representation>
+    </span>
   </div>
-
+   
 </div>

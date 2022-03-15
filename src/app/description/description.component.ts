@@ -35,8 +35,6 @@ export class DescriptionComponent {
   }
 
   localName(uri: string): string {
-    //console.log("LocalName");
-    //console.log(this.description.asJsonLd());
     return UriUtils.localName(uri);
   }
 

@@ -45,6 +45,7 @@ import { ResourceComponent } from './resource/resource.component';
 import { DetailIncomingFacetComponent } from './facet/detail-incoming-facet/detail-incoming-facet.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { ChartRepresentationComponent } from './facet/chart-representation/chart-representation.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { environment } from '../environments/environment';
     NetworkComponent,
     DatasetFormModalComponent,
     ResourceComponent,
-    DetailIncomingFacetComponent
+    DetailIncomingFacetComponent,
+    ChartRepresentationComponent
   ],
   imports: [
     AppRoutingModule,
