@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -46,6 +46,8 @@ import { DetailIncomingFacetComponent } from './facet/detail-incoming-facet/deta
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { ChartRepresentationComponent } from './facet/chart-representation/chart-representation.component';
+import { GoogleChartsModule } from 'angular-google-charts';
+
 
 @NgModule({
   declarations: [
@@ -89,6 +91,7 @@ import { ChartRepresentationComponent } from './facet/chart-representation/chart
     LoginBasicModule,
     ErrorHandlerModule,
     DescriptionModule,
+    GoogleChartsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
@@ -97,6 +100,7 @@ import { ChartRepresentationComponent } from './facet/chart-representation/chart
     AuthenticationBasicService, LoggedInGuard, AdministratorGuard, AdminService, UserService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [DatasetFormModalComponent]
+  entryComponents: [DatasetFormModalComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

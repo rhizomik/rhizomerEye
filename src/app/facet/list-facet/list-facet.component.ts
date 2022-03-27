@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, of, Subject, Subscriber, Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -13,9 +13,7 @@ import { catchError, takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 //---------------------------------------------------
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { ChartRole } from './chartRoleClassifier';
-
 
 @Component({
   selector: 'app-list-facet',
@@ -32,9 +30,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   totalInstances = 0;
   filteredInstances;
   page = 1;
-  pageSize = 50;
+  pageSize = 15;
   datasetClass: Class = new Class();
   resources: Description[] = [];
+  allResources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
@@ -54,14 +53,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     private classService: ClassService,
     private facetService: FacetService,
     private rangeService: RangeService,
-    private http        : HttpClient) {
+    ) {
   }
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
-    this.isChartCompatible(this.datasetId, this.classId, [])
   }
 
 
@@ -112,6 +110,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.filteredInstances = count;
         this.loadInstances(datasetId, classId, filters, this.page);
       });
+    this.isChartCompatible(this.datasetId, this.classId, filters);
   }
 
   delay(ms: number) {
@@ -146,7 +145,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           } else {
             this.resources = [];
           }
-          console.log(this.resources.length);
           this.sortResource();
         });
   }
@@ -155,7 +153,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.filteredInstances = undefined;
     this.resources = undefined;
     this.page = 1;
-    window.scrollTo(0, 0);
     this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
       count => {
         this.filteredInstances = count;
@@ -168,11 +165,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     var observation = this.classId.includes("bservation");
     this.showCharts = observation;
     var numerical_data = false;
-    var resources = null;
-    console.log("Crash here?")
     if (observation){
       forkJoin([
-          this.classService.getDetails(datasetId, classId, filters, 1, this.pageSize).pipe(
+          this.classService.getDetails(datasetId, classId, filters, 1, this.filteredInstances).pipe(
           catchError(err => of({})),
         ),
         this.classService.getInstancesLabels(datasetId, classId, filters, 1, this.pageSize).pipe(
@@ -182,18 +177,15 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           ([instances, labels]) => {
             const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
             labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
-            console.log(instances);
             if (instances['@graph']) {
-              console.log("arriba aqui");
               var anonResources = Description.getAnonResources(instances, this.labels);
               var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
-              console.log("Description First Element")
               this.isChartRepresentable(resources);
+              this.allResources = resources;
             } else if (instances['@type']) {
               var resources = [new Description(instances, instances['@context'], this.labels)];
             } else {
               resources = [];
-              console.log("No s'ha llegit")
             }
           });
     }
@@ -213,9 +205,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isChartRepresentable(descriptions: Description[]){
-    console.log(descriptions.length);
-    console.log(JSON.parse(descriptions[0].asJsonLd()));
-    console.log(JSON.parse(descriptions[1].asJsonLd()));
     //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical data.
     var axesClassification = {};
     var numericalClassification = {};
@@ -278,7 +267,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isNumerical(string){
-    return (!isNaN(Number(string[0]["@value"]).valueOf()) && string != null ) || string[0]["@value"] == ": ";
+    return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 
   getValue(json_object){

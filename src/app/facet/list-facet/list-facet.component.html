@@ -91,7 +91,8 @@
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
-      <app-chart-representation [datasetId]="datasetId" [rows]="selectedAxe1" [columns]="selectedAxe2"> </app-chart-representation>
+      <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2" 
+      [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
     </span>
   </div>
    
