@@ -1,0 +1,17 @@
+{
+    "network": {
+        "search": "Buscar todo...",
+        "search2": "Navegar todas las clases"
+    },
+    "search": {
+        "facets": "Facetas",
+        "no-facets": "No se han recuperado facetas",
+        "loading": "Cargando...",
+        "instances": "Instancias",
+        "showing": "Mostrando",
+        "outof": "de",
+        "matches": "coincidencias",
+        "explore": "Explore todas las coincidencias usando la faceta Tipo"
+
+    }
+}

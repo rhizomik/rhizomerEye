@@ -1,0 +1,16 @@
+{
+    "network": {
+        "search": "Search all...",
+        "search2": "Browse all classes"
+    },
+    "search": {
+        "facets": "Facets",
+        "no-facets": "No facets retrieved",
+        "loading": "Loading...",
+        "instances": "Instances",
+        "showing": "Showing",
+        "outof": "out of",
+        "matches": "matches",
+        "explore":"Explore all matches using the Type facet"
+    }
+}

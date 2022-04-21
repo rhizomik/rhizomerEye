@@ -1,0 +1,17 @@
+{
+    "network": {
+        "search": "Buscar-ho tot...",
+        "search2": "Navegar totes les classes"
+    },
+
+    "search": {
+        "facets": "Facetes",
+        "no-facets": "No s'han recuperat facetes",
+        "loading": "Carregant...",
+        "instances": "Instàncies",
+        "showing": "Mostrant",
+        "outof": "de",
+        "matches": "coincidències",
+        "explore": "Exploreu totes les coincidències mitjançant la faceta Tipus"
+    }
+}

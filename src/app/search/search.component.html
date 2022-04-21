@@ -1,7 +1,7 @@
 <div id="faceted" class="row">
 
   <div id="facets" class="col-md-4 m-0">
-    <h5 class="p-1">Facets
+    <h5 class="p-1">{{ 'search.facets' | translate }}
       <span class="badge badge-warning badge-pill">1</span>
       <span class="d-block d-md-none d-lg-none d-xl-none float-right">
         <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
@@ -25,10 +25,10 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <h5 class="p-1">Instances
+    <h5 class="p-1">{{ 'search.instances' | translate }}
       <span *ngIf="totalInstances > 0" class="badge badge-warning badge-pill">{{totalInstances}}</span>
-      <span *ngIf="totalInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
-      <span *ngIf="totalInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="totalInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-facets' | translate }}</span>
+      <span *ngIf="totalInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
     </h5>
     <div *ngIf="resources === undefined && totalInstances !== 0" id="loading" class="text-center mb-3">
       <div id="spinner"></div>
@@ -38,10 +38,10 @@
                        [anonDescriptions]="anonResources" [labels]="labels"></app-description>
     </div>
     <p *ngIf="totalInstances && resources" i18n class="text-center mb-0">
-      Showing {{resources?.length}} out of { totalInstances, plural,
-      =1 {1 match} other { {{totalInstances}} matches} }</p>
+      {{ 'search.showing' | translate }} {{resources?.length}} {{ 'search.outof' | translate }} { totalInstances, plural,
+      =1 {1 match} other { {{totalInstances}} {{ 'search.matches' | translate }}} }</p>
     <div class="text-center mt-0 mb-3" *ngIf="totalInstances > resources?.length && resources">
-      <small class="alert-warning">Explore all matches using the Type facet</small>
+      <small class="alert-warning">{{ 'search.explore' | translate }}</small>
     </div>
   </div>
 

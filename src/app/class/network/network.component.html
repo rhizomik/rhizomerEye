@@ -5,7 +5,7 @@
       <span class="fa fa-info-circle"></span> Details</button>
   </div>
   <div class="col-md form-group input-group">
-    <input id="search" type="text" class="form-control" #text placeholder="Search all..."
+    <input id="search" type="text" class="form-control" #text placeholder="{{ 'network.search' | translate }}"
            (keyup.enter)="search(text.value)"/>
     <div class="input-group-append">
       <button class="btn btn-sm btn-secondary" type="button" (click)="search(text.value)">
@@ -15,7 +15,7 @@
   </div>
   <div class="col-md-3 form-group">
     <input id="typeahead" type="text" class="form-control" [resultTemplate]="rt" #typeahead
-           [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete" placeholder="Browse all classes"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete" placeholder="{{ 'network.search2' | translate }}"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
     <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
   </div>

@@ -2,7 +2,7 @@
   <ul class="breadcrumb">
     <li class="breadcrumb-item item" [class.active]="isLast"
         *ngFor="let page of breadcrumbs; last as isLast">
-      <a *ngIf="!isLast" [routerLink]="[page.uri]">{{page.name}}</a>
+      <a *ngIf="!isLast" [routerLink]="[page.uri]">{{page.name | translate}}</a>
       <span *ngIf="isLast">{{page.name}}</span>
     </li>
     <li *ngIf="filters.length" class="breadcrumb-item item"></li>

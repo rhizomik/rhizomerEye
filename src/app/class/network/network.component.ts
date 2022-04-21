@@ -10,6 +10,8 @@ import { FacetService } from '../../facet/facet.service';
 import { Class } from '../class';
 import { Relation } from '../../facet/relation';
 
+import {TranslateService} from "@ngx-translate/core";
+
 import * as d3 from 'd3';
 
 @Component({
@@ -50,7 +52,10 @@ export class NetworkComponent implements OnInit, OnDestroy {
     private authService: AuthenticationBasicService,
     private datasetService: DatasetService,
     private classService: ClassService,
-    private facetService: FacetService) {
+    private facetService: FacetService,
+    private translate: TranslateService) {
+
+      translate.setDefaultLang('en');
   }
 
   ngOnInit() {
@@ -315,4 +320,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.simulation.stop();
   }
+
+  useLanguage(language: string): void {
+    this.translate.use(language);
+}
 }

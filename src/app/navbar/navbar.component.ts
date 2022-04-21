@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { AuthenticationBasicService } from '../login-basic/authentication-basic.service';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-navbar',
@@ -9,7 +10,10 @@ import { AuthenticationBasicService } from '../login-basic/authentication-basic.
 export class NavbarComponent implements OnInit {
   public isCollapsed: boolean;
 
-  constructor(private authService: AuthenticationBasicService) {
+  constructor(private authService: AuthenticationBasicService,
+    private translate: TranslateService) {
+
+      translate.setDefaultLang('en');
   }
 
   ngOnInit() {
@@ -23,4 +27,8 @@ export class NavbarComponent implements OnInit {
   isLoggedIn() {
     return this.authService.isLoggedIn();
   }
+
+  useLanguage(language: string): void {
+    this.translate.use(language);
+}
 }
