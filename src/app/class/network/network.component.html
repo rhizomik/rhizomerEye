@@ -17,7 +17,7 @@
     <input id="typeahead" type="text" class="form-control" [resultTemplate]="rt" #typeahead
            [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete" placeholder="{{ 'network.search2' | translate }}"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
-    <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+    <div class="invalid-feedback" *ngIf="searchFailed">{{ 'network.sorry' | translate }}</div>
   </div>
 </div>
 
@@ -26,9 +26,9 @@
   <div class="col-sm">&nbsp;</div>
   <div class="col-sm-3">
     <small class="form-text text-muted" *ngIf="typeahead.value.length > 0 && typeahead.value.length < 3">
-      Type 3 chars...</small>
+      {{ 'network.three-ch' | translate }}</small>
     <small class="form-text text-muted" *ngIf="typeahead.value.length > 2 && emptyAutocomplete && !searching">
-      No classes found</small>
+      {{ 'network.no-classes' | translate }}</small>
   </div>
 </div>
 
@@ -38,10 +38,10 @@
 
 <div *ngIf="links === undefined" id="loading" style="text-align: center;">
   <div id="spinner"></div>
-  <div>Analyzing all classes, this might require some time...</div>
+  <div>{{ 'network.analyzing' | translate }}</div>
 </div>
 <div *ngIf="classes?.length === 0" class="row">
-  <div class="col alert-danger m-3 text-center" >No class instances were found</div>
+  <div class="col alert-danger m-3 text-center" >{{ 'network.no-class-instances' | translate }}</div>
 </div>
 
 <svg style="width: 100%; height: auto; margin-top: -58px"></svg>
@@ -53,10 +53,10 @@
 
 <div class="row">
   <div class="col small alert-warning m-3 text-center">
-    Showing <span *ngIf="classes?.length === topClasses">top {{topClasses}} classes and </span>
-    <span *ngIf="facetRelevance > 0">relations with frequency > {{facetRelevance * 100}}%
-    (<a (click)="setFacetRelevance(0)" style="cursor: pointer">show all relations</a>)</span>
-    <span *ngIf="facetRelevance === 0">all relations
-    (<a (click)="setFacetRelevance(0.3)" style="cursor: pointer">show less relations</a>)</span>
+    {{ 'network.showing' | translate }} <span *ngIf="classes?.length === topClasses">top {{topClasses}} classes and </span>
+    <span *ngIf="facetRelevance > 0">{{ 'network.relations' | translate }} > {{facetRelevance * 100}}%
+    (<a (click)="setFacetRelevance(0)" style="cursor: pointer">{{ 'network.show-all' | translate }}</a>)</span>
+    <span *ngIf="facetRelevance === 0">{{ 'network.all-rel' | translate }}
+    (<a (click)="setFacetRelevance(0.3)" style="cursor: pointer">{{ 'network.show-less' | translate }}</a>)</span>
   </div>
 </div>

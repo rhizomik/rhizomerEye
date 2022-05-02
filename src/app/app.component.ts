@@ -19,7 +19,7 @@ export class AppComponent {
               private translate: TranslateService) {
     router.events.subscribe(() => breadService.navigateTo(router.url));
     angulartics.startTracking();
-    translate.setDefaultLang('en');
+    translate.setDefaultLang('ca');
     
   }
   useLanguage(language: string): void {

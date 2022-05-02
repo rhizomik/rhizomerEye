@@ -1,16 +1,34 @@
 {
     "network": {
+        "details": "Details",
         "search": "Search all...",
-        "search2": "Browse all classes"
+        "search2": "Browse all classes",
+        "sorry": "Sorry, suggestions could not be loaded.",
+        "three-ch": "Type 3 chars...",
+        "no-classes": "No classes found",
+        "analyzing":"Analyzing all classes, this might require some time...",
+        "no-class-instances": "No class instances were found",
+        "showing": "Showing",
+        "top": "top",
+        "classes and": "classes and",
+        "relations": "relations with frequency",
+        "show-all": "show all relations",
+        "all-rel": "all relations",
+        "show-less": "show less relations"
     },
+
     "search": {
         "facets": "Facets",
+        "facets-mid": "facets",
         "no-facets": "No facets retrieved",
+        "no-instances": "No instances retrieved",
         "loading": "Loading...",
         "instances": "Instances",
         "showing": "Showing",
         "outof": "out of",
         "matches": "matches",
-        "explore":"Explore all matches using the Type facet"
+        "explore":"Explore all matches using the Type facet",
+        "filter": "filtered from",
+        "facet-search": "Search all facets values"
     }
 }

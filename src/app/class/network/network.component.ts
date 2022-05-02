@@ -55,7 +55,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
     private facetService: FacetService,
     private translate: TranslateService) {
 
-      translate.setDefaultLang('en');
+      translate.setDefaultLang('ca');
   }
 
   ngOnInit() {

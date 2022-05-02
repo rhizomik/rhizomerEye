@@ -1,17 +1,34 @@
 {
     "network": {
+        "details": "Detalles",
         "search": "Buscar todo...",
-        "search2": "Navegar todas las clases"
+        "search2": "Navegar todas las clases",
+        "sorry": "Lo sentimos, no se pudieron cargar las sugerencias.",
+        "three-ch": "Escriba 3 caracteres...",
+        "no-classes": "No se encontraron clases",
+        "analyzing":"Analizando todas las clases, esto podría requerir algún tiempo...",
+        "no-class-instances": "No se encontraron instancias de clase",
+        "showing": "Mostrando",
+        "top": "las mejores",
+        "classes and": "clases y",
+        "relations": "relaciones con frequencia",
+        "show-all": "mostrar todas las relaciones",
+        "all-rel": "todas las relaciones",
+        "show-less": "mostrar menos relaciones"
     },
+
     "search": {
         "facets": "Facetas",
+        "facets-mid": "facetas",
         "no-facets": "No se han recuperado facetas",
+        "no-instances": "No se han recuperado instancias",
         "loading": "Cargando...",
         "instances": "Instancias",
         "showing": "Mostrando",
         "outof": "de",
         "matches": "coincidencias",
-        "explore": "Explore todas las coincidencias usando la faceta Tipo"
-
+        "explore": "Explore todas las coincidencias usando la faceta Tipo",
+        "filter": "filtradas de",
+        "facet-search": "Busca todo valor de facetas"
     }
 }

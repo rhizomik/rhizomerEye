@@ -1,17 +1,34 @@
 {
     "network": {
+        "details": "Detalls",
         "search": "Buscar-ho tot...",
-        "search2": "Navegar totes les classes"
+        "search2": "Navegar totes les classes",
+        "sorry": "Ho sento, els suggeriments no s'han pogut carregar.",
+        "three-ch": "Escriu 3 caràcters...",
+        "no-classes": "No s'ha trobat cap classe",
+        "analyzing":"Analitzant totes les classes, això podria requerir algun temps...",
+        "no-class-instances": "No s'ha trobat cap instància de classe",
+        "showing": "Mostrant",
+        "top": "les millors",
+        "classes and": "classes i",
+        "relations": "relacions amb una freqüència",
+        "show-all": "mostrar totes les relacions",
+        "all-rel": "totes les relacions",
+        "show-less": "mostrar menys relacions"
     },
 
     "search": {
         "facets": "Facetes",
-        "no-facets": "No s'han recuperat facetes",
+        "facets-mid": "facetes",
+        "no-facets": "No s'ha recuperat cap faceta",
+        "no-instances": "No s'ha recuperat cap instància",
         "loading": "Carregant...",
         "instances": "Instàncies",
         "showing": "Mostrant",
         "outof": "de",
         "matches": "coincidències",
-        "explore": "Exploreu totes les coincidències mitjançant la faceta Tipus"
+        "explore": "Exploreu totes les coincidències mitjançant la faceta Tipus",
+        "filter": "filtrades de",
+        "facet-search": "Cercar tots els valors de facetes"
     }
 }

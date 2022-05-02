@@ -13,7 +13,7 @@ export class NavbarComponent implements OnInit {
   constructor(private authService: AuthenticationBasicService,
     private translate: TranslateService) {
 
-      translate.setDefaultLang('en');
+      translate.setDefaultLang('ca');
   }
 
   ngOnInit() {
