@@ -25,12 +25,13 @@
 
           <!-- Query Type input -->
           <div class="form-group">
-            <label class="control-label" for="queryType">Query Type ("Optimized" is recommended for large datasets)</label>
+            <label class="control-label" for="queryType">Query Type</label>
             <select id="queryType" name="queryType" class="form-control" required
                     [(ngModel)]="dataset.queryType">
               <option [value]="'OPTIMIZED'">Optimized</option>
               <option [value]="'DETAILED'">Detailed</option>
             </select>
+            <div class="small">"Optimized" is recommended for large datasets, "Detailed" enables network overview.</div>
           </div>
 
           <!-- Button -->
