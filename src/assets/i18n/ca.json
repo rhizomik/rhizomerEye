@@ -1,4 +1,10 @@
 {
+    "navbar": {
+        "lang": "Llenguatge",
+        "en": "Anglès (EN)",
+        "ca": "Català (CA)",
+        "es": "Espanyol (ES)"
+    },
     "network": {
         "details": "Detalls",
         "search": "Buscar-ho tot...",

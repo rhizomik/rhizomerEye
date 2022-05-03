@@ -1,4 +1,11 @@
 {
+    "navbar": {
+        "lang": "Language",
+        "en": "English (EN)",
+        "ca": "Catalan (CA)",
+        "es": "Spanish (ES)"
+    },
+    
     "network": {
         "details": "Details",
         "search": "Search all...",

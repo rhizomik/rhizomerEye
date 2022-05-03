@@ -1,6 +1,8 @@
+<!--
 <button (click)="useLanguage('en')">en</button>
 <button (click)="useLanguage('ca')">ca</button>
 <button (click)="useLanguage('es')">es</button>
+-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-left"><img class="pull-left" style="max-width:45px" src="assets/rhizomikEye.svg"/></a>
   <a class="navbar-brand" [routerLink]="['']">Rhizomer<b>Eye</b></a>
@@ -34,5 +36,13 @@
       </li>
     </ul>
     <ul class="navbar-nav" app-login-navbar></ul>
+    <div class="dropdown">
+      <button class="dropbtn"><img src="https://i.ibb.co/VH2Zntb/ca.png"> {{ 'navbar.lang' | translate }}</button>
+      <div class="dropdown-content">
+        <a (click)="useLanguage('en')">{{ 'navbar.en' | translate }}</a>
+        <a (click)="useLanguage('ca')">{{ 'navbar.ca' | translate }}</a>
+        <a (click)="useLanguage('es')">{{ 'navbar.es' | translate }}</a>
+      </div>
+    </div>
   </div>
 </nav>
