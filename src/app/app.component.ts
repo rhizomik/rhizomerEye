@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
-import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-root',
@@ -16,13 +15,10 @@ export class AppComponent {
   constructor(router: Router,
               breadService: BreadcrumbService,
               angulartics: Angulartics2GoogleAnalytics,
-              private translate: TranslateService) {
+            ) {
     router.events.subscribe(() => breadService.navigateTo(router.url));
     angulartics.startTracking();
-    translate.setDefaultLang('ca');
+
     
   }
-  useLanguage(language: string): void {
-    this.translate.use(language);
-}
 }
