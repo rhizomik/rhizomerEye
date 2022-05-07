@@ -30,7 +30,7 @@
         <div style="float: right;">
           <p>
             <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-              Switch to Chart Mode
+              Chart View
             </button>
             <span *ngIf="!showDetails">
               <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
@@ -50,14 +50,9 @@
                   <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
                     <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
                   </select>
-                  <div style="margin-bottom: 0.5em;"></div>
-                  <h6>Select the attributes that will be the represented values:</h6>
-                  <select class="form-select" [(ngModel)]="selectedValue"aria-label="Default select example" id="select-algo">
-                    <option *ngFor="let value of possiblevalues" value="{{value[0]}}"> {{ value[1] }} </option>
-                  </select>
                   <div style="margin-bottom: 0.4em;"></div>
                   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a><button class="btn btn-primary" type="submit" (click)="createDataFrame()">Submit</button></a>
+                    <a><button class="btn btn-primary" type="submit" (click)="createDataFrame()">Create Chart</button></a>
                   </div>
               </div>
             </div>

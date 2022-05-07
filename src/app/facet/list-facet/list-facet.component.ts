@@ -271,6 +271,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   getValue(json_object){
+    if (json_object[0]["@label"]){
+      return json_object[0]["@label"]
+    }
     if (json_object[0]["@value"]){
       return json_object[0]["@value"];
     }
