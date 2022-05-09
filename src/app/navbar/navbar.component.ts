@@ -16,8 +16,6 @@ export class NavbarComponent implements OnInit {
     translate.setDefaultLang(navigator.language.substring(0,2));
   }
 
-    private userLang:string;
-
   ngOnInit() {
     this.isCollapsed = true;
   }

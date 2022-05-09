@@ -1,15 +1,16 @@
 {
     "navbar": {
-        "lang": "Lenguaje",
-        "en": "Inglés (EN)",
-        "ca": "Catalan (CA)",
-        "es": "Español (ES)"
+        "about": "Sobre",
+        "datasets": "Conjuntos de datos",
+        "list": "Listar",
+        "new": "Nuevo",
+        "administration": "Administración",
+        "users": "Usuarios"
     },
-
-    "network": {
+    "overview": {
         "details": "Detalles",
-        "search": "Buscar todo...",
-        "search2": "Navegar todas las clases",
+        "searchAll": "Buscar todo...",
+        "searchClasses": "Navegar todas las clases",
         "sorry": "Lo sentimos, no se pudieron cargar las sugerencias.",
         "three-ch": "Escriba 3 caracteres...",
         "no-classes": "No se encontraron clases",
@@ -21,9 +22,10 @@
         "relations": "relaciones con frequencia",
         "show-all": "mostrar todas las relaciones",
         "all-rel": "todas las relaciones",
-        "show-less": "mostrar menos relaciones"
+        "show-less": "mostrar menos relaciones",
+        "warning-showing-just": "Atención: mostrando solo las",
+        "classes": "clases más frecuentes"
     },
-
     "search": {
         "facets": "Facetas",
         "facets-mid": "facetas",
@@ -36,6 +38,6 @@
         "matches": "coincidencias",
         "explore": "Explore todas las coincidencias usando la faceta Tipo",
         "filter": "filtradas de",
-        "facet-search": "Busca todo valor de facetas"
+        "facet-search": "Buscar en todas las facetas"
     }
 }
