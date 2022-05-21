@@ -29,9 +29,11 @@
         <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span> 
         <div style="float: right;">
           <p>
-            <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-              Chart View
-            </button>
+            <span *ngIf="possibleRepresentation">
+              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Chart View
+              </button>
+            </span>
             <span *ngIf="!showDetails">
               <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
             </span>
@@ -81,14 +83,38 @@
       </p>
     </span>
     <span *ngIf="chartRepresentation">
-      <h5 class="p-1">Charts
+      <h5 class="p-1">Chart Representation
         <div style="float: right;">
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
       <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2" 
       [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
+    
+      <br>
+      <p i18n class="text-center">
+        Representing {{ 20 }} out of {{ 500 }} instances.
+      </p>
+      <p>
+        Introduce the number of instances to represent o represent them <span type="submit" (onclick)="changeChartPage(1, 500)"> all </span>.
+      </p>
+            
+        <form class="row" style="margin-left: 25%; margin-right: 25%;" (ngSubmit)="changeChartPage(form_min.value, form_max.value)">
+          <div class="col">
+            <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_min>
+          </div>
+          <div class="col">
+            <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_max>
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary btn-sm">Go!</button>
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary btn-sm">All Data</button>
+          </div>
+        </form>
     </span>
   </div>
+
    
 </div>

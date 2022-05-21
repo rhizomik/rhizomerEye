@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, UrlSegment } from '@angular/router';
 import { forkJoin, of, Subject, Subscriber, Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
@@ -14,6 +14,9 @@ import { Value } from '../../description/value';
 //---------------------------------------------------
 import { environment } from '../../../environments/environment';
 import { ChartRole } from './chartRoleClassifier';
+import { ChartRepresentationComponent } from '../chart-representation/chart-representation.component';
+import { query } from '@angular/animations';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-list-facet',
@@ -30,7 +33,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   totalInstances = 0;
   filteredInstances;
   page = 1;
-  pageSize = 15;
+  pageSize = 10;
   datasetClass: Class = new Class();
   resources: Description[] = [];
   allResources: Description[] = [];
@@ -39,12 +42,18 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   showFacets: boolean;
   showCharts: boolean;
   showDetails = false;
-  chartRepresentation = false;
+  possibleRepresentation = false;
+  chartRepresentation = false;//false;
   possibleaxes: String[] = [];
   possiblevalues: String[] = [];
   selectedAxe1: String;
   selectedAxe2: String;
+  uriAxe1: String;
+  uriAxe2: String;
   selectedValue: String;
+
+  numericalInstancesInit = 1;
+  numericalInstancesEnd  = 40;
 
   constructor(
     private router: Router,
@@ -59,7 +68,19 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
+    this.urlToMethod(this.route);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
+  }
+
+  urlToMethod(route: ActivatedRoute){
+    const url = route.snapshot.url;
+    const last_element = url[url.length - 1];
+    if ('charts:' === last_element.toString().substring(0, 7)){
+      this.chartRepresentation = true;
+      const selectedAxes = last_element.toString().substring(7).split('&');
+      this.uriAxe1 = selectedAxes[0];
+      this.uriAxe2 = selectedAxes[1]; 
+    }
   }
 
 
@@ -152,56 +173,73 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   isChartCompatible(datasetId: string, classId: string, filters: Filter[]) {
     this.filteredInstances = undefined;
     this.resources = undefined;
-    this.page = 1;
-    this.classService.getInstancesCount(datasetId, classId, filters).subscribe(
-      count => {
-        this.filteredInstances = count;
-        this.getDetails(datasetId, classId, filters);
-      });
+    this.getDetails(datasetId, classId, filters);
   }
 
   getDetails(datasetId: string, classId: string, filters: Filter[]){
     //We check if there is a numerical Observation/observation
-    var observation = this.classId.includes("bservation");
-    this.showCharts = observation;
-    var numerical_data = false;
-    if (observation){
-      forkJoin([
-          this.classService.getDetails(datasetId, classId, filters, 1, this.filteredInstances).pipe(
-          catchError(err => of({})),
-        ),
-        this.classService.getInstancesLabels(datasetId, classId, filters, 1, this.pageSize).pipe(
-          catchError(err => of({})),
-        ) ])
-        .subscribe(
-          ([instances, labels]) => {
-            const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
-            labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
-            if (instances['@graph']) {
-              var anonResources = Description.getAnonResources(instances, this.labels);
-              var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
-              this.isChartRepresentable(resources);
-              this.allResources = resources;
-            } else if (instances['@type']) {
-              var resources = [new Description(instances, instances['@context'], this.labels)];
-            } else {
-              resources = [];
-            }
-          });
-    }
-    return numerical_data;
+    forkJoin([
+        this.classService.getDetails(datasetId, classId, filters, 
+          this.numericalInstancesInit, this.numericalInstancesEnd).pipe(
+        catchError(err => of({})),
+      ),
+      this.classService.getInstancesLabels(datasetId, classId, filters, 1, this.pageSize).pipe(
+        catchError(err => of({})),
+      ) ])
+      .subscribe(
+        ([instances, labels]) => {
+          const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
+          labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
+          if (instances['@graph']) {
+            //var anonResources = Description.getAnonResources(instances, this.labels);
+            var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
+            this.possibleRepresentation = this.isChartRepresentable(resources);
+            this.allResources = resources;
+          } else if (instances['@type']) {
+            var resources = [new Description(instances, instances['@context'], this.labels)];
+          } else {
+            resources = [];
+          }
+        });
   }
 
   createDataFrame() {
     if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
       alert("Not OK!")
     } else {
-      this.chartRepresentation = true; 
+      this.chartRepresentation = true;
+      const url = this.route.snapshot.url.toString().split(',');
+      let params : ParamMap;
+      this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+        (filters: Filter[]) => params = Filter.toParamMap(filters));
+      
+      const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
+                      + '/charts:' + this.extractFromURI(this.selectedAxe1) + '&' + this.extractFromURI(this.selectedAxe2)
+      
+      this.router.navigate(
+          [new_url],
+          { queryParams: this.createQueryDict(params)});//{'rdf:employmentRate xsd:string' : '"75.4"'}});
     }
+  }
+
+  createQueryDict(params: ParamMap) {
+    var dict = {};
+    for (const key of params.keys){
+      alert(key);
+      dict[key] = params.get(key);
+    }
+    return dict;
   }
 
   goToInstancesMode() {
     this.chartRepresentation = false;
+    const url = this.route.snapshot.url.toString().split(',');
+    let params : ParamMap;
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => params = Filter.toParamMap(filters));
+    
+    const new_url = url[0]+ '/' + url[1]+ '/' + url[2];
+    this.router.navigate([new_url], { queryParams: this.createQueryDict(params)});
   }
 
   isChartRepresentable(descriptions: Description[]){
@@ -215,7 +253,22 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
     this.possibleaxes   = this.detectAxes(i, axesClassification);
     this.possiblevalues = this.detectNumericals(numericalClassification);
+    this.urlAxes();
 
+    return this.possibleaxes.length >= 2 && this.possiblevalues.length >= 1; 
+  }
+
+  urlAxes() : void {
+    for (let i = 0; i < this.possibleaxes.length; i++){
+      const axe = this.possibleaxes[i][1].toString();
+      const uri = this.possibleaxes[i][0].toString();
+      if (this.uriAxe1 == axe){
+        this.selectedAxe1 = uri;
+      }
+      if (this.uriAxe2 == axe){
+        this.selectedAxe2 = uri;
+      }
+    }
   }
 
   detectNumericals(numericalClassification){
@@ -270,6 +323,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 
+  changeChartPage(init: number, end: number){
+    this.numericalInstancesInit = init;
+    this.numericalInstancesEnd  = end;
+    this.ngOnInit();
+  }
+
   getValue(json_object){
     if (json_object[0]["@label"]){
       return json_object[0]["@label"]
@@ -284,10 +343,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       return json_object[0];
     }
     return json_object;
-  }
-
-  isGeoCompatible(){
-      //return this.isChartCompatible() 
   }
 
   goToPage(page: number) {
@@ -314,22 +369,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.breadcrumbService.clearFilter();
   }
 
-
   changeDetails() {
     this.showDetails = !this.showDetails;
-    if (this.showDetails){
-      this.pageSize = 10;
-    }else{
-      this.pageSize = 40;
-    }
     this.loadInstances(this.datasetId, this.classId, this.breadcrumbService.filters, this.page);
   }
 }

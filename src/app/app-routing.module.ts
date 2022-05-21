@@ -29,6 +29,7 @@ const routes: Routes = [
   { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>
       import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'datasets/:did/:cid', component: ListFacetComponent },
+  { path: 'datasets/:did/:cid/:chart', component: ListFacetComponent },
   { path: 'datasets/:did', component: WordCloudComponent },
   { path: 'datasets', component: ListDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'users/new', component: UserCreateComponent, canActivate: [AdministratorGuard] },
