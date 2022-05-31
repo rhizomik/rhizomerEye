@@ -1,0 +1,53 @@
+
+<div style="margin-bottom: 1.4em;"></div>
+
+<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+    <label class="btn btn-outline-primary btn-sm" for="btnradio1" (click)="tableChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x3" viewBox="0 0 16 16">
+      <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z"/>
+    </svg> Table</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+    <label class="btn btn-outline-primary btn-sm" for="btnradio2" (click)="lineChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+    </svg> Line</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+    <label class="btn btn-outline-primary btn-sm" for="btnradio3" (click)="barChart()"><i class="bi bi-bar-chart"></i> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
+      <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+    </svg> Bar</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+    <label class="btn btn-outline-primary btn-sm" for="btnradio4" (click)="pieChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pie-chart" viewBox="0 0 16 16">
+      <path d="M7.5 1.018a7 7 0 0 0-4.79 11.566L7.5 7.793V1.018zm1 0V7.5h6.482A7.001 7.001 0 0 0 8.5 1.018zM14.982 8.5H8.207l-4.79 4.79A7 7 0 0 0 14.982 8.5zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+    </svg> Pie</label>
+</div>
+
+
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
+    <div class="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+          {{numerical_values_input[layer][1]}}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li *ngFor="let variable of numerical_values_input.slice(0, layer).concat(numerical_values_input.slice(layer + 1, numerical_values_input.length))">
+              <button class="dropdown-item btn-sm" type="button" (click)="switchData(variable[0])">{{variable[1]}}</button>
+            </li>
+        </ul>
+      </div>
+    <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()">Switch Axes</button>
+</div>
+
+<br>
+
+<div>
+    <google-chart
+        #editable
+        [type]="type"
+        [data]="chartData.data" 
+        [columns]="chartData.columnNames" 
+        [options]="chartData.options" 
+        [height]="chartData.height"
+        [width]="chartData.width">
+    </google-chart>
+</div>
