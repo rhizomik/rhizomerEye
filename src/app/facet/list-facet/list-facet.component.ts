@@ -53,6 +53,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   uriAxe1: String;
   uriAxe2: String;
   selectedValue: String;
+  display = "none";
   
 
   numericalInstancesInit = 1;
@@ -382,5 +383,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   changeDetails() {
     this.showDetails = !this.showDetails;
     this.loadInstances(this.datasetId, this.classId, this.breadcrumbService.filters, this.page);
+  }
+
+  openModal() {
+    this.display = "block";
+  }
+  onCloseHandled() {
+    this.display = "none";
   }
 }

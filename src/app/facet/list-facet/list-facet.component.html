@@ -30,9 +30,11 @@
         <div style="float: right;">
           <p>
             <span *ngIf="possibleRepresentation">
-              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button> 
+              
+              <!-- data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Chart View
-              </button>
+              </button>-->
             </span>
             <span *ngIf="!showDetails">
               <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
@@ -42,9 +44,32 @@
             </span>
           </p>
           
+          <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Select the attributes that will work as axes:</h6>
+                      <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
+                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+                  </select>
+                  <div style="margin-bottom: 0.2em;"></div>
+                  <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
+                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-link" (click)="createDataFrame()">Create Chart</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
             <div class="collapse" id="collapseExample">
               <div class="card card-body">
-                  <h6>Select the attributes that will work as axes or references:</h6>
+                  <h6>Select the attributes that will work as axes:</h6>
                   <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
                     <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
                   </select>
@@ -58,6 +83,7 @@
                   </div>
               </div>
             </div>
+
           </div>
           
       </h5>
@@ -116,5 +142,4 @@
     </span>
   </div>
 
-   
 </div>
