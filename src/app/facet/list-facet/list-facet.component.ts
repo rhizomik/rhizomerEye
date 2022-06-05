@@ -18,6 +18,8 @@ import { ChartRepresentationComponent } from '../chart-representation/chart-repr
 import { query } from '@angular/animations';
 import { HttpParams } from '@angular/common/http';
 
+
+
 @Component({
   selector: 'app-list-facet',
   templateUrl: './list-facet.component.html',
@@ -51,6 +53,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   uriAxe1: String;
   uriAxe2: String;
   selectedValue: String;
+  
 
   numericalInstancesInit = 1;
   numericalInstancesEnd  = 40;
@@ -203,6 +206,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         });
   }
 
+  
+
   createDataFrame() {
     if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
       alert("Not OK!")
@@ -225,7 +230,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   createQueryDict(params: ParamMap) {
     var dict = {};
     for (const key of params.keys){
-      alert(key);
       dict[key] = params.get(key);
     }
     return dict;

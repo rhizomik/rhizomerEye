@@ -35,7 +35,9 @@
             </li>
         </ul>
       </div>
-    <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()">Switch Axes</button>
+    <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
+    </svg> Axes</button>
 </div>
 
 <br>
@@ -51,3 +53,23 @@
         [width]="chartData.width">
     </google-chart>
 </div>
+
+
+
+<button type="button" class="btn btn-info btn-lg" (click)="openModal()">click to open</button>
+    <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+         <div class="modal-dialog" role="document">
+               <div class="modal-content">
+                     <div class="modal-header">
+                           <h4 class="modal-title">Model Title</h4>
+                           <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+                         </div>
+                <div class="modal-body">
+                           <p>Model body text</p>
+                         </div>
+                     <div class="modal-footer">
+                           <button type="button" class="btn btn-default" (click)="onCloseHandled()" >Close</button>
+                         </div>
+            </div>
+             </div>
+ </div>

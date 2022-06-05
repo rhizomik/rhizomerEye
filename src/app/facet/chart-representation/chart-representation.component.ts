@@ -1,16 +1,16 @@
 import { Component, Input, OnInit, NgModule, OnChanges, SimpleChanges} from '@angular/core';
 import { Description } from '../../description/description';
 import { GoogleChartsModule, ChartType, ChartEditorComponent, ChartBase } from 'angular-google-charts';
+import { HostListener } from "@angular/core";
 import { ViewChild } from '@angular/core';
 import { ThisReceiver } from '@angular/compiler';
 import { json } from 'd3';
 
 
-
 @Component({
   selector: 'app-chart-representation',
   templateUrl: './chart-representation.component.html',
-  styleUrls: ['./chart-representation.component.css']
+  styleUrls: ['./chart-representation.component.css'],
 })
 
 export class ChartRepresentationComponent implements OnInit, OnChanges {
@@ -23,6 +23,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   resources: Description[];
   @Input()
   numerical_values_input: string[][];
+
+  display = "none";
 
   print :string;
  
@@ -50,7 +52,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   };
 
 
-  constructor () {}
+  constructor () {
+    this.onResize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    console.log(window.innerWidth);
+    if (window.innerWidth < 770){
+      this.chartData.width =  Math.floor(window.innerWidth * 0.9);
+    } else {
+      this.chartData.width =  Math.floor(window.innerWidth * (800/1396));
+    }     
+}
 
   ngOnInit(): void {
     if ((this.rows !== '' ||  this.rows !== undefined) 
@@ -94,6 +108,13 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   pieChart(){
     this.type = ChartType.PieChart;
+  }
+
+  openModal() {
+    this.display = "block";
+  }
+  onCloseHandled() {
+    this.display = "none";
   }
 
   getFirstColumn(array: any[][]){
