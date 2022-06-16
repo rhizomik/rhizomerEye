@@ -61,29 +61,11 @@
                   </select>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-link" (click)="createDataFrame()">Create Chart</button>
+                  <button type="button" class="btn btn-link" (click)="createDataFrame()">Create Charts</button>
                 </div>
               </div>
             </div>
           </div>
-
-            <div class="collapse" id="collapseExample">
-              <div class="card card-body">
-                  <h6>Select the attributes that will work as axes:</h6>
-                  <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
-                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
-                  </select>
-                  <div style="margin-bottom: 0.2em;"></div>
-                  <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
-                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
-                  </select>
-                  <div style="margin-bottom: 0.4em;"></div>
-                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a><button class="btn btn-primary" type="submit" (click)="createDataFrame()">Create Chart</button></a>
-                  </div>
-              </div>
-            </div>
-
           </div>
           
       </h5>
@@ -120,9 +102,8 @@
       <br>
       <p i18n class="text-center">
         Representing {{ 20 }} out of {{ 500 }} instances.
-      </p>
-      <p>
-        Introduce the number of instances to represent o represent them <span type="submit" (onclick)="changeChartPage(1, 500)"> all </span>.
+        <br>
+        <small><i>Introduce the range of instances to represent or represent them all</i></small> <span type="submit" (onclick)="changeChartPage(1, 500)">  </span>.
       </p>
             
         <form class="row" style="margin-left: 25%; margin-right: 25%;" (ngSubmit)="changeChartPage(form_min.value, form_max.value)">
@@ -133,10 +114,10 @@
             <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_max>
           </div>
           <div class="col">
-            <button type="submit" class="btn btn-primary btn-sm">Go!</button>
+            <button type="submit" style="width: auto;" class="btn btn-primary btn-sm">Get Data!</button>
           </div>
           <div class="col">
-            <button type="submit" class="btn btn-primary btn-sm">All Data</button>
+            <button type="submit" class="btn btn-primary btn-sm">All Data!</button>
           </div>
         </form>
     </span>

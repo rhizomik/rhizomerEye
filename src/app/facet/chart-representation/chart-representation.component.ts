@@ -5,6 +5,7 @@ import { HostListener } from "@angular/core";
 import { ViewChild } from '@angular/core';
 import { ThisReceiver } from '@angular/compiler';
 import { json } from 'd3';
+import { toJSDate } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-calendar';
 
 
 @Component({
@@ -23,12 +24,16 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   resources: Description[];
   @Input()
   numerical_values_input: string[][];
+  tag_chart : string;
 
   display = "none";
 
   print :string;
  
   numerical_values: string[];
+  correlation_fields: string[] = [];
+  is_correlation_chart: boolean = false;
+  
   dataframe : any[][][];
   column_index: string[];
   layer : number = 0;
@@ -39,14 +44,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   chartData = {
     data: [],
     columnNames: [],
-    options: {
-    hAxis: {
-      title: 'Month'
-    },
-    vAxis:{
-      title: 'Sell'
-  },
-  },
+    options: {},
   width: 800,
   height: 600
   };
@@ -70,12 +68,17 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if ((this.rows !== '' ||  this.rows !== undefined) 
       && (this.columns !== '' || this.columns !== undefined)){
       this.createCharts();
+      this.numerical_values_input[this.layer][1];
     }
       
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.createCharts();
+    if(this.is_correlation_chart){
+      this.createCorrelationTable();
+    } else {
+      this.createCharts();
+    }
   }
 
   createCharts() : void {
@@ -88,10 +91,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     var aux = this.rows;
     this.rows = this.columns;
     this.columns = aux;
-
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
     this.deleteAxisFromNumericals();
-    this.createDataFrame();
+
+    if (this.is_correlation_chart){
+      this.createCorrelationTable();
+    } else {
+      this.createDataFrame();
+    }
   }
 
   tableChart(){
@@ -111,6 +118,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   openModal() {
+    this.correlation_fields = [];
     this.display = "block";
   }
   onCloseHandled() {
@@ -153,16 +161,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     }
     this.dataframe = dataframe;
     this.switchData(this.numerical_values[this.layer]);
-    /*this.chartData.data = dataframe[this.layer];*/
-    //this.chartData.columnNames = this.column_index;
   }
 
   switchData(new_layer: string){
     this.layer = this.numerical_values.indexOf(new_layer);
-    //this.chartData.data = this.dataframe[this.layer];
-    console.log(this.dataframe[this.layer]);
-    this.resizeColumns();
-    this.resizeDataframe(this.dataframe[this.layer]);
+    this.tag_chart = this.numerical_values_input[this.layer][1]
+    if (this.is_correlation_chart) {
+      //This situation happens when the user comes from the correlation chart
+      this.is_correlation_chart = false;
+      this.createCharts();
+    } else {
+      this.resizeColumns();
+      this.resizeDataframe(this.dataframe[this.layer]);
+    }
   }
 
   resizeDataframe(dataframe : any[][]) : void {
@@ -172,8 +183,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         void_columns = void_columns.concat(i);
       }
     }
-    console.log("COLUMNS");
-    console.log(void_columns);
     this.chartData.data = this.deleteColumns(dataframe, void_columns);
   }
 
@@ -198,6 +207,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   resizeColumns() : void{
+    this.column_index = this.createColumnIndex();
     var columns : string[] = [];
     for (var i = 0; i < this.column_index.length; i++){
       if (!this.voidColumn(i, this.dataframe[this.layer])){
@@ -290,8 +300,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   getValue(json_object){
-    if (json_object[0]["@label"]){
-      return json_object[0]["@label"];
+    if (json_object[0]["label"]){
+      return json_object[0]["label"];
     }
     if (json_object[0]["@value"]){
       return json_object[0]["@value"];
@@ -307,6 +317,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   extractFromURI(uri: string) : string {
     var name = "";
+    console.log(uri);
     for (var i = (uri.length - 1); i >= 0; i--){
       if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#"){
         break;
@@ -316,7 +327,57 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     return name;
   }
 
+  createCorrelationTable(){
+    var table : any[][] = [];
+    this.column_index = this.createColumnIndexCorrelation();
+    for (var i = 0; i < this.resources.length; i++){
+      var resource = JSON.parse(this.resources[i].asJsonLd());
+      let column = this.getValue(resource[this.columns]);
+      let row = this.getValue(resource[this.rows]);
+      for (var attribute in resource){
+        if (this.correlation_fields.includes(attribute)){
+          let attribute_column = column + "_" + this.extractFromURI(attribute);
+          let [row_i, column_i] = this.insert_into_correlation_table(table, attribute, row, attribute_column);
+          table[row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
+        }
+      }
+    }
+    this.chartData.columnNames = this.column_index;
+    this.chartData.data = table;
+    this.display = "none";
+    this.tag_chart = "Multiple Facets"
+    this.is_correlation_chart = true;
+  }
+  createColumnIndexCorrelation() {
+    var index : string[];
+    index = [];
+    for (var i = 0; i < this.resources.length; i++){
+      for (var j = 0; j < this.correlation_fields.length; j++) {
+        var resource = JSON.parse(this.resources[i].asJsonLd());
+        var columnName = this.getValue(resource[this.columns]) + "_" + this.extractFromURI(this.correlation_fields[j]);
+        if (!index.includes(columnName)){
+          index = index.concat(columnName);
+        }
+      }
+    }
+    index.sort();
+    return [this.extractFromURI(this.rows)].concat(index);
+  }
 
+  correlationFacets(element){
+    this.correlation_fields.push(element);
+  }
 
+  insert_into_correlation_table(table : any[][], attribute: string, row, column) {
 
-}
+    let column_i = this.column_index.indexOf(column);
+    
+    if (!this.exists_row(table, row)){
+      this.add_row(table, row);
+    }
+    let row_i = this.get_row_index(table, row);
+
+    return [row_i, column_i];
+  }
+    
+  }

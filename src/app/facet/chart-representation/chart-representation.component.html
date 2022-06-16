@@ -27,12 +27,14 @@
 <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
     <div class="dropdown">
         <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-          {{numerical_values_input[layer][1]}}
+          {{ tag_chart }}
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
           <li *ngFor="let variable of numerical_values_input.slice(0, layer).concat(numerical_values_input.slice(layer + 1, numerical_values_input.length))">
               <button class="dropdown-item btn-sm" type="button" (click)="switchData(variable[0])">{{variable[1]}}</button>
-            </li>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+            <button class="dropdown-item btn-sm" type="button" (click)="openModal()">Multiple Facets</button>
         </ul>
       </div>
     <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
@@ -40,7 +42,31 @@
     </svg> Axes</button>
 </div>
 
-<br>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h6 class="modal-title">Select the facets you want to depict:</h6>
+            <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <i><small>You can select as many facets as you desire by pressing "Ctrl" button.<br>The outcome will be a single chart will all the data from the selected facets.</small></i>
+        <div style="margin-bottom:1em"></div>
+        <select multiple class="form-select" size="{{numerical_values_input.length}}" aria-label="multiple select example">
+          <option *ngFor="let variable of numerical_values_input"
+          [value]="variable[0]" (click)="correlationFacets($event.target.value)">{{variable[1]}}<br>
+          </option>
+        </select>
+      {{correlation_fields}}
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-link" (click)="createCorrelationTable()">Create Chart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom:1.5em"></div>
 
 <div>
     <google-chart
