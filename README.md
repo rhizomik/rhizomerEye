@@ -44,7 +44,7 @@ alt="Rhizomer - Details View for Nikola Tesla" width="500"/></a></p>
 
 If you are interested in testing Rhizomer with your own data, you can request and account.
 
-Additional information about how to use Rhizomer is available from [interact-with-rhizomer](https://github.com/rhizomik/rhizomerAPI/wiki/Deploy-Neptune-and-Rhizomer#interact-with-rhizomer)
+Additional information about how to use Rhizomer is available from [interact-with-rhizomer](https://github.com/rhizomik/rhizomerAPI/wiki/Deploy-Fuseki-and-Rhizomer#interact-with-rhizomer)
 
 ## Install
 
