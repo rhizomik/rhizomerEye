@@ -32,7 +32,7 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <h5 class="p-1">{{ 'search.instances' | translate }}
+    <h5 class="p-1">{{ 'search.Instances' | translate }}
       <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
       <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-instances' | translate }}</span>
       <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
@@ -50,7 +50,7 @@
                     (pageChange)="goToPage($event)"></ngb-pagination>
     <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
       {{ 'search.showing' | translate }} {{resources?.length}} {{ 'search.outof' | translate }} { filteredInstances, plural,
-      =1 {1 instance} other { {{filteredInstances}} {{ 'search.facets-mid' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
+      =1 {1 instance} other { {{filteredInstances}} {{ 'search.instances' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
   </div>
 
 </div>

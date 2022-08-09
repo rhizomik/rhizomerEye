@@ -28,11 +28,11 @@
     },
     "search": {
         "facets": "Facetas",
-        "facets-mid": "facetas",
+        "instances": "instancias",
         "no-facets": "No se han recuperado facetas",
         "no-instances": "No se han recuperado instancias",
         "loading": "Cargando...",
-        "instances": "Instancias",
+        "Instances": "Instancias",
         "showing": "Mostrando",
         "outof": "de",
         "matches": "coincidencias",

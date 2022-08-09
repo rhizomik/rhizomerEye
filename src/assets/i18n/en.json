@@ -28,11 +28,11 @@
     },
     "search": {
         "facets": "Facets",
-        "facets-mid": "facets",
+        "instances": "instances",
         "no-facets": "No facets retrieved",
         "no-instances": "No instances retrieved",
         "loading": "Loading...",
-        "instances": "Instances",
+        "Instances": "Instances",
         "showing": "Showing",
         "outof": "out of",
         "matches": "matches",
