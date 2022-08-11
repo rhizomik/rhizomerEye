@@ -1,14 +1,13 @@
 import { Property } from '../description/property';
 import { Description } from '../description/description';
-import { Value } from '../description/value';
 
 export class Resource extends Description {
   anonResources: Map<string, Description>;
   anonBody: Property;
 
   constructor(values: Object = {}, context: Object = {}, labels: Map<string, any> = new Map(),
-              anonResources: Map<string, Description> = new Map()) {
-    super(values, context, labels);
+              anonResources: Map<string, Description> = new Map(), prefLabel: string = 'en') {
+    super(values, context, labels, prefLabel);
     this.anonResources = anonResources;
     if (this.topicOf.length > 0 && this.topicOf[0].asString().startsWith('_:')) {
       const anon: Description = anonResources.get(this.topicOf[0].asString());

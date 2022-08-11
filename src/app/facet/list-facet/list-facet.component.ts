@@ -12,6 +12,7 @@ import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 import { Range } from '../../range/range';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-list-facet',
@@ -39,6 +40,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService,
+    public translate: TranslateService,
     private classService: ClassService,
     private facetService: FacetService,
     private rangeService: RangeService) {
@@ -106,10 +108,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         (instances) => {
           this.labels = new Map([...Description.getLabels(instances)]);
           if (instances['@graph']) {
-            this.anonResources = Description.getAnonResources(instances, this.labels);
-            this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
+            this.anonResources =
+              Description.getAnonResources(instances, this.labels, this.translate.currentLang);
+            this.resources =
+              Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels, this.translate.currentLang);
           } else if (instances['@type']) {
-            this.resources = [new Description(instances, instances['@context'], this.labels)];
+            this.resources =
+              [new Description(instances, instances['@context'], this.labels, this.translate.currentLang)];
           } else {
             this.resources = [];
           }

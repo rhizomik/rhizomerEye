@@ -7,6 +7,7 @@ import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
 import { IncomingFacet } from '../facet/incomingFacet';
 import { Dataset } from '../dataset/dataset';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-resource',
@@ -29,8 +30,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private datasetService: DatasetService,
+              public translate: TranslateService,
               @Inject(DOCUMENT) private document: any) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.resource = new Resource({}, {}, new Map(), new Map(), this.translate.currentLang);
   }
 
   ngOnInit() {
@@ -44,12 +47,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
           this.anonResources = Description.getAnonResources(response, this.labels);
           const resources = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
-            .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources));
-          this.resource = resources.length ? resources[0] : new Resource();
+            .map(instance =>
+              new Resource(instance, response['@context'], this.labels, this.anonResources, this.translate.currentLang));
+          this.resource = resources.length ? resources[0] :
+            new Resource({}, {}, new Map(), new Map(), this.translate.currentLang);
           this.browseContent(response['@context']);
         } else if (response['@id'] && response['@context'] &&
           UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Resource(response, response['@context']);
+          this.resource = new Resource(response, response['@context'], new Map(), new Map(), this.translate.currentLang);
           this.browseContent(response['@context']);
         }
         this.setPageJsonLd(this.resource);
@@ -102,10 +107,11 @@ export class ResourceComponent implements OnInit, OnDestroy {
           const anonResources = Description.getAnonResources(remote, this.labels);
           remoteResource = remote['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], remote['@context']) === this.resourceUri)
-            .map(instance => new Resource(instance, remote['@context'], labels, anonResources))[0];
+            .map(instance =>
+              new Resource(instance, remote['@context'], labels, anonResources, this.translate.currentLang))[0];
 
         } else {
-          remoteResource = new Resource(remote, remote['@context']);
+          remoteResource = new Resource(remote, remote['@context'], new Map(), new Map(), this.translate.currentLang);
         }
         this.resource['@id'] ? this.resource.combine(remoteResource) : this.resource = remoteResource;
         if (!this.resource['@id']) {
