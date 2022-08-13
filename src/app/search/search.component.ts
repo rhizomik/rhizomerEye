@@ -18,8 +18,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   text: BehaviorSubject<string> = new BehaviorSubject<string>('');
   totalInstances = 0;
   page = 1;
-  pageSize = 10;
-  datasetClass: Class = new Class();
+  pageSize = 20;
   resources: Description[] = [];
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, Value> = new Map<string, Value>();
@@ -55,7 +54,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.labels = new Map([...Description.getLabels(instances)]);
         if (instances['@graph']) {
           this.anonResources = Description.getAnonResources(instances, this.labels, this.translate.currentLang);
-          this.resources =  Description.getResources(instances, this.labels, this.translate.currentLang);
+          this.resources =  Description.getTypedResources(instances, this.labels, this.translate.currentLang);
         } else if (instances['@type']) {
           this.resources = [new Description(instances, instances['@context'], this.labels, this.translate.currentLang)];
         } else {

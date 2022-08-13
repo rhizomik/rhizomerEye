@@ -61,6 +61,12 @@ export class Description {
       .map(instance => new Description(instance, jsonld['@context'], labels, prefLang));
   }
 
+  static getTypedResources(jsonld: Object,labels: Map<string, Value> = new Map(), prefLang = 'en'): Description[] {
+    return jsonld['@graph']
+      .filter(instance => instance['@type'] || instance['rdf:type'])
+      .map(instance => new Description(instance, jsonld['@context'], labels, prefLang));
+  }
+
   static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, Value> = new Map(), prefLang = 'en')
     : Description[] {
     return jsonld['@graph']
