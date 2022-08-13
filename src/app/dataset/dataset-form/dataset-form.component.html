@@ -59,7 +59,6 @@
                     [(ngModel)]="endpoint.type">
               <option [value]="'GENERIC'">Generic</option>
               <option [value]="'MARKLOGIC'">MarkLogic</option>
-              <option [value]="'NEPTUNE'">Neptune</option>
               <option [value]="'STARDOG'">Stardog</option>
               <option [value]="'VIRTUOSO'">Virtuoso</option>
             </select>
@@ -186,19 +185,25 @@
                     class="btn m-1 btn-warning">Review</button>
           </div>
 
-          <div *ngIf="endpoint.serverGraphs">
+          <div *ngIf="endpoint.serverGraphs || endpoint.ontologies">
 
             <!-- Graphs checkboxes -->
-            <label class="control-label">Dataset Graphs</label>
+            <label class="control-label">Select the Dataset's Data and Ontology Graphs</label>
+            <div>
+              <label class="form-check-label small">Data</label>
+              <label class="form-check-label ml-2 small">Ontology</label>
+            </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="Default Graph" [disabled]="true"
-                     [checked]="this.endpoint.graphs.length === 0" >
-              <label class="form-check-label">Default Graph</label>
+                     style="margin-left: -0.75em" [checked]="this.endpoint.graphs.length === 0" >
+              <label class="form-check-label" style="margin-left: 5em">Default Graph</label>
             </div>
             <div *ngFor="let graph of endpoint.serverGraphs" class="dataset-graph form-check">
-              <input class="form-check-input" type="checkbox" value="{{graph}}"
-                     (change)="graphChange(graph, $event.target.checked)" [checked]="isSelected(graph)">
-              <label class="form-check-label">{{graph}}</label>
+              <input class="form-check-input" style="margin-left: -0.75em" type="checkbox" value="{{graph}}"
+                     (change)="graphChange(graph, $event.target.checked)" [checked]="isSelectedData(graph)">
+              <input class="form-check-input" style="margin-left: 2em" type="checkbox" value="{{graph}}"
+                     (change)="ontologyChange(graph, $event.target.checked)" [checked]="isSelectedOntology(graph)">
+              <label class="form-check-label" style="margin-left: 5em">{{graph}}</label>
               <span *ngIf="endpoint.writable" class="badge badge-pill badge-secondary pull-right"
                     style="cursor: pointer; margin-top: 3px;" (click)="loadModal(graph)">Load Data</span>
             </div>

@@ -9,6 +9,7 @@ export class Endpoint {
   updateUsername: string;
   updatePassword: string;
   graphs: string[];
+  ontologies: string[];
   serverGraphs: string[];
   timeout = 300000;
 

@@ -31,7 +31,7 @@ export class DetailDatasetComponent implements OnInit {
       ([dataset, endpoints]) => {
           this.dataset = dataset;
           this.endpoint = endpoints[0];
-          this.endpointService.datasetGraphs(datasetId, this.endpoint.id).subscribe(
+          this.endpointService.dataGraphs(datasetId, this.endpoint.id).subscribe(
             graphs => this.endpoint.graphs = graphs);
         });
   }
