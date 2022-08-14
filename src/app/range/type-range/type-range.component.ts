@@ -6,6 +6,7 @@ import { Range } from '../range';
 import { Value } from '../value';
 import { DatasetService } from '../../dataset/dataset.service';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 enum RangeStatus {UNEXPANDED, LOADING, EXPANDED}
 
@@ -26,6 +27,7 @@ export class TypeRangeComponent implements OnInit {
   constructor(
     private router: Router,
     private breadcrumbService: BreadcrumbService,
+    public translate: TranslateService,
     private datasetService: DatasetService) {
   }
 
@@ -48,7 +50,7 @@ export class TypeRangeComponent implements OnInit {
     if (text.startsWith('"') && text.endsWith('"')) {
       text = text.slice(1, text.length - 1);
     }
-    if (text !== value.label) {
+    if (text !== value.getLabel(this.translate.currentLang)) {
       return text;
     } else {
       return '';

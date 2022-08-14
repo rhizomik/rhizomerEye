@@ -10,7 +10,7 @@
   <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
      *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
      (click)="filterValue(value)" [class.bg-warning]="value.selected">
-    <span [title]="valueToolTip(value)">{{value.label}}</span>
+    <span [title]="valueToolTip(value)">{{value.getLabel(translate.currentLang)}}</span>
     <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
   </p>
   <div *ngIf="range.values">

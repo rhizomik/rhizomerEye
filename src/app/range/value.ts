@@ -1,24 +1,14 @@
 import { Filter } from '../breadcrumb/filter';
 import { Facet } from '../facet/facet';
+import { Labelled } from '../shared/labelled';
 
-export class Value {
-  value: string;
+export class Value extends Labelled {
   count: number;
   uri: string;
-  curie: string;
-  label: string;
   selected = false;
 
   constructor(values: Object = {}, facet: Facet, filters: Filter[]) {
-    Object.assign(<any>this, values);
-
-    if (!this.label) {
-      if (this.curie) {
-        this.label = this.curie.split(':')[1];
-      } else {
-        this.label = this.value.split('^^')[0];
-      }
-    }
+    super(values);
     if (this.uri) {
       this.value = '<' + this.uri + '>';
     } else if (this.value.indexOf('^^') > 0) {
