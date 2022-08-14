@@ -88,7 +88,7 @@ export class DetailRangeComponent implements OnInit {
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
         this.rangeService.getValuesContaining(this.datasetId, this.classId, this.facet.curie, this.range.curie,
-          this.breadcrumbService.filters, 10, term).pipe(
+          this.breadcrumbService.filters, 10, term, this.translate.currentLang).pipe(
             map(values => values.map(value => new Value(value, this.facet, this.breadcrumbService.filters))),
             tap(() => this.searchFailed = false),
             catchError(() => {

@@ -23,5 +23,5 @@
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  <ngb-highlight class="small" [result]="r.label" [term]="t"></ngb-highlight>
+  <ngb-highlight class="small" [result]="r.getLabel(translate.currentLang)" [term]="t"></ngb-highlight>
 </ng-template>
