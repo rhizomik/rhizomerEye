@@ -76,9 +76,11 @@ export class NetworkComponent implements OnInit, OnDestroy {
           uri: cls.uri,
           count: cls.instanceCount
         })));
-        forkJoin(classes.map(cls => this.facetService.getRelevantRelations(this.datasetId, cls.curie, this.facetRelevance))
-                        .map(o => o.pipe(catchError(() => of([])))))
-          .subscribe(
+        forkJoin(classes
+          .map(cls => this.facetService.getRelevantRelations(
+            this.datasetId, cls.curie, this.facetRelevance, this.translate.currentLang))
+          .map(o => o.pipe(catchError(() => of([]))))
+        ).subscribe(
             classesFacets => {
               this.relations = classesFacets.reduce((acc, val) => acc.concat(val), []);
               this.links = this.relations.map((relation: Relation) => ({
