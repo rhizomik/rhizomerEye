@@ -39,5 +39,9 @@
         "explore":"Explore all matches using the Type facet",
         "filter": "filtered from",
         "facet-search": "Search all facets values"
+    },
+    "resource": {
+        "is": "is",
+        "of": "of"
     }
 }

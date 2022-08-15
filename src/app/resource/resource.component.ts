@@ -8,6 +8,7 @@ import { Resource } from './resource';
 import { IncomingFacet } from '../facet/incomingFacet';
 import { Dataset } from '../dataset/dataset';
 import { TranslateService } from '@ngx-translate/core';
+import { FacetDomain } from '../facet/facetDomain';
 
 @Component({
   selector: 'app-resource',
@@ -66,9 +67,15 @@ export class ResourceComponent implements OnInit, OnDestroy {
     });
     this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe({
       next: (incomings) => {
-        this.incomings = incomings.sort((a, b) => a.label.localeCompare(b.label));
+        this.incomings = incomings
+          .map(incoming => new IncomingFacet(incoming))
+          .sort((a, b) =>
+            a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.incomings.forEach(incoming =>
-          incoming.domains = incoming.domains.sort((a, b) => a.label.localeCompare(b.label)));
+          incoming.domains = incoming.domains
+            .map(domain => new FacetDomain(domain))
+            .sort((a, b) =>
+              a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang))));
       },
       error: () => this.incomings = []
     });

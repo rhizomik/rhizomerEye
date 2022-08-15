@@ -1,12 +1,13 @@
 <div class="card facet p-2 mb-2">
   <h6 class="card-title p-1 mb-1">
-    <b title="{{facet.uri}}">is {{facet.label}} of</b>
+    <b title="{{facet.uri}}">{{ 'resource.is' | translate }}
+      {{facet.getLabel(translate.currentLang)}} {{ 'resource.of' | translate }}</b>
     <span class="badge badge-primary badge-pill float-right">{{facet.uses}}</span>
   </h6>
   <div *ngFor="let domain of facet.domains">
     <div class="card range p-2 mb-1">
       <p class="card-title p-1 m-0" (click)="browseIncoming(domain.curie)" style="cursor: pointer">
-        <b title="{{domain.uri}}">{{domain.label}}</b>
+        <b title="{{domain.uri}}">{{domain.getLabel(translate.currentLang)}}</b>
         <span class="badge badge-light badge-pill">{{domain.count}}</span>
       </p>
     </div>

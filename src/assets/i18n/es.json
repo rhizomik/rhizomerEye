@@ -39,5 +39,9 @@
         "explore": "Explore todas las coincidencias usando la faceta Tipo",
         "filter": "filtradas de",
         "facet-search": "Buscar en todas las facetas"
+    },
+    "resource": {
+        "is": "es",
+        "of": "de"
     }
 }
