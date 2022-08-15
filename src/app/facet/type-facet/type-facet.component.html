@@ -1,6 +1,6 @@
 <div class="card facet p-2 mb-2" [class.bg-warning]="facet.selected">
   <h6 class="card-title p-1 mb-1">
-    <b>{{facet.label}}</b>
+    <b>{{facet.getLabel(translate.currentLang)}}</b>
   </h6>
   <div *ngFor="let range of facet.ranges">
     <app-type-range [datasetId]="datasetId" [text]="text" [facet]="facet" [range]="range"></app-type-range>

@@ -58,13 +58,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
     this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
       next: (facets: Facet[]) => {
-        this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
+        this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
+          a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
         this.loadFacetClass();
         forkJoin(this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
-              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
+              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
               const paramFilters = Filter.fromParam(this.classId, this.facets, params);
               paramFilters.forEach((filter: Filter) => {
                 if (!filter.value) {

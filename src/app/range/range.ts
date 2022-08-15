@@ -1,9 +1,9 @@
 import { Value } from './value';
+import { Labelled } from '../shared/labelled';
 
-export class Range {
+export class Range extends Labelled {
   id: string;
   uri: string;
-  label: string;
   timesUsed: number;
   differentValues: number;
   curie: string;
@@ -12,7 +12,7 @@ export class Range {
   expanded: boolean;
 
   constructor(values: Object = {}) {
-    Object.assign(<any>this, values);
+    super(values);
   }
 
   static searchRange = new Range({ uri: 'http://www.w3.org/2001/XMLSchema#string', curie: 'xsd:string' });

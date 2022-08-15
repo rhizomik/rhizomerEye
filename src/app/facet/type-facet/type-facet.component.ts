@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Facet } from '../facet';
 import { Range } from '../../range/range';
 import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-type-facet',
@@ -14,7 +15,9 @@ export class TypeFacetComponent implements OnInit {
   facet: Facet;
   range: Range;
 
-  constructor() {}
+  constructor(
+    public translate: TranslateService) {
+  }
 
   ngOnInit(): void {
     this.facet = new Facet(

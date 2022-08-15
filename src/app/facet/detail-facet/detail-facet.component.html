@@ -1,6 +1,6 @@
 <div class="card facet p-2 mb-2" [class.bg-warning]="facet.selected">
   <h6 class="card-title p-1 mb-1" (click)="filterAll()" style="cursor: pointer" title="Filter all with {{facet.uri}}">
-    <b>{{facet.label}}</b>
+    <b>{{facet.getLabel(translate.currentLang)}}</b>
     <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span>
   </h6>
   <div *ngFor="let range of facet.ranges">

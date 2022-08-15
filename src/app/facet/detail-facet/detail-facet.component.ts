@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { Facet } from '../facet';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-facet',
@@ -15,6 +16,7 @@ export class DetailFacetComponent {
   @Input() ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(
+    public translate: TranslateService,
     private breadcrumbService: BreadcrumbService) {
   }
 
