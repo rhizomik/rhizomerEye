@@ -50,10 +50,11 @@ export class ClassService extends Rest2Service<Class> {
       `${environment.API}/datasets/${did}/classes`, {params: params});
   }
 
-  getTopClassesContaining(did: string, top: number, containing: string): Observable<Class[]> {
+  getTopClassesContaining(did: string, top: number, containing: string, lang: string): Observable<Class[]> {
     let params = new HttpParams();
     params = params.append('top', top.toString());
     params = params.append('containing', containing);
+    params = params.append('lang', lang);
     return this.http.get<Class[]>(
       `${environment.API}/datasets/${did}/classes`, {params: params});
   }

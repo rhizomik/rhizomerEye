@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Class } from '../class';
 import { ClassService } from '../class.service';
 import { DatasetService } from '../../dataset/dataset.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-list-class',
@@ -17,6 +18,7 @@ export class ListClassComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    public translate: TranslateService,
     private datasetService: DatasetService,
     private classService: ClassService) {
   }
@@ -29,7 +31,8 @@ export class ListClassComponent implements OnInit {
   loadClassList() {
     this.classService.getAll(this.datasetId).subscribe(
       (classes: Class[]) => {
-        this.classes = classes.sort((a, b) => a.label.localeCompare(b.label));
+        this.classes = classes.sort((a, b) =>
+          a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.totalClasses = classes.length;
       });
   }
