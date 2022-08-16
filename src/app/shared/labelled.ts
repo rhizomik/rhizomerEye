@@ -21,6 +21,9 @@ export class Labelled {
       return this.defaultLabel;
     } else if (lang && this.labels[lang]) {
       return this.labels[lang];
+    } else if (lang && Object.keys(this.labels).some(code => code.indexOf(lang) === 0)) {
+      const code = Object.keys(this.labels).find(code => code.indexOf(lang) === 0);
+      return this.labels[code];
     } else if (this.labels["undefined"]) {
       return this.labels["undefined"];
     } else if (this.labels["en"]) {

@@ -19,7 +19,7 @@ export class Property {
   }
 
   filterLangValues(lang: string): Value[] {
-    const preferred = this.values.filter(value => value.language && value.language.indexOf(lang) >= 0);
+    const preferred = this.values.filter(value => value.language && value.language.startsWith(lang));
     const noLang = this.values.filter(value => !value.language);
     return preferred.length > 0 ? preferred : (noLang.length > 0 ? noLang : this.values);
   }
