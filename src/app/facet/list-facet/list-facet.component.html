@@ -1,14 +1,14 @@
 <div id="faceted" class="row">
 
   <div id="facets" class="col-md-4 m-0">
-    <h5 class="p-1">Facets
+    <h5 class="p-1">{{ 'search.facets' | translate }}
       <span *ngIf="retrievedFacets > 0">
         <span class="badge badge-warning badge-pill">{{retrievedFacets}}</span>
         <a *ngIf="retrievedFacets < datasetClass.facetsCount" class="badge" [routerLink]=""
             (click)="loadAllFacets()" title="Load all facets"> of {{datasetClass.facetsCount}}</a>
       </span>
-      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">No facets retrieved</span>
-      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">{{ 'search.no-facets' | translate }}</span>
+      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
       <span class="d-block d-md-none d-lg-none d-xl-none float-right">
         <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
@@ -17,7 +17,7 @@
     <div class="card facet p-2 mb-2">
       <div class="input-group">
         <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #search
-               placeholder="Search all facets values" (keyup.enter)="filterContains(search)"/>
+               placeholder="{{ 'search.facet-search' | translate }}" (keyup.enter)="filterContains(search)"/>
         <div class="input-group-append">
           <button class="btn btn-sm btn-secondary" type="button" (click)="filterContains(search)">
             <span class="fa fa-search"></span>
@@ -32,10 +32,10 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <h5 class="p-1">Instances
+    <h5 class="p-1">{{ 'search.Instances' | translate }}
       <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-      <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
-      <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-instances' | translate }}</span>
+      <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
     </h5>
     <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
       <div id="spinner"></div>
@@ -49,8 +49,8 @@
                     [directionLinks]="false" size="sm"
                     (pageChange)="goToPage($event)"></ngb-pagination>
     <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
-      Showing {{resources?.length}} out of { filteredInstances, plural,
-      =1 {1 instance} other { {{filteredInstances}} instances} } filtered from {{totalInstances}}</p>
+      {{ 'search.showing' | translate }} {{resources?.length}} {{ 'search.outof' | translate }} { filteredInstances, plural,
+      =1 {1 instance} other { {{filteredInstances}} {{ 'search.instances' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
   </div>
 
 </div>

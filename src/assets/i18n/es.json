@@ -1,0 +1,47 @@
+{
+    "navbar": {
+        "about": "Sobre",
+        "datasets": "Conjuntos de datos",
+        "list": "Listar",
+        "new": "Nuevo",
+        "administration": "Administración",
+        "users": "Usuarios"
+    },
+    "overview": {
+        "details": "Detalles",
+        "searchAll": "Buscar todo...",
+        "searchClasses": "Navegar todas las clases",
+        "sorry": "Lo sentimos, no se pudieron cargar las sugerencias.",
+        "three-ch": "Escriba 3 caracteres...",
+        "no-classes": "No se encontraron clases",
+        "analyzing":"Analizando todas las clases, esto podría requerir algún tiempo...",
+        "no-class-instances": "No se encontraron instancias de clase",
+        "showing": "Mostrando",
+        "top": "las mejores",
+        "classes and": "clases y",
+        "relations": "relaciones con frequencia",
+        "show-all": "mostrar todas las relaciones",
+        "all-rel": "todas las relaciones",
+        "show-less": "mostrar menos relaciones",
+        "warning-showing-just": "Atención: mostrando solo las",
+        "classes": "clases más frecuentes"
+    },
+    "search": {
+        "facets": "Facetas",
+        "instances": "instancias",
+        "no-facets": "No se han recuperado facetas",
+        "no-instances": "No se han recuperado instancias",
+        "loading": "Cargando...",
+        "Instances": "Instancias",
+        "showing": "Mostrando",
+        "outof": "de",
+        "matches": "coincidencias",
+        "explore": "Explore todas las coincidencias usando la faceta Tipo",
+        "filter": "filtradas de",
+        "facet-search": "Buscar en todas las facetas"
+    },
+    "resource": {
+        "is": "es",
+        "of": "de"
+    }
+}

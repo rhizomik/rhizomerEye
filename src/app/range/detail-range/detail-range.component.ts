@@ -8,6 +8,7 @@ import { Value } from '../value';
 import { Filter } from '../../breadcrumb/filter';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 
 enum RangeStatus {UNEXPANDED, LOADING, EXPANDED}
 
@@ -30,6 +31,7 @@ export class DetailRangeComponent implements OnInit {
 
   constructor(
     private breadcrumbService: BreadcrumbService,
+    public translate: TranslateService,
     private rangeService: RangeService) {
   }
 
@@ -72,7 +74,7 @@ export class DetailRangeComponent implements OnInit {
     if (text.startsWith('"') && text.endsWith('"')) {
       text = text.slice(1, text.length - 1);
     }
-    if (text !== value.label) {
+    if (text !== value.getLabel(this.translate.currentLang)) {
       return text;
     } else {
       return '';
@@ -86,7 +88,7 @@ export class DetailRangeComponent implements OnInit {
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
         this.rangeService.getValuesContaining(this.datasetId, this.classId, this.facet.curie, this.range.curie,
-          this.breadcrumbService.filters, 10, term).pipe(
+          this.breadcrumbService.filters, 10, term, this.translate.currentLang).pipe(
             map(values => values.map(value => new Value(value, this.facet, this.breadcrumbService.filters))),
             tap(() => this.searchFailed = false),
             catchError(() => {

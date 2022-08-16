@@ -22,9 +22,10 @@ export class FacetService extends Rest3Service<Facet> {
       `${environment.API}/datasets/${did}/classes/${cid}/facets`, {params: params});
   }
 
-  getRelevantRelations(did: string, cid: string, relevance: number): Observable<Relation[]> {
+  getRelevantRelations(did: string, cid: string, relevance: number, lang: string): Observable<Relation[]> {
     let params = new HttpParams();
     params = params.append('relevance', relevance.toString());
+    params = params.append('lang', lang);
     return this.http.get<Relation[]>(
       `${environment.API}/datasets/${did}/classes/${cid}/relations`, {params: params});
   }

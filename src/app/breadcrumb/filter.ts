@@ -51,9 +51,9 @@ export class Filter {
     }).filter(filter => !!filter);
   }
 
-  static toString(filters: Filter[]): string {
+  static toString(filters: Filter[], lang: string): string {
     return filters
-      .map(filter => filter.facet.label + (filter.label ? ': ' + filter.label : ''))
+      .map(filter => filter.facet.getLabel(lang) + (filter.label ? ': ' + filter.label : ''))
       .join(' & ');
   }
 }

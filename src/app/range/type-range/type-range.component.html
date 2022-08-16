@@ -1,12 +1,12 @@
 <div class="card range p-2 mb-1">
-  <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.label}}</b>
+  <p class="card-title p-1 m-0"><b title="{{range.uri}}">{{range.getLabel(translate.currentLang)}}</b>
     <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
     <span *ngIf="status === rangeStatus.LOADING" class="fa fa-circle-o-notch fa-spin ml-1"></span>
   </p>
   <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
      *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
      (click)="exploreType(value)" [class.bg-warning]="value.selected">
-    <span [title]="valueToolTip(value)">{{value.label}}</span>
+    <span [title]="valueToolTip(value)">{{value.getLabel(translate.currentLang)}}</span>
     <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
   </p>
 </div>

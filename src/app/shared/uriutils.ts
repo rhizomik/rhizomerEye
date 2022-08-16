@@ -15,9 +15,9 @@ export class UriUtils {
     }
   }
 
-  static getLabel(uri: string, labels: Map<string, any>): string {
+  static getLabel(uri: string, labels: Map<string, any>, prefLang: string): string {
     if (labels.has(uri)) {
-      const label = this.pickLabel(labels.get(uri), 'en');
+      const label = this.pickLabel(labels.get(uri), prefLang);
       if (label && label.length) {
         return label;
       }
@@ -27,9 +27,12 @@ export class UriUtils {
 
   static pickLabel(value: any, prefLang: string): string {
     if (value instanceof Array) {
-      return value
-      .filter(label => label['@language'] === prefLang || label['@language'] === undefined)
-      .map(label => label['@value'] || label)[0];
+      const preferred = value
+        .filter(label => label['@language'] && label['@language'].indexOf(prefLang) === 0)
+        .map(label => label['@value'] || label)[0];
+      const noLang = value.filter(label => !label['@language']).map(label => label['@value'] || label)[0];
+      const defaultLang = value.map(label => label['@value'] || label)[0];
+      return preferred || noLang || defaultLang;
     } else if (value['@value']) {
       return value['@value'];
     } else {

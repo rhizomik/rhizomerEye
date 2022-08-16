@@ -8,7 +8,9 @@
 
 <div class="card mb-1" *ngFor="let clazz of classes">
   <div class="card-body row m-1">
-    <h4 class="card-title col-md-12 p-1"><a [routerLink]="[clazz.id]">{{clazz.label}}</a></h4>
+    <h4 class="card-title col-md-12 p-1">
+      <a [routerLink]="[clazz.id]">{{clazz.getLabel(translate.currentLang)}}</a>
+    </h4>
     <div class="col-md-4 p-1">
       <h6 class="card-subtitle text-muted">Count</h6>
       <p class="card-text">{{clazz.instanceCount}}</p>

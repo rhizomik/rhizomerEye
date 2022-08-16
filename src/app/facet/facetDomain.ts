@@ -1,11 +1,11 @@
+import { Labelled } from '../shared/labelled';
 
-export class FacetDomain {
+export class FacetDomain extends Labelled {
   uri: string;
-  label: string;
   curie: string;
   count: number;
 
   constructor(values: Object = {}) {
-    Object.assign(<any>this, values);
+    super(values);
   }
 }

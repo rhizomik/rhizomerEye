@@ -14,12 +14,20 @@ export class EndpointService extends Rest2Service<Endpoint> {
     super('datasets', 'endpoints', http);
   }
 
-  datasetGraphs(did: string, eid: number): Observable<string[]> {
+  dataGraphs(did: string, eid: number): Observable<string[]> {
     return this.http.get<string[]>(`${environment.API}/datasets/${did}/endpoints/${eid}/graphs`);
+  }
+
+  ontologyGraphs(did: string, eid: number): Observable<string[]> {
+    return this.http.get<string[]>(`${environment.API}/datasets/${did}/endpoints/${eid}/ontologies`);
   }
 
   updateGraphs(did: string, eid: number, graphs: string[]): Observable<string[]> {
     return this.http.put<string[]>(`${environment.API}/datasets/${did}/endpoints/${eid}/graphs`, graphs);
+  }
+
+  updateOntologies(did: string, eid: number, ontologies: string[]): Observable<string[]> {
+    return this.http.put<string[]>(`${environment.API}/datasets/${did}/endpoints/${eid}/ontologies`, ontologies);
   }
 
   serverGraphs(did: string, eid: number): Observable<string[]> {

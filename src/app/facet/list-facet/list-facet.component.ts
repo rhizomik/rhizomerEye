@@ -12,6 +12,7 @@ import { Filter } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 import { Range } from '../../range/range';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-list-facet',
@@ -39,6 +40,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService,
+    public translate: TranslateService,
     private classService: ClassService,
     private facetService: FacetService,
     private rangeService: RangeService) {
@@ -56,13 +58,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
     this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
       next: (facets: Facet[]) => {
-        this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
+        this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
+          a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
         this.loadFacetClass();
         forkJoin(this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
-              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
+              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
               const paramFilters = Filter.fromParam(this.classId, this.facets, params);
               paramFilters.forEach((filter: Filter) => {
                 if (!filter.value) {
@@ -106,10 +109,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         (instances) => {
           this.labels = new Map([...Description.getLabels(instances)]);
           if (instances['@graph']) {
-            this.anonResources = Description.getAnonResources(instances, this.labels);
-            this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
+            this.anonResources =
+              Description.getAnonResources(instances, this.labels, this.translate.currentLang);
+            this.resources =
+              Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels, this.translate.currentLang);
           } else if (instances['@type']) {
-            this.resources = [new Description(instances, instances['@context'], this.labels)];
+            this.resources =
+              [new Description(instances, instances['@context'], this.labels, this.translate.currentLang)];
           } else {
             this.resources = [];
           }

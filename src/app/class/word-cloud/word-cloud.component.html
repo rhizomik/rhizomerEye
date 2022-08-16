@@ -2,10 +2,10 @@
   <div *ngIf="isLoggedIn()" class="col-lg-2 form-group pull-left">
     <button id="detailsBtn" type="button" [routerLink]="['/datasets', datasetId, 'details']"
             class="btn btn-outline-primary">
-      <span class="fa fa-info-circle"></span> Details</button>
+      <span class="fa fa-info-circle"></span> {{ 'overview.details' | translate }}</button>
   </div>
   <div class="col-md form-group input-group">
-    <input id="search" type="text" class="form-control" #text placeholder="Search all..."
+    <input id="search" type="text" class="form-control" #text placeholder="{{ 'overview.searchAll' | translate }}"
            (keyup.enter)="search(text.value)"/>
     <div class="input-group-append">
       <button class="btn btn-sm btn-secondary" type="button" (click)="search(text.value)">
@@ -15,9 +15,10 @@
   </div>
   <div class="col-md-3 form-group">
     <input id="typeahead" type="text" class="form-control" [resultTemplate]="rt" #typeahead
-           [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete" placeholder="Browse all classes"
+           [class.is-invalid]="searchFailed" [ngbTypeahead]="autocomplete"
+           placeholder="{{ 'overview.searchClasses' | translate }}"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
-    <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+    <div class="invalid-feedback" *ngIf="searchFailed">{{ 'overview.sorry' | translate }}</div>
   </div>
 </div>
 
@@ -26,27 +27,27 @@
   <div class="col-sm">&nbsp;</div>
   <div class="col-sm-3">
     <small class="form-text text-muted" *ngIf="typeahead.value.length > 0 && typeahead.value.length < 3">
-      Type 3 chars...</small>
+      {{ 'overview.three-ch' | translate }}</small>
     <small class="form-text text-muted" *ngIf="typeahead.value.length > 2 && emptyAutocomplete && !searching">
-      No classes found</small>
+      {{ 'overview.no-classes' | translate }}</small>
   </div>
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  <ngb-highlight [result]="r.label" [term]="t"></ngb-highlight>
+  <ngb-highlight [result]="r.getLabel(translate.currentLang)" [term]="t"></ngb-highlight>
 </ng-template>
 
 <div *ngIf="classes === undefined" id="loading" style="text-align: center;">
   <div id="spinner"></div>
-  <div>Analyzing all classes, this might require some time...</div>
+  <div>{{ 'overview.analyzing' | translate }}</div>
 </div>
 <div *ngIf="classes?.length === 0" class="row">
-  <div class="col alert-danger m-3 text-center" >No class instances were found</div>
+  <div class="col alert-danger m-3 text-center" >{{ 'overview.no-class-instances' | translate }}</div>
 </div>
 
 <svg style="width: 100%; height: auto"></svg>
 
 <div class="row">
   <div class="col small alert-warning m-3 text-center" *ngIf="classes?.length === topClasses">
-    Warning: showing just top {{topClasses}} classes!</div>
+    {{ 'overview.warning-showing-just' | translate }} {{topClasses}} {{ 'overview.classes' | translate }}!</div>
 </div>

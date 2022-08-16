@@ -49,6 +49,11 @@ import { environment } from '../environments/environment';
 import { TypeFacetComponent } from './facet/type-facet/type-facet.component';
 import { TypeRangeComponent } from './range/type-range/type-range.component';
 
+// import ngx-translate and the http loader
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient} from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -93,7 +98,15 @@ import { TypeRangeComponent } from './range/type-range/type-range.component';
     LoginBasicModule,
     ErrorHandlerModule,
     DescriptionModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    // ngx-translate and the loader module
+    TranslateModule.forRoot({
+        loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+        }
+    })
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
@@ -104,3 +117,8 @@ import { TypeRangeComponent } from './range/type-range/type-range.component';
   entryComponents: [DatasetFormModalComponent]
 })
 export class AppModule { }
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}

@@ -1,0 +1,47 @@
+{
+    "navbar": {
+        "about": "Sobre",
+        "datasets": "Conjunts de dades",
+        "list": "Llistar",
+        "new": "Nou",
+        "administration": "Administració",
+        "users": "Usuaris"
+    },
+    "overview": {
+        "details": "Detalls",
+        "searchAll": "Buscar-ho tot...",
+        "searchClasses": "Navegar totes les classes",
+        "sorry": "Ho sento, els suggeriments no s'han pogut carregar.",
+        "three-ch": "Escriu 3 caràcters...",
+        "no-classes": "No s'ha trobat cap classe",
+        "analyzing":"Analitzant totes les classes, això podria requerir algun temps...",
+        "no-class-instances": "No s'ha trobat cap instància de classe",
+        "showing": "Mostrant",
+        "top": "les millors",
+        "classes and": "classes i",
+        "relations": "relacions amb una freqüència",
+        "show-all": "mostrar totes les relacions",
+        "all-rel": "totes les relacions",
+        "show-less": "mostrar menys relacions",
+        "warning-showing-just": "Atenció: mostrant només les",
+        "classes": "classes més freqüents"
+    },
+    "search": {
+        "facets": "Facetes",
+        "instances": "instàncies",
+        "no-facets": "No s'ha recuperat cap faceta",
+        "no-instances": "No s'ha recuperat cap instància",
+        "loading": "Carregant...",
+        "Instances": "Instàncies",
+        "showing": "Mostrant",
+        "outof": "de",
+        "matches": "coincidències",
+        "explore": "Exploreu totes les coincidències mitjançant la faceta Tipus",
+        "filter": "filtrades de",
+        "facet-search": "Cercar a totes les facetes"
+    },
+    "resource": {
+        "is": "és",
+        "of": "de"
+    }
+}

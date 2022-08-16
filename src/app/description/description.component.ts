@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from '../class/class.service';
 import { Class } from '../class/class';
 import { Value } from './value';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-description',
@@ -28,6 +29,7 @@ export class DescriptionComponent {
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
+              public translate: TranslateService,
               private classService: ClassService) { }
 
   getAnonResource(value: any) {
