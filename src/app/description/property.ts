@@ -10,7 +10,7 @@ export class Property {
     this.uri = UriUtils.expandUri(key, context);
     this.label = UriUtils.getLabel(this.uri, labels, prefLang);
     if (value instanceof Array) {
-      this.values = value.map(v => new Value(key, v, context, labels));
+      this.values = value.map(v => new Value(key, v, context, labels, prefLang));
     } else if (value['@list']) {
       this.values = value['@list'].map(v => new Value(key, v, context, labels, prefLang));
     } else {

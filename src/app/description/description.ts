@@ -25,9 +25,9 @@ export class Description {
           case '@context': { break; }
           case 'http://www.wikidata.org/prop/direct/P18':
           case 'http://xmlns.com/foaf/0.1/depiction': {
-            this.depiction = Value.getValues(key, value, context, labels); break; }
+            this.depiction = Value.getValues(key, value, context, labels, prefLang); break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
-            this.topicOf = Value.getValues(key, value, context, labels); break; }
+            this.topicOf = Value.getValues(key, value, context, labels, prefLang); break; }
           default:
             this.properties.push(new Property(key, value, context, labels, prefLang));
         }
