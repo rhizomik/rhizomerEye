@@ -32,10 +32,11 @@ export class Value {
     }
   }
 
-  static getValues(key: string, input: any, context: Object = {}, labels: Map<string, Value> = new Map()) {
+  static getValues(key: string, input: any, context: Object = {},
+                   labels: Map<string, Value> = new Map(), prefLang: string) {
     return input instanceof Array ?
-      input.map(v => new Value(key, v, context, labels)) :
-      [new Value(key, input, context, labels)];
+      input.map(v => new Value(key, v, context, labels, prefLang)) :
+      [new Value(key, input, context, labels, prefLang)];
   }
 
   isAnon() {

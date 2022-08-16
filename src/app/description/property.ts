@@ -10,7 +10,7 @@ export class Property {
     this.uri = UriUtils.expandUri(key, context);
     this.label = UriUtils.getLabel(this.uri, labels, prefLang);
     if (value instanceof Array) {
-      this.values = value.map(v => new Value(key, v, context, labels));
+      this.values = value.map(v => new Value(key, v, context, labels, prefLang));
     } else if (value['@list']) {
       this.values = value['@list'].map(v => new Value(key, v, context, labels, prefLang));
     } else {
@@ -19,7 +19,7 @@ export class Property {
   }
 
   filterLangValues(lang: string): Value[] {
-    const preferred = this.values.filter(value => value.language && value.language.indexOf(lang) >= 0);
+    const preferred = this.values.filter(value => value.language && value.language.startsWith(lang));
     const noLang = this.values.filter(value => !value.language);
     return preferred.length > 0 ? preferred : (noLang.length > 0 ? noLang : this.values);
   }

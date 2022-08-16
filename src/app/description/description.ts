@@ -2,6 +2,8 @@ import { Property } from './property';
 import { Value } from './value';
 import { UriUtils } from '../shared/uriutils';
 
+const RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+
 export class Description {
   '@id': string;
   '@type': Value[] = [];
@@ -25,9 +27,9 @@ export class Description {
           case '@context': { break; }
           case 'http://www.wikidata.org/prop/direct/P18':
           case 'http://xmlns.com/foaf/0.1/depiction': {
-            this.depiction = Value.getValues(key, value, context, labels); break; }
+            this.depiction = Value.getValues(key, value, context, labels, prefLang); break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
-            this.topicOf = Value.getValues(key, value, context, labels); break; }
+            this.topicOf = Value.getValues(key, value, context, labels, prefLang); break; }
           default:
             this.properties.push(new Property(key, value, context, labels, prefLang));
         }
@@ -63,7 +65,7 @@ export class Description {
 
   static getTypedResources(jsonld: Object,labels: Map<string, Value> = new Map(), prefLang = 'en'): Description[] {
     return jsonld['@graph']
-      .filter(instance => instance['@type'] || instance['rdf:type'])
+      .filter(instance => instance['@type'] || instance['rdf:type'] || instance[RDF_TYPE_URI])
       .map(instance => new Description(instance, jsonld['@context'], labels, prefLang));
   }
 
@@ -72,7 +74,8 @@ export class Description {
     return jsonld['@graph']
       .filter(instance =>
         instance['@type'] && Description.isOfType(instance['@type'], type, jsonld['@context']) ||
-        instance['rdf:type'] && Description.isOfType(instance['rdf:type'], type, jsonld['@context']) )
+        instance['rdf:type'] && Description.isOfType(instance['rdf:type'], type, jsonld['@context']) ||
+        instance[RDF_TYPE_URI] && Description.isOfType(instance[RDF_TYPE_URI], type, jsonld['@context']))
       .map(instance =>
         new Description(instance, jsonld['@context'], labels, prefLang));
   }

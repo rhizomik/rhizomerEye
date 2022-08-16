@@ -34,7 +34,7 @@
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  <ngb-highlight [result]="r.label" [term]="t"></ngb-highlight>
+  <ngb-highlight [result]="r.getLabel(translate.currentLang)" [term]="t"></ngb-highlight>
 </ng-template>
 
 <div *ngIf="links === undefined" id="loading" style="text-align: center;">

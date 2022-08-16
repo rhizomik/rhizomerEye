@@ -28,7 +28,7 @@ export class UriUtils {
   static pickLabel(value: any, prefLang: string): string {
     if (value instanceof Array) {
       const preferred = value
-        .filter(label => label['@language'] && label['@language'].indexOf(prefLang) >= 0)
+        .filter(label => label['@language'] && label['@language'].indexOf(prefLang) === 0)
         .map(label => label['@value'] || label)[0];
       const noLang = value.filter(label => !label['@language']).map(label => label['@value'] || label)[0];
       const defaultLang = value.map(label => label['@value'] || label)[0];
