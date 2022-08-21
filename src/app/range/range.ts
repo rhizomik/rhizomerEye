@@ -8,6 +8,7 @@ export class Range extends Labelled {
   differentValues: number;
   curie: string;
   relation: boolean;
+  allBlank: boolean;
   values: Value[];
   expanded: boolean;
 

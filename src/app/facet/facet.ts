@@ -7,6 +7,7 @@ export class Facet extends Labelled {
   range: string;
   curie: string;
   relation: boolean;
+  allBlank: boolean;
   timesUsed: number;
   differentValues: number;
   ranges: Range[];
