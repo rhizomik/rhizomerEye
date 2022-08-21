@@ -4,7 +4,7 @@ export class Dataset {
   id: string;
   public = false;
   owner: string;
-  queryType = 'OPTIMIZED';
+  queryType = 'DETAILED';
   inferenceEnabled = false;
   sampleSize: number;
   coverage: number;
