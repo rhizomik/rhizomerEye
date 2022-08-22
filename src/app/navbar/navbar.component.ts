@@ -12,8 +12,10 @@ export class NavbarComponent implements OnInit {
 
   constructor(private authService: AuthenticationBasicService,
               private translate: TranslateService) {
-    //we need to substract some info for ngx-translate to recognize the language
-    translate.setDefaultLang(navigator.language.substring(0,2));
+    this.translate.addLangs(['en', 'es', 'ca']);
+    this.translate.setDefaultLang('en');
+    this.translate.use(this.translate.getLangs().includes(this.translate.getBrowserLang()) ?
+      this.translate.getBrowserLang() : this.translate.getDefaultLang());
   }
 
   ngOnInit() {
