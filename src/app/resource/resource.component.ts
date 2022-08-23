@@ -45,7 +45,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       next: (response) => {
         if (response['@graph']) {
           this.labels = Description.getLabels(response);
-          this.anonResources = Description.getAnonResources(response, this.labels);
+          this.anonResources = Description.getAnonResources(response, this.labels, this.translate.currentLang);
           const resources = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
             .map(instance =>
