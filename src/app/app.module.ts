@@ -10,6 +10,10 @@ import { ErrorHandlerModule } from './error-handler/error-handler.module';
 import { HttpErrorInterceptor } from './error-handler/http-error-interceptor';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 import { LoginBasicModule } from './login-basic/login-basic.module';
 import { AuthenticationBasicService } from './login-basic/authentication-basic.service';
@@ -48,11 +52,6 @@ import { SearchComponent } from './search/search.component';
 import { environment } from '../environments/environment';
 import { TypeFacetComponent } from './facet/type-facet/type-facet.component';
 import { TypeRangeComponent } from './range/type-range/type-range.component';
-
-// import ngx-translate and the http loader
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {HttpClient} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -99,7 +98,7 @@ import {HttpClient} from '@angular/common/http';
     ErrorHandlerModule,
     DescriptionModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    // ngx-translate and the loader module
+    NgxSliderModule,
     TranslateModule.forRoot({
         loader: {
             provide: TranslateLoader,
