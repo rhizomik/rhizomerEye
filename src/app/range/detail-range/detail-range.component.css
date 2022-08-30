@@ -1,0 +1,28 @@
+::ng-deep .range-slider {
+  /*margin-top: -10px;*/
+}
+
+::ng-deep .range-slider .ngx-slider .ngx-slider-selection {
+  background: #007bff;
+}
+
+::ng-deep .range-slider .ngx-slider .ngx-slider-pointer {
+  width: 16px;
+  height: 16px;
+  top: -6px;
+  background-color: #ffc107;
+}
+
+::ng-deep .range-slider .ngx-slider .ngx-slider-pointer:after {
+  top: 4px;
+  left: 4px;
+  background-color: #007bff;
+}
+
+::ng-deep .range-slider .ngx-slider .ngx-slider-bubble {
+  cursor: default;
+  bottom: 12px;
+  padding: 0 0 0 6px;
+  color: #212529;
+  font-size: 80%;
+}
