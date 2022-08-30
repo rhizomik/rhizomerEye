@@ -153,6 +153,14 @@
               </div>
             </div>
 
+            <!-- Query Type input -->
+            <div class="form-check">
+              <input id="inferenceEnabled" name="inferenceEnabled" class="form-check-input" type="checkbox"
+                     [(ngModel)]="endpoint.inferenceEnabled">
+              <label class="form-check-label">Enable Inference</label>
+              <div class="small">Compute inferred types based on class hierarchies, properties domains and ranges.</div>
+            </div>
+
           </div>
 
           <!-- Button -->
