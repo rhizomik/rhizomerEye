@@ -13,6 +13,10 @@
     <span [title]="valueToolTip(value)">{{value.getLabel(translate.currentLang)}}</span>
     <span class="badge badge-secondary float-right mt-1 mb-1">{{value.count}}</span>
   </p>
+  <div class="range-slider" *ngIf="status === rangeStatus.EXPANDED && range.min && range.max">
+    <ngx-slider [options]="sliderOptions()" [value]="0" [highValue]="range.max" (userChangeEnd)="changeRange($event)">
+    </ngx-slider>
+  </div>
   <div *ngIf="range.values">
     <input id="typeahead-http" type="text" class="pl-3 form-control form-control-sm"
            [resultTemplate]="rt" [editable]='false' #autocomplete

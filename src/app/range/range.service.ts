@@ -37,4 +37,13 @@ export class RangeService extends Rest4Service<Range> {
       `${environment.API}/datasets/${did}/classes/${cid}/facets/${fid}/ranges/${rid}/valuesContaining`,
       {params: params});
   }
+
+  getMinMax(did: string, cid: string, fid: string, rid: string, filters: Filter[]): Observable<Range> {
+    let params = new HttpParams();
+    filters.forEach((filter: Filter) =>
+      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : ''), filter.value));
+    return this.http.get<Range>(
+      `${environment.API}/datasets/${did}/classes/${cid}/facets/${fid}/ranges/${rid}/minmax`,
+      {params: params});
+  }
 }

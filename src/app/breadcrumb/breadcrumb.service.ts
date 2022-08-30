@@ -31,13 +31,11 @@ export class BreadcrumbService {
 
   addFacetFilter(classId: string, facet: Facet, range: Range, value: string) {
     this.filters = this.filters.concat(new Filter(classId, facet, range, value));
-    this.filtersSelection.next(this.filters);
     this.updateLocation();
   }
 
   addFacetFilters(filters: Filter[]) {
     this.filters = filters;
-    this.filtersSelection.next(this.filters);
     this.updateLocation();
   }
 
@@ -45,8 +43,13 @@ export class BreadcrumbService {
     this.filters = this.filters.filter((filter: Filter) =>
       (filter.classId !== classId || filter.facet.id !== facet.id ||
         ( filter.range && filter.range.id !== range.id ) || filter.value !== value));
-    this.filtersSelection.next(this.filters);
     this.updateLocation();
+  }
+
+  clearFacetFiltersStartingWith(classId: string, facet: Facet, range: Range, value: string) {
+    this.filters = this.filters.filter((filter: Filter) =>
+      (filter.classId !== classId || filter.facet.id !== facet.id ||
+        ( filter.range && filter.range.id !== range.id ) || filter.value.indexOf(value) != 0 ));
   }
 
   clearFilter() {
@@ -54,7 +57,8 @@ export class BreadcrumbService {
     this.filtersSelection.next(this.filters);
   }
 
-  private updateLocation() {
+  updateLocation() {
+    this.filtersSelection.next(this.filters);
     const locationPath = this.location.path().split('?')[0];
     const locationQuery = Filter.toParam(this.filters).toString();
     this.location.go(locationPath, locationQuery);
