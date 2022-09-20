@@ -11,6 +11,8 @@ export class Range extends Labelled {
   allBlank: boolean;
   values: Value[];
   expanded: boolean;
+  min: number;
+  max: number;
 
   constructor(values: Object = {}) {
     super(values);

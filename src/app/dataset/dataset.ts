@@ -5,9 +5,6 @@ export class Dataset {
   public = false;
   owner: string;
   queryType = 'DETAILED';
-  inferenceEnabled = false;
-  sampleSize: number;
-  coverage: number;
   endpoint: Endpoint;
 
   constructor(values: Object = {}) {

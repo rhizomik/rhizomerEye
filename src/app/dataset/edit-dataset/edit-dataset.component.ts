@@ -94,9 +94,6 @@ export class EditDatasetComponent implements OnInit {
   graphChange(graph: string, isChecked: boolean) {
     if (isChecked) {
       this.endpoint.graphs.push(graph);
-      if (this.isSelectedOntology(graph)) {
-        this.ontologyChange(graph, false);
-      }
     } else {
       this.endpoint.graphs = this.endpoint.graphs.filter(item => item !== graph);
     }
@@ -105,9 +102,6 @@ export class EditDatasetComponent implements OnInit {
   ontologyChange(graph: string, isChecked: boolean) {
     if (isChecked) {
       this.endpoint.ontologies.push(graph);
-      if (this.isSelectedData(graph)) {
-        this.graphChange(graph, false);
-      }
     } else {
       this.endpoint.ontologies = this.endpoint.ontologies.filter(item => item !== graph);
     }
