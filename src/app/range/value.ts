@@ -19,6 +19,6 @@ export class Value extends Labelled {
     }
 
     this.selected = filters.filter((filter: Filter) =>
-      (filter.facet.id === facet.id && filter.value && filter.value === this.value)).length > 0;
+      (filter.facet.id === facet.id && filter.values && filter.values.includes(this.value))).length > 0;
   }
 }
