@@ -27,7 +27,12 @@ export class Filter {
         if (value.startsWith('<') && value.endsWith('>')) {
           return UriUtils.localName(value.substring(1, value.length - 1))
         } else {
-          return value.substring(1, value.length - 1);
+          const literal = value.substring(1, value.length - 1);
+          if (UriUtils.isUrl(literal)) {
+            return UriUtils.localName(literal);
+          } else {
+            return literal;
+          }
         }
       }).join(this.operator == Operator.OR ? ' or ' : ' and ') :
       null;
