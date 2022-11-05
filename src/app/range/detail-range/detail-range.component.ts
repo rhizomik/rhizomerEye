@@ -98,11 +98,7 @@ export class DetailRangeComponent implements OnInit {
     if (text.startsWith('"') && text.endsWith('"')) {
       text = text.slice(1, text.length - 1);
     }
-    if (text !== value.getLabel(this.translate.currentLang)) {
-      return text;
-    } else {
-      return '';
-    }
+    return text;
   }
 
   search: OperatorFunction<string, readonly Value[]> = (text$: Observable<string>) =>

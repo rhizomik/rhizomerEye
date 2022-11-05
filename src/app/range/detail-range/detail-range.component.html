@@ -15,7 +15,7 @@
       </label>
     </div>
   </div>
-  <p class="card-text value small pl-3 m-0" [class.border-bottom]="!lastValue"
+  <p class="card-text value small pl-3 m-0 text-truncate" [class.border-bottom]="!lastValue"
      *ngFor="let value of range.values; let lastValue=last" style="cursor: pointer"
      (click)="filterValue(value)" [class.bg-warning]="value.selected">
     <span [title]="valueToolTip(value)">{{value.getLabel(translate.currentLang)}}</span>
