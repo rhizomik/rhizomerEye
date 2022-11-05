@@ -8,7 +8,7 @@ import { RangeService } from '../../range/range.service';
 import { Class } from '../../class/class';
 import { Facet } from '../facet';
 import { Description } from '../../description/description';
-import { Filter } from '../../breadcrumb/filter';
+import { Filter, Operator } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 import { Range } from '../../range/range';
@@ -68,7 +68,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
               const paramFilters = Filter.fromParam(this.classId, this.facets, params);
               paramFilters.forEach((filter: Filter) => {
-                if (!filter.value) {
+                if (!filter.values.length) {
                   filter.facet.selected = true;
                 } else {
                   filter.range.expanded = true;
@@ -148,8 +148,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   filterContains(searchText: HTMLInputElement) {
-    this.breadcrumbService.addFacetFilter(this.classId, Facet.searchFacet, Range.searchRange,
-      '"' + searchText.value + '"');
+    this.breadcrumbService.addFacetFilterValue(this.classId, Facet.searchFacet, Range.searchRange,
+      '"' + searchText.value + '"', Operator.NONE);
     searchText.value = '';
   }
 
