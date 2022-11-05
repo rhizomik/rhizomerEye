@@ -40,6 +40,6 @@ export class BreadcrumbComponent implements OnInit {
   }
 
   removeFilter(filter: Filter){
-    this.breadService.removeFacetFilter(filter.classId, filter.facet, filter.range, filter.value)
+    this.breadService.removeFacetFilter(filter.classId, filter.facet, filter.range)
   }
 }
