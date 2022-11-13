@@ -6,6 +6,7 @@ export class Value extends Labelled {
   count: number;
   uri: string;
   selected = false;
+  negated = false;
 
   constructor(values: Object = {}, facet: Facet, filters: Filter[]) {
     super(values);
@@ -20,5 +21,7 @@ export class Value extends Labelled {
 
     this.selected = filters.filter((filter: Filter) =>
       (filter.facet.id === facet.id && filter.values && filter.values.includes(this.value))).length > 0;
+    this.negated = filters.filter((filter: Filter) =>
+      (filter.facet.id === facet.id && filter.values && filter.values.includes('!' + this.value))).length > 0;
   }
 }

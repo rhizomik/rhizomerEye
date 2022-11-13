@@ -60,10 +60,10 @@ export class Filter {
   }
 
   private static splitValues(values: string): string[] {
-    if (/<[^>]+>(?: <[^>]+>)*/.test(values)) {
-      return values.match(/<[^>]+>/g);
-    } else if (/"[^"]+"(?: "[^"]+")*/.test(values)) {
-      return values.match(/"[^"]+"/g);
+    if (/^!?<[^>]+>(?: !?<[^>]+>)*$/.test(values)) {
+      return values.match(/!?<[^>]+>/g);
+    } else if (/^!?"[^"]+"(?: !?"[^"]+")*/.test(values)) {
+      return values.match(/!?"[^"]+"/g);
     } else {
       return [];
     }
