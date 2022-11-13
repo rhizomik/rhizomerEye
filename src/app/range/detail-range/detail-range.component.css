@@ -1,5 +1,4 @@
 ::ng-deep .range-slider {
-  /*margin-top: -10px;*/
 }
 
 ::ng-deep .range-slider .ngx-slider .ngx-slider-selection {
@@ -35,7 +34,7 @@
 }
 
 .switch input {
-  display:none;
+  display: none;
 }
 
 .slider {
@@ -46,12 +45,12 @@
   right: 0;
   bottom: 0;
   background-color: #ffc107;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 20px;
 }
 
-.slider:before {
+.slider::before {
   position: absolute;
   content: "";
   height: 12px;
@@ -72,26 +71,23 @@ input:focus + .slider {
   box-shadow: 0 0 1px #ffc107;
 }
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(36px);
+input:checked + .slider::before {
   -ms-transform: translateX(36px);
   transform: translateX(36px);
 }
 
-.slider:after
-{
-  content:'And';
+.slider::after {
+  content: 'And';
   color: black;
   display: block;
   position: absolute;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
   font-size: x-small;
   font-weight: bold;
 }
 
-input:checked + .slider:after
-{
-  content:'Or';
+input:checked + .slider::after {
+  content: 'Or';
 }
