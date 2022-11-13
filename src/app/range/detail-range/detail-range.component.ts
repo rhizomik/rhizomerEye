@@ -67,6 +67,13 @@ export class DetailRangeComponent implements OnInit {
           this.rangeService.getValues(this.datasetId, this.classId, this.facet.curie, this.range.curie, filters)
             .subscribe((values: Value[]) => {
               this.range.values = values.map(value => new Value(value, this.facet, filters));
+              this.filter?.values
+                .filter(filterValue => !this.range.values.find(value => value.value === filterValue))
+                .map(filterValue => filterValue.startsWith('!') ? filterValue.substring(1) : filterValue)
+                .forEach(filterValue =>
+                  this.rangeService.getValue(this.datasetId, this.classId, this.facet.curie,
+                    this.range.curie, filterValue, filters)
+                    .subscribe(value => this.range.values.push(new Value(value, this.facet, filters))));
               this.status = RangeStatus.EXPANDED;
             });
         });

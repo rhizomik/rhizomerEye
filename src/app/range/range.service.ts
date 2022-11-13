@@ -23,6 +23,14 @@ export class RangeService extends Rest4Service<Range> {
       {params: params});
   }
 
+  getValue(did: string, cid: string, fid: string, rid: string, value: string, filters: Filter[]): Observable<Value> {
+    let params = Filter.toQuery(filters);
+    params = params.append('value', value);
+    return this.http.get<Value>(
+      `${environment.API}/datasets/${did}/classes/${cid}/facets/${fid}/ranges/${rid}`,
+      {params: params});
+  }
+
   getValuesContaining(did: string, cid: string, fid: string, rid: string, filters: Filter[],
                       top: number, containing: string, lang: string): Observable<Value[]> {
     let params = Filter.toQuery(filters);
