@@ -175,6 +175,10 @@ export class DetailRangeComponent implements OnInit {
       if (filter.values && filter.values.length > 0) {
         filter.operator = this.isOperatorOr ? Operator.OR : Operator.AND;
       }
+      if (filter.operator == Operator.OR) {
+        // TODO: negation not supported with operator OR, switch all negated to selected
+        filter.values = filter.values.map(value => value.startsWith('!') ? value.substring(1) : value);
+      }
       this.breadcrumbService.addFacetFilter(filter);
     }
   }
