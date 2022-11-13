@@ -80,16 +80,22 @@ export class DetailRangeComponent implements OnInit {
   }
 
   filterValue(value: Value) {
-    if (!value.selected) {
-      let operator = Operator.NONE;
-      if (this.filter?.values?.length > 0) {
-        operator = this.isOperatorOr ? Operator.OR : Operator.AND;
-      }
+    let operator = Operator.NONE;
+    if (this.filter?.values?.length > 0) {
+      operator = this.isOperatorOr ? Operator.OR : Operator.AND;
+    }
+    if (!value.selected && !value.negated) {
       this.breadcrumbService.addFacetFilterValue(this.classId, this.facet, this.range, value.value, operator);
       value.selected = true;
-    } else {
-      this.breadcrumbService.removeFacetFilterValue(this.classId, this.facet, this.range, value.value);
+      value.negated = false;
+    } else if (value.selected && !value.negated && !this.isOperatorOr) {
+      this.breadcrumbService.negateFacetFilterValue(this.classId, this.facet, this.range, value.value, operator);
       value.selected = false;
+      value.negated = true;
+    } else {
+      this.breadcrumbService.removeFacetFilterValue(this.classId, this.facet, this.range, value.value, value.negated);
+      value.selected = false;
+      value.negated = false;
     }
   }
 

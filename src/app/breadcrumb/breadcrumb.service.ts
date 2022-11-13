@@ -53,10 +53,24 @@ export class BreadcrumbService {
     this.updateLocation();
   }
 
-  removeFacetFilterValue(classId: string, facet: Facet, range: Range, value: string) {
+  negateFacetFilterValue(classId: string, facet: Facet, range: Range, value: string, operator: Operator) {
+    let filter = this.popFacetFilter(classId, facet, range);
+    if (!filter) {
+      this.filters = this.filters.concat(new Filter(classId, facet, range, '!' + value));
+    } else {
+      filter.values = filter.values.filter(existing => existing != value).concat('!' + value);
+      if (filter.values.length > 1) {
+        filter.operator = operator;
+      }
+      this.filters = this.filters.concat(filter);
+    }
+    this.updateLocation();
+  }
+
+  removeFacetFilterValue(classId: string, facet: Facet, range: Range, value: string, negated: boolean) {
     let filter = this.popFacetFilter(classId, facet, range);
     if (filter) {
-      filter.values = filter.values.filter(existing => existing != value);
+      filter.values = filter.values.filter(existing => existing != (negated ? '!' : '') + value);
       if (filter.values.length == 1) {
         filter.operator = Operator.NONE;
       }
