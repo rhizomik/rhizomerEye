@@ -24,14 +24,19 @@ export class Filter {
   getLabel(): string {
     return this.values && this.values.length ?
       this.values.map(value => {
+        let negated = '';
+        if (value.startsWith('!')) {
+          negated += 'not ';
+          value = value.substring(1);
+        }
         if (value.startsWith('<') && value.endsWith('>')) {
-          return UriUtils.localName(value.substring(1, value.length - 1))
+          return negated + UriUtils.localName(value.substring(1, value.length - 1))
         } else {
           const literal = value.substring(1, value.length - 1);
           if (UriUtils.isUrl(literal)) {
-            return UriUtils.localName(literal);
+            return negated + UriUtils.localName(literal);
           } else {
-            return literal;
+            return negated + literal;
           }
         }
       }).join(this.operator == Operator.OR ? ' or ' : ' and ') :
