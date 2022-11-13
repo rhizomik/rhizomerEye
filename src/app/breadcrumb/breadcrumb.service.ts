@@ -7,6 +7,7 @@ import { Filter, Operator } from './filter';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
+import { RangeService } from '../range/range.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class BreadcrumbService {
 
   constructor(private location: Location,
               private titleService: Title,
+              private rangeService: RangeService,
               private angularticsService: Angulartics2GoogleAnalytics) {
     this.breadcrumbs = new BehaviorSubject([]);
     this.filtersSelection = new BehaviorSubject([]);

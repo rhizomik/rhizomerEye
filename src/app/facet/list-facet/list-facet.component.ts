@@ -66,22 +66,43 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
-              const paramFilters = Filter.fromParam(this.classId, this.facets, params);
-              paramFilters.forEach((filter: Filter) => {
-                if (!filter.values.length) {
-                  filter.facet.selected = true;
-                } else {
-                  filter.range.expanded = true;
-                }
-              });
-              this.breadcrumbService.addFacetFilters(paramFilters);
-              this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-                (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
+              this.loadFilters(params);
             }
         );
       },
       error: () => this.router.navigate(['..'], {relativeTo: this.route})
     });
+  }
+
+  loadFilters(params: ParamMap) {
+    const paramFilters = params.keys.map(key => {
+      const value = params.get(key);
+      const facetCurie = key.split(' ')[0] || null;
+      const rangeCurie = key.split(' ')[1] || null;
+      const facet = this.facets.find(f => f.curie === facetCurie);
+      if (facet) {
+        const range = facet.ranges.find(r => r.curie === rangeCurie);
+
+        return new Filter(classId, facet, range, value);
+      } else if (facetCurie === 'rhz:contains') {
+        return new Filter(classId, Facet.searchFacet, Range.searchRange, value);
+      } else {
+        return null;
+      }
+    }).filter(filter => !!filter);
+      this.rangeService.getValue(this.datasetId, this.classId, this.f)
+
+
+    paramFilters.forEach((filter: Filter) => {
+      if (!filter.values.length) {
+        filter.facet.selected = true;
+      } else {
+        filter.range.expanded = true;
+      }
+    });
+    this.breadcrumbService.addFacetFilters(paramFilters);
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
   }
 
   loadFacetClass() {

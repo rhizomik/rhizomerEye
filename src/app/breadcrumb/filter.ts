@@ -2,6 +2,7 @@ import { Facet } from '../facet/facet';
 import { Range } from '../range/range';
 import { HttpParams } from '@angular/common/http';
 import { convertToParamMap, ParamMap } from '@angular/router';
+import { Value } from '../range/value';
 import { UriUtils } from '../shared/uriutils';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -12,7 +13,7 @@ export class Filter {
   facet: Facet;
   range: Range;
   operator: Operator;
-  values: string[];
+  values: Value[];
 
   constructor(classId: string, facet: Facet, range: Range, value: string) {
     this.classId = classId;
@@ -23,26 +24,9 @@ export class Filter {
   }
 
   getLabel(translate: TranslateService): string {
-    return this.values && this.values.length ?
-      this.values.map(value => {
-        let negated = '';
-        if (value.startsWith('!')) {
-          negated += translate.instant('breadcrumbs.not') + ' ';
-          value = value.substring(1);
-        }
-        if (value.startsWith('<') && value.endsWith('>')) {
-          return negated + UriUtils.localName(value.substring(1, value.length - 1))
-        } else {
-          const literal = value.substring(1, value.length - 1);
-          if (UriUtils.isUrl(literal)) {
-            return negated + UriUtils.localName(literal);
-          } else {
-            return negated + literal;
-          }
-        }
-      }).join(this.operator == Operator.OR ? ' ' + translate.instant('breadcrumbs.or') + ' ' :
-        ' ' + translate.instant('breadcrumbs.and') + ' ') :
-      null;
+    return this.values?.map(value => (value.negated ? translate.instant('breadcrumbs.not') + ' ' : '') + value.getLabel(translate.currentLang))
+        .join(this.operator == Operator.OR ? ' ' + translate.instant('breadcrumbs.or') + ' ' :
+          ' ' + translate.instant('breadcrumbs.and') + ' ');
   }
 
   private static parseOperator(value: string): Operator {
@@ -55,10 +39,10 @@ export class Filter {
     }
   }
 
-  private static parseValues(value: string, operator: Operator): string[] {
+  private static parseValues(value: string, operator: Operator): Value[] {
     if (!value || value == 'null') return [];
     if (operator == Operator.NONE) {
-      return [value];
+      return [new Value({}, )];
     } else if (operator == Operator.AND || operator == Operator.OR) {
       return Filter.splitValues(value.substring(value.indexOf('(') + 1, value.lastIndexOf(')')));
     } else {

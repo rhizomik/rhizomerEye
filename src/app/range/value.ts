@@ -20,8 +20,10 @@ export class Value extends Labelled {
     }
 
     this.selected = filters.filter((filter: Filter) =>
-      (filter.facet.id === facet.id && filter.values && filter.values.includes(this.value))).length > 0;
+      (filter.facet.id === facet.id && filter.values &&
+        filter.values.filter(value => value.selected && value.value === this.value))).length > 0;
     this.negated = filters.filter((filter: Filter) =>
-      (filter.facet.id === facet.id && filter.values && filter.values.includes('!' + this.value))).length > 0;
+      (filter.facet.id === facet.id && filter.values &&
+        filter.values.filter(value => value.negated && value.value === this.value))).length > 0;
   }
 }
