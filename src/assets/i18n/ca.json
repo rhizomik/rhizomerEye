@@ -38,7 +38,10 @@
         "matches": "coincidències",
         "explore": "Exploreu totes les coincidències mitjançant la faceta Tipus",
         "filter": "filtrades de",
-        "facet-search": "Cercar a totes les facetes"
+        "facet-search": "Cercar a totes les facetes",
+        "exclude": "excloure",
+        "And": "I",
+        "Or": "O"
     },
     "resource": {
         "is": "és",
