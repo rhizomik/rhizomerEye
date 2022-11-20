@@ -9,8 +9,8 @@
     <li class="badge badge-warning badge-pill m-1 text-truncate" *ngFor="let filter of filters">
       <span class="fa fa-times-circle" (click)="removeFilter(filter)"></span>
       {{filter.facet.getLabel(translate.currentLang)}}
-      <span *ngIf="filter.getLabel() && filter.facet.getLabel(translate.currentLang)">: </span>
-      <span *ngIf="filter.getLabel">{{filter.getLabel()}}</span>
+      <span *ngIf="filter.getLabel(translate) && filter.facet.getLabel(translate.currentLang)">: </span>
+      <span *ngIf="filter.getLabel(translate)">{{filter.getLabel(translate)}}</span>
     </li>
   </ul>
 </nav>

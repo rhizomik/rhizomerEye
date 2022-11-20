@@ -3,6 +3,7 @@ import { Range } from '../range/range';
 import { HttpParams } from '@angular/common/http';
 import { convertToParamMap, ParamMap } from '@angular/router';
 import { UriUtils } from '../shared/uriutils';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum Operator {NONE = '', OR = 'OR', AND = 'AND'}
 
@@ -21,12 +22,12 @@ export class Filter {
     this.values = Filter.parseValues(value, this.operator);
   }
 
-  getLabel(): string {
+  getLabel(translate: TranslateService): string {
     return this.values && this.values.length ?
       this.values.map(value => {
         let negated = '';
         if (value.startsWith('!')) {
-          negated += 'not ';
+          negated += translate.instant('breadcrumbs.not') + ' ';
           value = value.substring(1);
         }
         if (value.startsWith('<') && value.endsWith('>')) {
@@ -39,7 +40,8 @@ export class Filter {
             return negated + literal;
           }
         }
-      }).join(this.operator == Operator.OR ? ' or ' : ' and ') :
+      }).join(this.operator == Operator.OR ? ' ' + translate.instant('breadcrumbs.or') + ' ' :
+        ' ' + translate.instant('breadcrumbs.and') + ' ') :
       null;
   }
 
@@ -126,9 +128,10 @@ export class Filter {
     }).filter(filter => !!filter);
   }
 
-  static toString(filters: Filter[], lang: string): string {
+  static toString(filters: Filter[], translate: TranslateService): string {
     return filters
-      .map(filter => filter.facet.getLabel(lang) + (filter.getLabel() ? ': ' + filter.getLabel() : ''))
+      .map(filter => filter.facet.getLabel(translate.currentLang) +
+        (filter.getLabel(translate) ? ': ' + filter.getLabel(translate) : ''))
       .join(' & ');
   }
 }

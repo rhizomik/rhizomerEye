@@ -182,4 +182,12 @@ export class DetailRangeComponent implements OnInit {
       this.breadcrumbService.addFacetFilter(filter);
     }
   }
+
+  operatorLabel(): string {
+    if (this.isOperatorOr) {
+      return this.translate.instant('search.Or');
+    } else {
+      return this.translate.instant('search.And');
+    }
+  }
 }

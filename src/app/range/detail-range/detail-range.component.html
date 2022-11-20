@@ -11,7 +11,7 @@
       <label class="switch">
         <input type="checkbox" id="switch-{{facet.curie }}-{{range.curie}}"
                (change)="switchOperator()" [(ngModel)]="isOperatorOr">
-        <div class="slider round"></div>
+        <div class="slider round"><div class="slider-text text-center">{{operatorLabel()}}</div></div>
       </label>
     </div>
   </div>

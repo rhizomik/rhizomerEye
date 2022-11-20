@@ -46,5 +46,10 @@
     "resource": {
         "is": "és",
         "of": "de"
+    },
+    "breadcrumbs": {
+        "and": "i",
+        "or": "o",
+        "not": "no"
     }
 }
