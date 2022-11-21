@@ -3,7 +3,7 @@ import { Subject, Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { Facet } from '../facet';
 import { TranslateService } from '@ngx-translate/core';
-import { Filter } from '../../breadcrumb/filter';
+import { Filter, Operator } from '../../breadcrumb/filter';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -35,7 +35,7 @@ export class DetailFacetComponent implements OnInit {
 
   filterAll() {
     if (!this.facet.selected) {
-      this.breadcrumbService.addFacetFilter(new Filter(this.classId, this.facet, null, null));
+      this.breadcrumbService.addFacetFilter(new Filter(this.classId, this.facet, null, Operator.NONE, []));
       this.facet.selected = true;
     } else {
       this.breadcrumbService.removeFacetFilter(this.classId, this.facet, null);

@@ -2,8 +2,9 @@ import { Facet } from '../facet/facet';
 import { Range } from '../range/range';
 import { HttpParams } from '@angular/common/http';
 import { convertToParamMap, ParamMap } from '@angular/router';
-import { UriUtils } from '../shared/uriutils';
+import { RangeValue } from '../range/rangeValue';
 import { TranslateService } from '@ngx-translate/core';
+import { UriUtils } from '../shared/uriutils';
 
 export enum Operator {NONE = '', OR = 'OR', AND = 'AND'}
 
@@ -12,40 +13,24 @@ export class Filter {
   facet: Facet;
   range: Range;
   operator: Operator;
-  values: string[];
+  values: RangeValue[];
 
-  constructor(classId: string, facet: Facet, range: Range, value: string) {
+  constructor(classId: string, facet: Facet, range: Range, operator: Operator, values: RangeValue[]) {
     this.classId = classId;
     this.facet = facet;
     this.range = range;
-    this.operator = Filter.parseOperator(value);
-    this.values = Filter.parseValues(value, this.operator);
+    this.operator = operator;
+    this.values = values;
   }
 
   getLabel(translate: TranslateService): string {
-    return this.values && this.values.length ?
-      this.values.map(value => {
-        let negated = '';
-        if (value.startsWith('!')) {
-          negated += translate.instant('breadcrumbs.not') + ' ';
-          value = value.substring(1);
-        }
-        if (value.startsWith('<') && value.endsWith('>')) {
-          return negated + UriUtils.localName(value.substring(1, value.length - 1))
-        } else {
-          const literal = value.substring(1, value.length - 1);
-          if (UriUtils.isUrl(literal)) {
-            return negated + UriUtils.localName(literal);
-          } else {
-            return negated + literal;
-          }
-        }
-      }).join(this.operator == Operator.OR ? ' ' + translate.instant('breadcrumbs.or') + ' ' :
-        ' ' + translate.instant('breadcrumbs.and') + ' ') :
-      null;
+    return this.values?.map(value =>
+      (value.negated ? translate.instant('breadcrumbs.not') + ' ' : '') + value.getLabel(translate.currentLang))
+      .join(this.operator == Operator.OR ? ' ' + translate.instant('breadcrumbs.or') + ' ' :
+          ' ' + translate.instant('breadcrumbs.and') + ' ');
   }
 
-  private static parseOperator(value: string): Operator {
+  public static parseOperator(value: string): Operator {
     if (value && value.startsWith('OR(') && value.endsWith(')')) {
       return Operator.OR
     } else if (value && value.startsWith('AND(') && value.endsWith(')')) {
@@ -55,34 +40,48 @@ export class Filter {
     }
   }
 
-  private static parseValues(value: string, operator: Operator): string[] {
+  public static parseValues(value: string, facet: Facet, operator: Operator): RangeValue[] {
     if (!value || value == 'null') return [];
     if (operator == Operator.NONE) {
-      return [value];
+      return Filter.splitValues(value, facet);
     } else if (operator == Operator.AND || operator == Operator.OR) {
-      return Filter.splitValues(value.substring(value.indexOf('(') + 1, value.lastIndexOf(')')));
+      return Filter.splitValues(value.substring(value.indexOf('(') + 1, value.lastIndexOf(')')), facet);
     } else {
       return [];
     }
   }
 
-  private static splitValues(values: string): string[] {
+  private static splitValues(values: string, facet: Facet): RangeValue[] {
     if (/^!?<[^>]+>(?: !?<[^>]+>)*$/.test(values)) {
-      return values.match(/!?<[^>]+>/g);
+      return values.match(/!?<[^>]+>/g).map(match => {
+        const negated = match.startsWith('!');
+        const uri = match.substring(negated ? 2 : 1, match.length -1);
+        const rangeValue = new RangeValue({ uri, curie: ':' + UriUtils.localName(uri) }, facet, []);
+        rangeValue.selected = true;
+        rangeValue.negated = negated;
+        return rangeValue;
+      });
     } else if (/^!?"[^"]+"(?: !?"[^"]+")*/.test(values)) {
-      return values.match(/!?"[^"]+"/g);
+      return values.match(/!?"[^"]+"/g).map(match => {
+        const negated = match.startsWith('!');
+        const value = match.substring(negated ? 2 : 1, match.length -1);
+        const rangeValue = new RangeValue({ value }, facet, []);
+        rangeValue.selected = true;
+        rangeValue.negated = negated;
+        return rangeValue;
+      });
     } else {
       return [];
     }
   }
 
-  private static valuesToParam(values: string[], operator: Operator): string {
+  private static valuesToParam(values: RangeValue[], operator: Operator): string {
     if (!values.length) return 'null';
     let toParam = '';
     if (operator != Operator.NONE) {
-      toParam += operator + '(' + values.join(' ') + ')';
+      toParam += operator + '(' + values.map(value => (value.negated ? '!' : '') + value.value).join(' ') + ')';
     } else {
-      toParam += values.join(' ');
+      toParam += values.map(value => (value.negated ? '!' : '') + value.value).join(' ');
     }
     return toParam;
   }
@@ -109,23 +108,6 @@ export class Filter {
       params[filter.facet.curie + (filter.range ? ' ' + filter.range.curie : '')] =
         this.valuesToParam(filter.values, filter.operator));
     return convertToParamMap(params);
-  }
-
-  static fromParam(classId: string, facets: Facet[], params: ParamMap): Filter[] {
-    return params.keys.map(key => {
-      const value = params.get(key);
-      const facetCurie = key.split(' ')[0] || null;
-      const rangeCurie = key.split(' ')[1] || null;
-      const facet = facets.find(f => f.curie === facetCurie);
-      if (facet) {
-        const range = facet.ranges.find(r => r.curie === rangeCurie);
-        return new Filter(classId, facet, range, value);
-      } else if (facetCurie === 'rhz:contains') {
-        return new Filter(classId, Facet.searchFacet, Range.searchRange, value);
-      } else {
-        return null;
-      }
-    }).filter(filter => !!filter);
   }
 
   static toString(filters: Filter[], translate: TranslateService): string {

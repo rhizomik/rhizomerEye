@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 import { Range } from '../../range/range';
 import { TranslateService } from '@ngx-translate/core';
+import { RangeValue } from '../../range/rangeValue';
 
 @Component({
   selector: 'app-list-facet',
@@ -66,22 +67,42 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
-              const paramFilters = Filter.fromParam(this.classId, this.facets, params);
-              paramFilters.forEach((filter: Filter) => {
-                if (!filter.values.length) {
-                  filter.facet.selected = true;
-                } else {
-                  filter.range.expanded = true;
-                }
-              });
-              this.breadcrumbService.addFacetFilters(paramFilters);
-              this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-                (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
+              this.loadFilters(params);
             }
         );
       },
       error: () => this.router.navigate(['..'], {relativeTo: this.route})
     });
+  }
+
+  loadFilters(params: ParamMap) {
+    const paramFilters = params.keys.map(key => {
+      const valueParam = params.get(key);
+      const facetCurie = key.split(' ')[0] || null;
+      const rangeCurie = key.split(' ')[1] || null;
+      const facet = this.facets.find(f => f.curie === facetCurie);
+      if (facet) {
+        const range = facet.ranges.find(r => r.curie === rangeCurie);
+        const operator = Filter.parseOperator(valueParam);
+        const values = Filter.parseValues(valueParam, facet, operator);
+        return new Filter(this.classId, facet, range, operator, values);
+      } else if (facetCurie === 'rhz:contains') {
+        return new Filter(this.classId, Facet.searchFacet, Range.searchRange, Operator.NONE,
+          [new RangeValue({ value: valueParam }, Facet.searchFacet, [])]);
+      } else {
+        return null;
+      }
+    }).filter(filter => !!filter);
+    paramFilters.forEach((filter: Filter) => {
+      if (!filter.values.length) {
+        filter.facet.selected = true;
+      } else {
+        filter.range.expanded = true;
+      }
+    });
+    this.breadcrumbService.addFacetFilters(paramFilters);
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
   }
 
   loadFacetClass() {
@@ -149,7 +170,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   filterContains(searchText: HTMLInputElement) {
     this.breadcrumbService.addFacetFilterValue(this.classId, Facet.searchFacet, Range.searchRange,
-      '"' + searchText.value + '"', Operator.NONE);
+      new RangeValue({ value: searchText.value }, Facet.searchFacet, []), Operator.NONE);
     searchText.value = '';
   }
 

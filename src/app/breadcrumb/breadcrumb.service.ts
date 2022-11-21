@@ -7,6 +7,8 @@ import { Filter, Operator } from './filter';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
+import { RangeService } from '../range/range.service';
+import { RangeValue } from '../range/rangeValue';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,7 @@ export class BreadcrumbService {
 
   constructor(private location: Location,
               private titleService: Title,
+              private rangeService: RangeService,
               private angularticsService: Angulartics2GoogleAnalytics) {
     this.breadcrumbs = new BehaviorSubject([]);
     this.filtersSelection = new BehaviorSubject([]);
@@ -39,10 +42,10 @@ export class BreadcrumbService {
     this.updateLocation();
   }
 
-  addFacetFilterValue(classId: string, facet: Facet, range: Range, value: string, operator: Operator) {
+  addFacetFilterValue(classId: string, facet: Facet, range: Range, value: RangeValue, operator: Operator) {
     let filter = this.popFacetFilter(classId, facet, range);
     if (!filter) {
-      this.filters = this.filters.concat(new Filter(classId, facet, range, value));
+      this.filters = this.filters.concat(new Filter(classId, facet, range, operator, [value]));
     } else {
       filter.values = filter.values.concat(value);
       if (filter.values.length > 1) {
@@ -53,12 +56,14 @@ export class BreadcrumbService {
     this.updateLocation();
   }
 
-  negateFacetFilterValue(classId: string, facet: Facet, range: Range, value: string, operator: Operator) {
+  negateFacetFilterValue(classId: string, facet: Facet, range: Range, value: RangeValue, operator: Operator) {
+    const negatedValue = value;
+    negatedValue.negated = true;
     let filter = this.popFacetFilter(classId, facet, range);
     if (!filter) {
-      this.filters = this.filters.concat(new Filter(classId, facet, range, '!' + value));
+      this.filters = this.filters.concat(new Filter(classId, facet, range, Operator.NONE, [negatedValue]));
     } else {
-      filter.values = filter.values.filter(existing => existing != value).concat('!' + value);
+      filter.values = filter.values.filter(existing => existing.value !== negatedValue.value).concat(negatedValue);
       if (filter.values.length > 1) {
         filter.operator = operator;
       }
@@ -67,10 +72,10 @@ export class BreadcrumbService {
     this.updateLocation();
   }
 
-  removeFacetFilterValue(classId: string, facet: Facet, range: Range, value: string, negated: boolean) {
+  removeFacetFilterValue(classId: string, facet: Facet, range: Range, value: RangeValue) {
     let filter = this.popFacetFilter(classId, facet, range);
     if (filter) {
-      filter.values = filter.values.filter(existing => existing != (negated ? '!' : '') + value);
+      filter.values = filter.values.filter(existing => existing.value !== value.value);
       if (filter.values.length == 1) {
         filter.operator = Operator.NONE;
       }

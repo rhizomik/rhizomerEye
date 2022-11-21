@@ -49,6 +49,8 @@
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 20px;
+  font-size: x-small;
+  font-weight: bold;
 }
 
 .slider::before {
@@ -75,11 +77,6 @@ input:focus + .slider {
 input:checked + .slider::before {
   -ms-transform: translateX(36px);
   transform: translateX(36px);
-}
-
-.slider {
-  font-size: x-small;
-  font-weight: bold;
 }
 
 .slider::after {

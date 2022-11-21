@@ -4,7 +4,7 @@ import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { RangeService } from '../range.service';
 import { Facet } from '../../facet/facet';
 import { Range } from '../range';
-import { Value } from '../value';
+import { RangeValue } from '../rangeValue';
 import { Filter, Operator } from '../../breadcrumb/filter';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
@@ -65,16 +65,16 @@ export class DetailRangeComponent implements OnInit {
           this.filter = this.breadcrumbService.getFacetFilter(this.classId, this.facet, this.range);
           this.isOperatorOr = this.filter && this.filter.operator == Operator.OR;
           this.rangeService.getValues(this.datasetId, this.classId, this.facet.curie, this.range.curie, filters)
-            .subscribe((values: Value[]) => {
-              this.range.values = values.map(value => new Value(value, this.facet, filters));
-              this.filter?.values
-                .filter(filterValue => !this.range.values.find(value => value.value === filterValue))
-                .map(filterValue => filterValue.startsWith('!') ? filterValue.substring(1) : filterValue)
-                .forEach(filterValue =>
-                  this.rangeService.getValue(this.datasetId, this.classId, this.facet.curie,
-                    this.range.curie, filterValue, filters)
-                    .subscribe(value => this.range.values.push(new Value(value, this.facet, filters))));
-              this.status = RangeStatus.EXPANDED;
+            .pipe(map(response => response.map(value => new RangeValue(value, this.facet, filters)))).subscribe(
+              (rangeValues: RangeValue[]) => {
+                this.range.values = rangeValues;
+                this.filter?.values
+                  .filter(filterValue => !this.range.values.find(value => value.value === filterValue.value))
+                  .forEach(filterValue =>
+                    this.rangeService.getValue(this.datasetId, this.classId, this.facet.curie,
+                      this.range.curie, filterValue.value, filters)
+                      .subscribe(value => this.range.values.push(new RangeValue(value, this.facet, filters))));
+                this.status = RangeStatus.EXPANDED;
             });
         });
     }
@@ -86,27 +86,27 @@ export class DetailRangeComponent implements OnInit {
     this.status = RangeStatus.UNEXPANDED;
   }
 
-  filterValue(value: Value) {
+  filterValue(value: RangeValue) {
     let operator = Operator.NONE;
     if (this.filter?.values?.length > 0) {
       operator = this.isOperatorOr ? Operator.OR : Operator.AND;
     }
     if (!value.selected && !value.negated) {
-      this.breadcrumbService.addFacetFilterValue(this.classId, this.facet, this.range, value.value, operator);
       value.selected = true;
       value.negated = false;
+      this.breadcrumbService.addFacetFilterValue(this.classId, this.facet, this.range, value, operator);
     } else if (value.selected && !value.negated && !this.isOperatorOr) {
-      this.breadcrumbService.negateFacetFilterValue(this.classId, this.facet, this.range, value.value, operator);
       value.selected = false;
       value.negated = true;
+      this.breadcrumbService.negateFacetFilterValue(this.classId, this.facet, this.range, value, operator);
     } else {
-      this.breadcrumbService.removeFacetFilterValue(this.classId, this.facet, this.range, value.value, value.negated);
       value.selected = false;
       value.negated = false;
+      this.breadcrumbService.removeFacetFilterValue(this.classId, this.facet, this.range, value);
     }
   }
 
-  valueToolTip(value: Value) {
+  valueToolTip(value: RangeValue) {
     let text: string = value.value;
     if (text.startsWith('"') && text.endsWith('"')) {
       text = text.slice(1, text.length - 1);
@@ -114,7 +114,7 @@ export class DetailRangeComponent implements OnInit {
     return text;
   }
 
-  search: OperatorFunction<string, readonly Value[]> = (text$: Observable<string>) =>
+  search: OperatorFunction<string, readonly RangeValue[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(500),
       distinctUntilChanged(),
@@ -122,7 +122,7 @@ export class DetailRangeComponent implements OnInit {
       switchMap(term => term.length < 3 ? of([]) :
         this.rangeService.getValuesContaining(this.datasetId, this.classId, this.facet.curie, this.range.curie,
           this.isOperatorOr ? [] : this.breadcrumbService.filters, 10, term, this.translate.currentLang).pipe(
-            map(values => values.map(value => new Value(value, this.facet, this.breadcrumbService.filters))),
+            map(values => values.map(value => new RangeValue(value, this.facet, this.breadcrumbService.filters))),
             tap(() => this.searchFailed = false),
             catchError(() => {
               this.searchFailed = true;
@@ -141,14 +141,14 @@ export class DetailRangeComponent implements OnInit {
   changeRange(changeContext: ChangeContext) {
     let filter = this.breadcrumbService.popFacetFilter(this.classId, this.facet, this.range);
     if (!filter) {
-      filter = new Filter(this.classId, this.facet, this.range, '');
+      filter = new Filter(this.classId, this.facet, this.range, Operator.NONE, []);
     }
     if (changeContext.pointerType == PointerType.Min) {
-      filter.values = filter.values.filter(value => !value.startsWith('"≧'));
-      filter.values.push('"≧' + changeContext.value + '"');
+      filter.values = filter.values.filter(value => !value.value.startsWith('"≧'));
+      filter.values.push(new RangeValue({ value: '≧' + changeContext.value }, this.facet, []));
     } else if (changeContext.pointerType == PointerType.Max) {
-      filter.values = filter.values.filter(value => !value.startsWith('"≦'));
-      filter.values.push('"≦' + changeContext.highValue + '"');
+      filter.values = filter.values.filter(value => !value.value.startsWith('"≦'));
+      filter.values.push(new RangeValue({ value: '≦' + changeContext.highValue }, this.facet, []));
     }
     if (filter.values.length > 1) {
       filter.operator = Operator.AND;
@@ -177,7 +177,7 @@ export class DetailRangeComponent implements OnInit {
       }
       if (filter.operator == Operator.OR) {
         // TODO: negation not supported with operator OR, switch all negated to selected
-        filter.values = filter.values.map(value => value.startsWith('!') ? value.substring(1) : value);
+        filter.values = filter.values.map(value => { value.negated = false; return value; } );
       }
       this.breadcrumbService.addFacetFilter(filter);
     }
