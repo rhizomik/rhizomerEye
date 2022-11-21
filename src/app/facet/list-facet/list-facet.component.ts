@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
 import { Range } from '../../range/range';
 import { TranslateService } from '@ngx-translate/core';
+import { RangeValue } from '../../range/rangeValue';
 
 @Component({
   selector: 'app-list-facet',
@@ -76,23 +77,22 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   loadFilters(params: ParamMap) {
     const paramFilters = params.keys.map(key => {
-      const value = params.get(key);
+      const valueParam = params.get(key);
       const facetCurie = key.split(' ')[0] || null;
       const rangeCurie = key.split(' ')[1] || null;
       const facet = this.facets.find(f => f.curie === facetCurie);
       if (facet) {
         const range = facet.ranges.find(r => r.curie === rangeCurie);
-
-        return new Filter(classId, facet, range, value);
+        const operator = Filter.parseOperator(valueParam);
+        const values = Filter.parseValues(valueParam, facet, operator);
+        return new Filter(this.classId, facet, range, operator, values);
       } else if (facetCurie === 'rhz:contains') {
-        return new Filter(classId, Facet.searchFacet, Range.searchRange, value);
+        return new Filter(this.classId, Facet.searchFacet, Range.searchRange, Operator.NONE,
+          [new RangeValue({ value: valueParam }, Facet.searchFacet, [])]);
       } else {
         return null;
       }
     }).filter(filter => !!filter);
-      this.rangeService.getValue(this.datasetId, this.classId, this.f)
-
-
     paramFilters.forEach((filter: Filter) => {
       if (!filter.values.length) {
         filter.facet.selected = true;
@@ -170,7 +170,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   filterContains(searchText: HTMLInputElement) {
     this.breadcrumbService.addFacetFilterValue(this.classId, Facet.searchFacet, Range.searchRange,
-      '"' + searchText.value + '"', Operator.NONE);
+      new RangeValue({ value: searchText.value }, Facet.searchFacet, []), Operator.NONE);
     searchText.value = '';
   }
 
