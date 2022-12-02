@@ -38,10 +38,18 @@
         "matches": "matches",
         "explore":"Explore all matches using the Type facet",
         "filter": "filtered from",
-        "facet-search": "Search all facets values"
+        "facet-search": "Search all facets values",
+        "exclude": "exclude",
+        "And": "And",
+        "Or": "Or"
     },
     "resource": {
         "is": "is",
         "of": "of"
+    },
+    "breadcrumbs": {
+        "and": "and",
+        "or": "or",
+        "not": "not"
     }
 }

@@ -2,10 +2,11 @@ import { Filter } from '../breadcrumb/filter';
 import { Facet } from '../facet/facet';
 import { Labelled } from '../shared/labelled';
 
-export class Value extends Labelled {
+export class RangeValue extends Labelled {
   count: number;
   uri: string;
   selected = false;
+  negated = false;
 
   constructor(values: Object = {}, facet: Facet, filters: Filter[]) {
     super(values);
@@ -17,8 +18,8 @@ export class Value extends Labelled {
     } else {
       this.value = '\"' + this.value + '\"';
     }
-
-    this.selected = filters.filter((filter: Filter) =>
-      (filter.facet.id === facet.id && filter.value && filter.value === this.value)).length > 0;
+    const filter = filters.find(f => f.facet.id === facet.id && f.range.uri === facet.range);
+    this.selected = filter?.values.find(value => value.value === this.value)?.selected || false;
+    this.negated = filter?.values.find(value => value.value === this.value)?.negated || false;
   }
 }

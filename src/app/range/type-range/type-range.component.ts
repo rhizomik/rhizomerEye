@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { Facet } from '../../facet/facet';
 import { Range } from '../range';
-import { Value } from '../value';
+import { RangeValue } from '../rangeValue';
 import { DatasetService } from '../../dataset/dataset.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -39,13 +39,13 @@ export class TypeRangeComponent implements OnInit {
   first100Values(range: Range, text: string) {
     this.status = RangeStatus.LOADING;
     this.datasetService.searchTypesFacetValues(this.datasetId, text).subscribe(
-      (values: Value[]) => {
-        range.values = values.map(value => new Value(value, this.facet, []));
+      (values: RangeValue[]) => {
+        range.values = values.map(value => new RangeValue(value, this.facet, []));
         this.status = RangeStatus.EXPANDED;
       });
   }
 
-  valueToolTip(value: Value) {
+  valueToolTip(value: RangeValue) {
     let text: string = value.value;
     if (text.startsWith('"') && text.endsWith('"')) {
       text = text.slice(1, text.length - 1);
@@ -57,7 +57,7 @@ export class TypeRangeComponent implements OnInit {
     }
   }
 
-  exploreType(value: Value) {
+  exploreType(value: RangeValue) {
     if (this.datasetId === 'default') {
       this.router.navigate(['/overview', value.curie],
         { queryParams: { 'rhz:contains xsd:string': '"' + this.text.getValue() + '"' } });

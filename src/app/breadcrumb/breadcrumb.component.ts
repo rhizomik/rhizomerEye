@@ -26,7 +26,7 @@ export class BreadcrumbComponent implements OnInit {
       breadcrumbs => {
         this.breadcrumbs = breadcrumbs;
         this.titleService.setTitle(Breadcrumb.toString(this.breadcrumbs) +
-          (this.filters.length ? ' - ' + Filter.toString(this.filters, this.translate.currentLang) : ''));
+          (this.filters.length ? ' - ' + Filter.toString(this.filters, this.translate) : ''));
       }
     );
     this.breadService.filtersSelection.subscribe(
@@ -34,12 +34,12 @@ export class BreadcrumbComponent implements OnInit {
         this.filters = filters;
         const currentTitle = this.titleService.getTitle();
         this.titleService.setTitle(currentTitle +
-          (this.filters.length ? ' - ' + Filter.toString(this.filters, this.translate.currentLang) : ''));
+          (this.filters.length ? ' - ' + Filter.toString(this.filters, this.translate) : ''));
       }
     );
   }
 
   removeFilter(filter: Filter){
-    this.breadService.removeFacetFilter(filter.classId, filter.facet, filter.range, filter.value)
+    this.breadService.removeFacetFilter(filter.classId, filter.facet, filter.range)
   }
 }

@@ -120,7 +120,13 @@ export class ResourceComponent implements OnInit, OnDestroy {
         } else {
           remoteResource = new Resource(remote, remote['@context'], new Map(), new Map(), this.translate.currentLang);
         }
-        this.resource['@id'] ? this.resource.combine(remoteResource) : this.resource = remoteResource;
+        if (remoteResource) {
+          if (this.resource['@id']) {
+            this.resource.combine(remoteResource);
+          } else {
+            this.resource = remoteResource;
+          }
+        }
         if (!this.resource['@id']) {
           this.onNoData();
         }

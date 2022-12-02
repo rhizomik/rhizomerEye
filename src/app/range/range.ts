@@ -1,4 +1,4 @@
-import { Value } from './value';
+import { RangeValue } from './rangeValue';
 import { Labelled } from '../shared/labelled';
 
 export class Range extends Labelled {
@@ -9,7 +9,7 @@ export class Range extends Labelled {
   curie: string;
   relation: boolean;
   allBlank: boolean;
-  values: Value[];
+  values: RangeValue[];
   expanded: boolean;
   min: number;
   max: number;

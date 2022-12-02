@@ -38,10 +38,18 @@
         "matches": "coincidencias",
         "explore": "Explore todas las coincidencias usando la faceta Tipo",
         "filter": "filtradas de",
-        "facet-search": "Buscar en todas las facetas"
+        "facet-search": "Buscar en todas las facetas",
+        "exclude": "excluir",
+        "And": "Y",
+        "Or": "O"
     },
     "resource": {
         "is": "es",
         "of": "de"
+    },
+    "breadcrumbs": {
+        "and": "y",
+        "or": "o",
+        "not": "no"
     }
 }
