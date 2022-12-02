@@ -105,6 +105,14 @@ h5 {
   background-color: rgb(160, 110, 139);
 }
 
+.slider-text {
+  margin-top: 0 !important;
+}
+
+.slider {
+  background-color: #FFF176 !important;
+}
+
 /*==============================================================================================*/
 /*WARNING COLORS*/
 /*Changed warning color to something less vibrant.*/
