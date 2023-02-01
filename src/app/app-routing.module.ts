@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule, UrlSegment } from '@angular/router';
 import { LoggedInGuard } from './login-basic/loggedin.guard';
 import { AdministratorGuard } from './login-basic/administrator.guard';
@@ -17,6 +17,7 @@ import { WordCloudComponent } from './class/word-cloud/word-cloud.component';
 import { NetworkComponent } from './class/network/network.component';
 import { ResourceComponent } from './resource/resource.component';
 import { LoginFormComponent } from './login-basic/login-form.component';
+import { SearchComponent } from './search/search.component';
 import { ChartRepresentationComponent } from './facet/chart-representation/chart-representation.component';
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'datasets/:did/edit', component: EditDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/details', component: DetailDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/network', component: NetworkComponent },
+  { path: 'datasets/:did/search', component: SearchComponent },
   { path: 'datasets/:did/:cid/detail', component: DetailClassComponent, canActivate: [LoggedInGuard] },
   { path: 'datasets/:did/:cid/resource', component: ResourceComponent },
   { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>
@@ -37,6 +39,7 @@ const routes: Routes = [
   { path: 'users/:id', component: UserDetailComponent, canActivate: [LoggedInGuard] },
   { path: 'users', component: UserListComponent, canActivate: [AdministratorGuard] },
   { path: 'about', component: AboutComponent },
+  { path: 'overview/search', component: SearchComponent },
   { path: 'overview/:cid', component: ListFacetComponent },
   { path: 'overview/:cid/resource', component: ResourceComponent },
   { path: 'overview/:cid/edit-resource', loadChildren: () =>
@@ -52,7 +55,7 @@ const routes: Routes = [
 export function nonStaticFiles(url: UrlSegment[]) {
   return url.length === 0 ||
          ( !(url[0].path === 'html') && !(url[0].path === 'images') &&
-           !(url[0].path === 'ontologies') ) ||
+           !(url[0].path === 'ontologies') && !(url[0].path === '.well-known') ) ||
          ( (url[0].path === 'ontologies') && !url[url.length - 1].path.includes('.')) ?
          ({consumed: url}) : null;
 }

@@ -9,6 +9,11 @@ import { AppComponent } from './app.component';
 import { ErrorHandlerModule } from './error-handler/error-handler.module';
 import { HttpErrorInterceptor } from './error-handler/http-error-interceptor';
 import { Angulartics2Module } from 'angulartics2';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 import { LoginBasicModule } from './login-basic/login-basic.module';
 import { AuthenticationBasicService } from './login-basic/authentication-basic.service';
@@ -43,11 +48,12 @@ import { DatasetFormModalComponent } from './dataset/edit-dataset/dataset-form-m
 import { DescriptionModule } from './description/description.module';
 import { ResourceComponent } from './resource/resource.component';
 import { DetailIncomingFacetComponent } from './facet/detail-incoming-facet/detail-incoming-facet.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { SearchComponent } from './search/search.component';
+import { TypeFacetComponent } from './facet/type-facet/type-facet.component';
+import { TypeRangeComponent } from './range/type-range/type-range.component';
 import { ChartRepresentationComponent } from './facet/chart-representation/chart-representation.component';
 import { GoogleChartsModule } from 'angular-google-charts';
-
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -74,6 +80,9 @@ import { GoogleChartsModule } from 'angular-google-charts';
     DatasetFormModalComponent,
     ResourceComponent,
     DetailIncomingFacetComponent,
+    SearchComponent,
+    TypeFacetComponent,
+    TypeRangeComponent,
     ChartRepresentationComponent
   ],
   imports: [
@@ -91,8 +100,16 @@ import { GoogleChartsModule } from 'angular-google-charts';
     LoginBasicModule,
     ErrorHandlerModule,
     DescriptionModule,
-    GoogleChartsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    NgxSliderModule,
+    TranslateModule.forRoot({
+        loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+        }
+    }),
+    GoogleChartsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
@@ -104,3 +121,8 @@ import { GoogleChartsModule } from 'angular-google-charts';
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}

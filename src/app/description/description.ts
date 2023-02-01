@@ -2,6 +2,8 @@ import { Property } from './property';
 import { Value } from './value';
 import { UriUtils } from '../shared/uriutils';
 
+const RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+
 export class Description {
   '@id': string;
   '@type': Value[] = [];
@@ -11,7 +13,7 @@ export class Description {
   depiction: Value[] = [];
   topicOf: Value[] = [];
 
-  constructor(values: Object = {}, context: Object = {}, labels: Map<string, any> = new Map()) {
+  constructor(values: Object = {}, context: Object = {}, labels: Map<string, any> = new Map(), prefLang = 'en') {
     Object.entries(values).forEach(
       ([key, value]) => {
         const expandedUri = UriUtils.expandUri(key, context);
@@ -19,41 +21,63 @@ export class Description {
           case '@id': {
             if ((<string>value).startsWith('_:')) { this['@id'] = value;
             } else { this['@id'] = UriUtils.expandUri(value, context); } break; }
-          case '@type': { this['@type'] = this.processTypes(value, context, labels); break; }
+          case '@type': { this['@type'] = this.processTypes(value, context, labels, prefLang); break; }
+          case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type': {
+            this['@type'] = this.processTypes(value, context, labels, prefLang); break; }
           case '@context': { break; }
           case 'http://www.wikidata.org/prop/direct/P18':
           case 'http://xmlns.com/foaf/0.1/depiction': {
-            this.depiction = Value.getValues(key, value, context, labels); break; }
+            this.depiction = Value.getValues(key, value, context, labels, prefLang); break; }
           case 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': {
-            this.topicOf = Value.getValues(key, value, context, labels); break; }
+            this.topicOf = Value.getValues(key, value, context, labels, prefLang); break; }
           default:
-            this.properties.push(new Property(key, value, context, labels));
+            this.properties.push(new Property(key, value, context, labels, prefLang));
         }
       }
     );
-    this.label = this.pickLabel(this.properties, 'en');
+    this.label = this.pickLabel(this.properties, prefLang);
     this.properties = this.properties.sort((a, b) => a.label.localeCompare(b.label));
   }
 
   static isOfType(types: any, classUri: string, context: Object): boolean {
     if (types instanceof Array) {
       return (<Array<string>>types.map(value => UriUtils.expandUri(value, context))).includes(classUri);
+    } else if (types['@id']) {
+      return UriUtils.expandUri(types['@id'], context) === classUri;
     } else {
       return UriUtils.expandUri(<string>types, context) === classUri;
     }
   }
 
-  static getAnonResources(jsonld: Object, labels: Map<string, Value> = new Map()): Map<string, Description> {
+  static getAnonResources(jsonld: Object, labels: Map<string, Value> = new Map(), prefLang = 'en')
+    : Map<string, Description> {
     const anonResources: Map<string, Description> = new Map<string, Description>();
     jsonld['@graph'].filter(instance => (<string>instance['@id']).startsWith('_:'))
-      .map(instance => anonResources.set(instance['@id'], new Description(instance, jsonld['@context'], labels)));
+      .map(instance =>
+        anonResources.set(instance['@id'], new Description(instance, jsonld['@context'], labels, prefLang)));
     return anonResources;
   }
 
-  static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, Value> = new Map()): Description[] {
+  static getResources(jsonld: Object,labels: Map<string, Value> = new Map(), prefLang = 'en'): Description[] {
     return jsonld['@graph']
-      .filter(instance => instance['@type'] && Description.isOfType(instance['@type'], type, jsonld['@context']))
-      .map(instance => new Description(instance, jsonld['@context'], labels));
+      .map(instance => new Description(instance, jsonld['@context'], labels, prefLang));
+  }
+
+  static getTypedResources(jsonld: Object,labels: Map<string, Value> = new Map(), prefLang = 'en'): Description[] {
+    return jsonld['@graph']
+      .filter(instance => instance['@type'] || instance['rdf:type'] || instance[RDF_TYPE_URI])
+      .map(instance => new Description(instance, jsonld['@context'], labels, prefLang));
+  }
+
+  static getResourcesOfType(jsonld: Object, type: string, labels: Map<string, Value> = new Map(), prefLang = 'en')
+    : Description[] {
+    return jsonld['@graph']
+      .filter(instance =>
+        instance['@type'] && Description.isOfType(instance['@type'], type, jsonld['@context']) ||
+        instance['rdf:type'] && Description.isOfType(instance['rdf:type'], type, jsonld['@context']) ||
+        instance[RDF_TYPE_URI] && Description.isOfType(instance[RDF_TYPE_URI], type, jsonld['@context']))
+      .map(instance =>
+        new Description(instance, jsonld['@context'], labels, prefLang));
   }
 
   static getLabels(jsonld: Object): Map<string, any> {
@@ -89,11 +113,12 @@ export class Description {
       : undefined;
   }
 
-  processTypes(value: any, context: Object = {}, labels: Map<string, Value> = new Map()): Value[] {
+  processTypes(value: any, context: Object = {}, labels: Map<string, Value> = new Map(), prefLang = 'en')
+    : Value[] {
     if (value instanceof Array) {
-      return value.map((url: string) => new Value('@type', url, context, labels));
+      return value.map((url: string) => new Value('@type', url, context, labels, prefLang));
     } else {
-      return [new Value('@type', value, context, labels)];
+      return [new Value('@type', value, context, labels, prefLang)];
     }
   }
 

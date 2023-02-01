@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { IncomingFacet } from '../incomingFacet';
 import { Router } from '@angular/router';
 import { Dataset } from '../../dataset/dataset';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-incoming-facet',
@@ -13,7 +14,10 @@ export class DetailIncomingFacetComponent {
   @Input() facet: IncomingFacet = new IncomingFacet();
   @Input() resource: string;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    public translate: TranslateService) {
+  }
 
   browseIncoming(domainCurie: string): void {
     const queryParams = {};

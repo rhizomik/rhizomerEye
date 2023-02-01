@@ -78,14 +78,17 @@ export class EditDatasetComponent implements OnInit {
   getGraphs() {
     forkJoin([
       this.endpointService.serverGraphs(this.datasetId, this.endpoint.id),
-      this.endpointService.datasetGraphs(this.datasetId, this.endpoint.id)])
-    .subscribe(
-      ([serverGraphs, datasetGraphs]) => {
-        this.graphsRetrieved = true;
-        this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
-        this.endpoint.graphs = datasetGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
-      },
-      () => this.error = true);
+      this.endpointService.dataGraphs(this.datasetId, this.endpoint.id),
+      this.endpointService.ontologyGraphs(this.datasetId, this.endpoint.id)])
+    .subscribe({
+        next: ([serverGraphs, dataGraphs, ontologyGraphs]) => {
+          this.graphsRetrieved = true;
+          this.endpoint.serverGraphs = serverGraphs.sort((a, b) => a.localeCompare(b));
+          this.endpoint.graphs = dataGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
+          this.endpoint.ontologies = ontologyGraphs.filter(graph => this.endpoint.serverGraphs.includes(graph));
+        },
+        error: () => this.error = true
+    });
   }
 
   graphChange(graph: string, isChecked: boolean) {
@@ -96,15 +99,28 @@ export class EditDatasetComponent implements OnInit {
     }
   }
 
+  ontologyChange(graph: string, isChecked: boolean) {
+    if (isChecked) {
+      this.endpoint.ontologies.push(graph);
+    } else {
+      this.endpoint.ontologies = this.endpoint.ontologies.filter(item => item !== graph);
+    }
+  }
+
   setGraphs(): void {
     forkJoin([
       this.endpointService.updateGraphs(this.dataset.id, this.endpoint.id, this.endpoint.graphs),
+      this.endpointService.updateOntologies(this.dataset.id, this.endpoint.id, this.endpoint.ontologies),
       this.datasetService.clearClasses(this.dataset.id)])
       .subscribe(() => this.router.navigate(['/datasets', this.dataset.id, 'details']));
   }
 
-  isSelected(graph: string): boolean {
+  isSelectedData(graph: string): boolean {
     return this.endpoint.graphs.includes(graph);
+  }
+
+  isSelectedOntology(graph: string): boolean {
+    return this.endpoint.ontologies.includes(graph);
   }
 
   addGraph(newGraph: NgModel) {

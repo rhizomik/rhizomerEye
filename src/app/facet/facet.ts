@@ -1,12 +1,13 @@
 import { Range } from '../range/range';
+import { Labelled } from '../shared/labelled';
 
-export class Facet {
+export class Facet extends Labelled {
   id: string;
   uri: string;
-  label: string;
   range: string;
   curie: string;
   relation: boolean;
+  allBlank: boolean;
   timesUsed: number;
   differentValues: number;
   ranges: Range[];
@@ -14,6 +15,8 @@ export class Facet {
   domainURI: string;
 
   constructor(values: Object = {}) {
-    Object.assign(<any>this, values);
+    super(values);
   }
+
+  static searchFacet = new Facet({ uri: 'urn:rhz:contains', label: '', curie: 'rhz:contains' });
 }

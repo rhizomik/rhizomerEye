@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router, UrlSegment } from '@angular/router';
-import { forkJoin, of, Subject, Subscriber, Subscription } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { forkJoin, of, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
 import { ClassService } from '../../class/class.service';
 import { FacetService } from '../facet.service';
@@ -8,17 +8,13 @@ import { RangeService } from '../../range/range.service';
 import { Class } from '../../class/class';
 import { Facet } from '../facet';
 import { Description } from '../../description/description';
-import { Filter } from '../../breadcrumb/filter';
+import { Filter, Operator } from '../../breadcrumb/filter';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { Value } from '../../description/value';
-//---------------------------------------------------
-import { environment } from '../../../environments/environment';
+import { Range } from '../../range/range';
+import { TranslateService } from '@ngx-translate/core';
+import { RangeValue } from '../../range/rangeValue';
 import { ChartRole } from './chartRoleClassifier';
-import { ChartRepresentationComponent } from '../chart-representation/chart-representation.component';
-import { query } from '@angular/animations';
-import { HttpParams } from '@angular/common/http';
-
-
 
 @Component({
   selector: 'app-list-facet',
@@ -54,7 +50,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   uriAxe2: String;
   selectedValue: String;
   display = "none";
-  
 
   numericalInstancesInit = 1;
   numericalInstancesEnd  = 40;
@@ -63,10 +58,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService,
+    public translate: TranslateService,
     private classService: ClassService,
     private facetService: FacetService,
-    private rangeService: RangeService,
-    ) {
+    private rangeService: RangeService) {
   }
 
   ngOnInit() {
@@ -83,38 +78,60 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       this.chartRepresentation = true;
       const selectedAxes = last_element.toString().substring(7).split('&');
       this.uriAxe1 = selectedAxes[0];
-      this.uriAxe2 = selectedAxes[1]; 
+      this.uriAxe2 = selectedAxes[1];
     }
   }
-
 
   refreshFacets(relevance: number, params: ParamMap) {
     if (params.keys.length) {
       relevance = 0;
     }
-    this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe(
-      (facets: Facet[]) => {
-        this.facets = facets.sort((a, b) => a.label.localeCompare(b.label));
+    this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
+      next: (facets: Facet[]) => {
+        this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
+          a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
         this.loadFacetClass();
         forkJoin(this.facets.map(facet =>
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
-              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges);
-              const paramFilters = Filter.fromParam(this.classId, this.facets, params);
-              paramFilters.forEach((filter: Filter) => {
-                if (!filter.value) {
-                  filter.facet.selected = true;
-                } else {
-                  filter.range.expanded = true;
-                }
-              });
-              this.breadcrumbService.addFacetFilters(paramFilters);
-              this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-                (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
+              facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
+              this.loadFilters(params);
             }
         );
-      }, () => this.router.navigate(['..'], {relativeTo: this.route}));
+      },
+      error: () => this.router.navigate(['..'], {relativeTo: this.route})
+    });
+  }
+
+  loadFilters(params: ParamMap) {
+    const paramFilters = params.keys.map(key => {
+      const valueParam = params.get(key);
+      const facetCurie = key.split(' ')[0] || null;
+      const rangeCurie = key.split(' ')[1] || null;
+      const facet = this.facets.find(f => f.curie === facetCurie);
+      if (facet) {
+        const range = facet.ranges.find(r => r.curie === rangeCurie);
+        const operator = Filter.parseOperator(valueParam);
+        const values = Filter.parseValues(valueParam, facet, operator);
+        return new Filter(this.classId, facet, range, operator, values);
+      } else if (facetCurie === 'rhz:contains') {
+        return new Filter(this.classId, Facet.searchFacet, Range.searchRange, Operator.NONE,
+          [new RangeValue({ value: valueParam }, Facet.searchFacet, [])]);
+      } else {
+        return null;
+      }
+    }).filter(filter => !!filter);
+    paramFilters.forEach((filter: Filter) => {
+      if (!filter.values.length) {
+        filter.facet.selected = true;
+      } else {
+        filter.range.expanded = true;
+      }
+    });
+    this.breadcrumbService.addFacetFilters(paramFilters);
+    this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
   }
 
   loadFacetClass() {
@@ -143,35 +160,24 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   loadInstances(datasetId: string, classId: string, filters: Filter[], page: number) {
-
-    //Depending on what we want to show.
-    if (this.showDetails){
-      var api_result = this.classService.getDetails(datasetId, classId, filters, page, this.pageSize);
-    }else {
-      var api_result = this.classService.getInstances(datasetId, classId, filters, page, this.pageSize);
-    }
-
-    forkJoin([
-      api_result.pipe(
-        catchError(err => of({})),
-      ),
-      this.classService.getInstancesLabels(datasetId, classId, filters, page, this.pageSize).pipe(
-        catchError(err => of({})),
-      ) ])
-      .subscribe(
-        ([instances, labels]) => {
-          const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
-          this.labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
-          if (instances['@graph']) {
-            this.anonResources = Description.getAnonResources(instances, this.labels);
-            this.resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
-          } else if (instances['@type']) {
-            this.resources = [new Description(instances, instances['@context'], this.labels)];
-          } else {
-            this.resources = [];
-          }
-          this.sortResource();
-        });
+    (this.showDetails ?
+      this.classService.getDetails(datasetId, classId, filters, page, this.pageSize) :
+      this.classService.getInstances(datasetId, classId, filters, page, this.pageSize)).subscribe(
+      (instances) => {
+        this.labels = new Map([...Description.getLabels(instances)]);
+        if (instances['@graph']) {
+          this.anonResources =
+            Description.getAnonResources(instances, this.labels, this.translate.currentLang);
+          this.resources =
+            Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels, this.translate.currentLang);
+        } else if (instances['@type']) {
+          this.resources =
+            [new Description(instances, instances['@context'], this.labels, this.translate.currentLang)];
+        } else {
+          this.resources = [];
+        }
+        this.sortResource();
+      });
   }
 
   isChartCompatible(datasetId: string, classId: string, filters: Filter[]) {
@@ -183,7 +189,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   getDetails(datasetId: string, classId: string, filters: Filter[]){
     //We check if there is a numerical Observation/observation
     forkJoin([
-        this.classService.getDetails(datasetId, classId, filters, 
+        this.classService.getDetails(datasetId, classId, filters,
           this.numericalInstancesInit, this.numericalInstancesEnd).pipe(
         catchError(err => of({})),
       ),
@@ -207,8 +213,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         });
   }
 
-  
-
   createDataFrame() {
     if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
       alert("Not OK!")
@@ -218,10 +222,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       let params : ParamMap;
       this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
         (filters: Filter[]) => params = Filter.toParamMap(filters));
-      
+
       const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
                       + '/charts:' + this.extractFromURI(this.selectedAxe1) + '&' + this.extractFromURI(this.selectedAxe2)
-      
+
       this.router.navigate(
           [new_url],
           { queryParams: this.createQueryDict(params)});//{'rdf:employmentRate xsd:string' : '"75.4"'}});
@@ -242,7 +246,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     let params : ParamMap;
     this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (filters: Filter[]) => params = Filter.toParamMap(filters));
-    
+
     const new_url = url[0]+ '/' + url[1]+ '/' + url[2];
     this.router.navigate([new_url], { queryParams: this.createQueryDict(params)});
   }
@@ -260,7 +264,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.possiblevalues = this.detectNumericals(numericalClassification);
     this.urlAxes();
 
-    return this.possibleaxes.length >= 2 && this.possiblevalues.length >= 1; 
+    return this.possibleaxes.length >= 2 && this.possiblevalues.length >= 1;
   }
 
   urlAxes() : void {
@@ -308,7 +312,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   chartRoleClassifier(json_input, background_axes, background_numerical){
-    var json_object = JSON.parse(json_input.asJsonLd()); 
+    var json_object = JSON.parse(json_input.asJsonLd());
     for (var attribute in json_object){
       if (!background_axes[attribute]){
         background_axes[attribute] = 1;
@@ -321,7 +325,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         background_numerical[attribute] = ChartRole.Nothing;
       }
     }
-
   }
 
   isNumerical(string){
@@ -372,6 +375,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         return a['@id'].localeCompare(b['@id']);
       }
     });
+  }
+
+  filterContains(searchText: HTMLInputElement) {
+    this.breadcrumbService.addFacetFilterValue(this.classId, Facet.searchFacet, Range.searchRange,
+      new RangeValue({ value: searchText.value }, Facet.searchFacet, []), Operator.NONE);
+    searchText.value = '';
   }
 
   ngOnDestroy() {

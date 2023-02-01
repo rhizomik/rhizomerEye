@@ -1,9 +1,11 @@
 import { Component, ComponentFactoryResolver, Input } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from '../class/class.service';
 import { Class } from '../class/class';
+import { Value } from './value';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-description',
@@ -18,20 +20,29 @@ export class DescriptionComponent {
   @Input()
   anonDescriptions: Map<string, Description> = new Map<string, Description>();
   @Input()
-  labels: Map<string, string> = new Map<string, string>();
+  labels: Map<string, Value> = new Map<string, Value>();
   @Input()
   resource = 'resource';
+  @Input()
+  details = false;
   depictionExpanded = false;
 
   constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              public translate: TranslateService,
               private classService: ClassService) { }
 
   getAnonResource(value: any) {
     return this.anonDescriptions.get(value.asString());
   }
 
-  switchExpansion() {
-    this.depictionExpanded = !this.depictionExpanded;
+  clickDescriptionDepiction() {
+    if (this.details) {
+      this.depictionExpanded = !this.depictionExpanded;
+    } else {
+      this.router.navigate([this.resource], { queryParams: { uri: this.description['@id'] },
+        relativeTo: this.activatedRoute });
+    }
   }
 
   localName(uri: string): string {

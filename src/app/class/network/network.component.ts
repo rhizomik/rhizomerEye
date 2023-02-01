@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin, Observable, of, OperatorFunction } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
@@ -11,6 +11,8 @@ import { Class } from '../class';
 import { Relation } from '../../facet/relation';
 
 import * as d3 from 'd3';
+import { TranslateService } from '@ngx-translate/core';
+import { Labelled } from '../../shared/labelled';
 
 @Component({
   selector: 'app-network',
@@ -27,7 +29,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   topClasses = 30;
   facetRelevance = 0.3;
   links: { id: string, label: string; source: string; target: string }[];
-  nodes: { id: string; label: string; uri: string; count: number }[];
+  nodes: Node[];
   maxCount: number;
   minCount: number;
   maxNodeSize: number;
@@ -40,17 +42,19 @@ export class NetworkComponent implements OnInit, OnDestroy {
   force: number;
   link: any;
   node: any;
-  linkLabels: any;
   linkPath: any;
   textPath: any;
+  emptyAutocomplete = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthenticationBasicService,
+    public translate: TranslateService,
     private datasetService: DatasetService,
     private classService: ClassService,
-    private facetService: FacetService) {
+    private facetService: FacetService,
+    ) {
   }
 
   ngOnInit() {
@@ -62,18 +66,21 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   loadClassList() {
-    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe(
-      (classes: Class[]) => {
+    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe({
+      next: (classes: Class[]) => {
         this.classes = classes;
-        this.nodes = this.classes.map((cls: Class) => ({
+        this.nodes = this.classes.map((cls: Class) => (new Node({
           id: cls.curie,
-          label: cls.label,
+          curie: cls.curie,
+          labels: cls.labels,
           uri: cls.uri,
           count: cls.instanceCount
-        }));
-        forkJoin(classes.map(cls => this.facetService.getRelevantRelations(this.datasetId, cls.curie, this.facetRelevance))
-                        .map(o => o.pipe(catchError(() => of([])))))
-          .subscribe(
+        })));
+        forkJoin(classes
+          .map(cls => this.facetService.getRelevantRelations(
+            this.datasetId, cls.curie, this.facetRelevance, this.translate.currentLang))
+          .map(o => o.pipe(catchError(() => of([]))))
+        ).subscribe(
             classesFacets => {
               this.relations = classesFacets.reduce((acc, val) => acc.concat(val), []);
               this.links = this.relations.map((relation: Relation) => ({
@@ -109,7 +116,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
               this.setup();
             });
       },
-      () => this.router.navigate(['/about']));
+      error: () => this.router.navigate(['/about'])
+    });
   }
 
   setup() {
@@ -180,7 +188,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .text(d => d.uri);
 
     this.node.append('text')
-        .text(d => d.label)
+        .text(d => d.getLabel(this.translate.currentLang))
         .attr('class', 'node-label')
       .clone(true).lower()
         .attr('class', 'node-label-outline');
@@ -253,20 +261,23 @@ export class NetworkComponent implements OnInit, OnDestroy {
       .on('end', dragended);
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  autocomplete: OperatorFunction<string, readonly Class[]> = (text$: Observable<string>) =>
     text$.pipe(
+      tap(() => this.emptyAutocomplete = false),
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
-        this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
+        this.classService.getTopClassesContaining(this.datasetId, 10, term, this.translate.currentLang).pipe(
           tap(() => this.searchFailed = false),
+          map(response => response.map(cls => new Class(cls))),
           catchError(() => {
             this.searchFailed = true;
             return of([]);
-          }))
+          })
+        )
       ),
-      tap(() => this.searching = false)
+      tap((results) => { this.searching = false; this.emptyAutocomplete = results.length < 1 })
     )
 
   browse(event) {
@@ -275,6 +286,16 @@ export class NetworkComponent implements OnInit, OnDestroy {
       this.router.navigate(['/overview', curie]);
     } else {
       this.router.navigate(['/datasets', this.datasetId, curie]);
+    }
+  }
+
+  search(text: string) {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview/search'],
+        { queryParams: { 'text': text } });
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, 'search'],
+        { queryParams: { 'text': text } });
     }
   }
 
@@ -301,5 +322,15 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.simulation.stop();
+  }
+}
+
+class Node extends Labelled {
+  id: string;
+  uri: string;
+  count: number;
+
+  constructor(values: Object = {}) {
+    super(values);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClassService } from '../class.service';
 import { Class } from '../class';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-class',
@@ -15,6 +16,7 @@ export class DetailClassComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    public translate: TranslateService,
     private classService: ClassService) {
   }
 

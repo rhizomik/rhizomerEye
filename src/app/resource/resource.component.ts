@@ -7,6 +7,8 @@ import { UriUtils } from '../shared/uriutils';
 import { Resource } from './resource';
 import { IncomingFacet } from '../facet/incomingFacet';
 import { Dataset } from '../dataset/dataset';
+import { TranslateService } from '@ngx-translate/core';
+import { FacetDomain } from '../facet/facetDomain';
 
 @Component({
   selector: 'app-resource',
@@ -29,42 +31,54 @@ export class ResourceComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private datasetService: DatasetService,
+              public translate: TranslateService,
               @Inject(DOCUMENT) private document: any) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.resource = new Resource({}, {}, new Map(), new Map(), this.translate.currentLang);
   }
 
   ngOnInit() {
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.resourceUri = this.route.snapshot.queryParamMap.get('uri') || this.document.location.href;
     this.datasetService.get(this.datasetId).subscribe((dataset) => this.dataset = dataset);
-    this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe(
-      (response) => {
+    this.datasetService.describeDatasetResource(this.datasetId, this.resourceUri).subscribe({
+      next: (response) => {
         if (response['@graph']) {
           this.labels = Description.getLabels(response);
-          this.anonResources = Description.getAnonResources(response, this.labels);
+          this.anonResources = Description.getAnonResources(response, this.labels, this.translate.currentLang);
           const resources = response['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], response['@context']) === this.resourceUri)
-            .map(instance => new Resource(instance, response['@context'], this.labels, this.anonResources));
-          this.resource = resources.length ? resources[0] : new Resource();
+            .map(instance =>
+              new Resource(instance, response['@context'], this.labels, this.anonResources, this.translate.currentLang));
+          this.resource = resources.length ? resources[0] :
+            new Resource({}, {}, new Map(), new Map(), this.translate.currentLang);
           this.browseContent(response['@context']);
         } else if (response['@id'] && response['@context'] &&
           UriUtils.expandUri(response['@id'], response['@context']) === this.resourceUri) {
-          this.resource = new Resource(response, response['@context']);
+          this.resource = new Resource(response, response['@context'], new Map(), new Map(), this.translate.currentLang);
           this.browseContent(response['@context']);
         }
         this.setPageJsonLd(this.resource);
         this.browseRemoteData(this.datasetId, this.resourceUri);
       },
-      () => {
+      error: () => {
         this.onNoData();
-      });
-    this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe(
-      (incomings) => {
-        this.incomings = incomings.sort((a, b) => a.label.localeCompare(b.label));
+      }
+    });
+    this.datasetService.resourceIncomingFacets(this.datasetId, this.resourceUri).subscribe({
+      next: (incomings) => {
+        this.incomings = incomings
+          .map(incoming => new IncomingFacet(incoming))
+          .sort((a, b) =>
+            a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.incomings.forEach(incoming =>
-          incoming.domains = incoming.domains.sort((a, b) => a.label.localeCompare(b.label)));
+          incoming.domains = incoming.domains
+            .map(domain => new FacetDomain(domain))
+            .sort((a, b) =>
+              a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang))));
       },
-      () => this.incomings = []);
+      error: () => this.incomings = []
+    });
   }
 
   private browseContent(context: Object = {}) {
@@ -92,25 +106,34 @@ export class ResourceComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    this.datasetService.browseUriData(datasetId, uri).subscribe(
-      (remote) => {
+    this.datasetService.browseUriData(datasetId, uri).subscribe({
+      next: (remote) => {
         let remoteResource;
         if (remote['@graph']) {
           const labels = Description.getLabels(remote);
           const anonResources = Description.getAnonResources(remote, this.labels);
           remoteResource = remote['@graph']
             .filter(instance => UriUtils.expandUri(instance['@id'], remote['@context']) === this.resourceUri)
-            .map(instance => new Resource(instance, remote['@context'], labels, anonResources))[0];
+            .map(instance =>
+              new Resource(instance, remote['@context'], labels, anonResources, this.translate.currentLang))[0];
 
         } else {
-          remoteResource = new Resource(remote, remote['@context']);
+          remoteResource = new Resource(remote, remote['@context'], new Map(), new Map(), this.translate.currentLang);
         }
-        this.resource['@id'] ? this.resource.combine(remoteResource) : this.resource = remoteResource;
+        if (remoteResource) {
+          if (this.resource['@id']) {
+            this.resource.combine(remoteResource);
+          } else {
+            this.resource = remoteResource;
+          }
+        }
         if (!this.resource['@id']) {
           this.onNoData();
         }
         this.loading = false;
-      }, error => console.log(error));
+      },
+      error: (error) => console.log(error)
+    });
   }
 
   private onNoData() {

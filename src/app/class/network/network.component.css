@@ -34,14 +34,14 @@ circle {
 .node-label {
   font: 1.6vmin sans-serif;
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: none;
   cursor: pointer;
 }
 
 .node-label-outline {
   font: 1.6vmin sans-serif;
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: none;
   fill: none;
   stroke: white;
   stroke-width: 2;

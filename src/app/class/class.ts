@@ -1,12 +1,13 @@
-export class Class {
+import { Labelled } from '../shared/labelled';
+
+export class Class extends Labelled {
   id: string;
   uri: string;
-  label: string;
   instanceCount: number;
   facetsCount: number;
   curie: string;
 
   constructor(values: Object = {}) {
-    Object.assign(<any>this, values);
+    super(values);
   }
 }

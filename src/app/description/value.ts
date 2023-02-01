@@ -7,7 +7,7 @@ export class Value {
   language: string;
   type: string;
 
-  constructor(key: string, value: any, context: Object = {}, labels: Map<string, any> = new Map()) {
+  constructor(key: string, value: any, context: Object = {}, labels: Map<string, any> = new Map(), prefLang = 'en') {
     if (value['@value']) {
       this.value = value['@value'];
       if (value['@type']) {
@@ -15,12 +15,12 @@ export class Value {
       }
     } else if (value['@id']) {
       this.uri = UriUtils.expandUri(value['@id'], context);
-      this.label = UriUtils.getLabel(this.uri, labels);
+      this.label = UriUtils.getLabel(this.uri, labels, prefLang);
     } else if (typeof value === 'string') {
       const isUri = context[key] && context[key]['@type'] ? context[key]['@type'] === '@id' : false;
       if (isUri || key === '@type') {
         this.uri = UriUtils.expandUri(value, context);
-        this.label = UriUtils.getLabel(this.uri, labels);
+        this.label = UriUtils.getLabel(this.uri, labels, prefLang);
       } else {
         this.value = value;
       }
@@ -32,10 +32,11 @@ export class Value {
     }
   }
 
-  static getValues(key: string, input: any, context: Object = {}, labels: Map<string, Value> = new Map()) {
+  static getValues(key: string, input: any, context: Object = {},
+                   labels: Map<string, Value> = new Map(), prefLang: string) {
     return input instanceof Array ?
-      input.map(v => new Value(key, v, context, labels)) :
-      [new Value(key, input, context, labels)];
+      input.map(v => new Value(key, v, context, labels, prefLang)) :
+      [new Value(key, input, context, labels, prefLang)];
   }
 
   isAnon() {

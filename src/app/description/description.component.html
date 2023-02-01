@@ -1,6 +1,6 @@
 <div class="card mb-2" *ngIf="description">
   <img *ngIf="description.depiction.length > 0" class="card-img-top"
-       style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="switchExpansion()"
+       style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="clickDescriptionDepiction()"
        [src]="description.depiction[0].asString()" alt="resource depiction">
   <div class="card-header">
     <p class="card-text" [class.reverse-text-truncate]="!description.label">
@@ -15,9 +15,9 @@
     </p>
   </div>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item small" *ngFor="let property of description.properties">
+    <li class="list-group-item small {{property.uri}}" *ngFor="let property of description.properties">
       <b title="{{property.uri}}">{{property.label}}</b>:
-      <span *ngFor="let value of property.filterLangValues('en'); let firstValue=first">
+      <span *ngFor="let value of property.filterLangValues(translate.currentLang); let firstValue=first">
         <app-description *ngIf="value.isAnon()" [datasetId]="datasetId" [resource]="resource"
           [description]="getAnonResource(value)" [anonDescriptions]="anonDescriptions">
         </app-description>

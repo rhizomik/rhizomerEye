@@ -5,10 +5,12 @@ export class Endpoint {
   queryUsername: string;
   queryPassword: string;
   writable: boolean;
+  inferenceEnabled = false;
   updateEndPoint: string;
   updateUsername: string;
   updatePassword: string;
   graphs: string[];
+  ontologies: string[];
   serverGraphs: string[];
   timeout = 300000;
 

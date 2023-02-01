@@ -25,12 +25,13 @@
 
           <!-- Query Type input -->
           <div class="form-group">
-            <label class="control-label" for="queryType">Query Type ("Optimized" is recommended for large datasets)</label>
+            <label class="control-label" for="queryType">Query Type</label>
             <select id="queryType" name="queryType" class="form-control" required
                     [(ngModel)]="dataset.queryType">
-              <option [value]="'OPTIMIZED'">Optimized</option>
               <option [value]="'DETAILED'">Detailed</option>
+              <option [value]="'OPTIMIZED'">Optimized</option>
             </select>
+            <div class="small">"Optimized" is just recommended for large datasets, "Detailed" enables network overview.</div>
           </div>
 
           <!-- Button -->
@@ -57,8 +58,9 @@
             <select id="serverType" name="serverType" class="form-control" required
                     [(ngModel)]="endpoint.type">
               <option [value]="'GENERIC'">Generic</option>
+              <option [value]="'FUSEKI'">Fuseki</option>
+              <option [value]="'FUSEKI_LUCENE'">Fuseki+Lucene</option>
               <option [value]="'MARKLOGIC'">MarkLogic</option>
-              <option [value]="'NEPTUNE'">Neptune</option>
               <option [value]="'STARDOG'">Stardog</option>
               <option [value]="'VIRTUOSO'">Virtuoso</option>
             </select>
@@ -68,15 +70,15 @@
           <div class="form-group" [class.was-validated]="query.dirty || query.touched">
             <label class="control-label" for="query">SPARQL Query Service URL*</label>
             <input id="query" name="query" type="url" class="form-control" required
-                   [(ngModel)]="endpoint.queryEndPoint" #query="ngModel">
+                   [(ngModel)]="endpoint.queryEndPoint" #query="ngModel" pattern="https?://.+">
             <div class="invalid-feedback">A SPARQL query endpoint is required</div>
           </div>
 
           <!-- Endpoint Timeout input -->
-          <div class="form-group" [class.was-validated]="query.dirty || query.touched">
+          <div class="form-group" [class.was-validated]="timeout.dirty || timeout.touched">
             <label class="control-label" for="query">SPARQL Service Timeout*</label>
             <input id="timeout" name="timeout" type="number" class="form-control" required
-                   [(ngModel)]="endpoint.timeout" #query="ngModel">
+                   [(ngModel)]="endpoint.timeout" #timeout="ngModel">
             <div class="invalid-feedback">A SPARQL service timeout is required</div>
             <div class="small">Long timeouts recommended, in milliseconds. 300000 corresponds to 5 minutes.</div>
           </div>
@@ -129,7 +131,7 @@
             <div class="form-group" [class.was-validated]="update.dirty || update.touched">
               <label class="control-label" for="update">SPARQL Update Service URL (optional)</label>
               <input id="update" name="update" type="url" class="form-control"
-                     [(ngModel)]="endpoint.updateEndPoint" #update="ngModel">
+                     [(ngModel)]="endpoint.updateEndPoint" #update="ngModel" pattern="https?://.+">
             </div>
 
             <div class="row">
@@ -151,6 +153,14 @@
                   <label class="form-check-label">Set password</label>
                 </div>
               </div>
+            </div>
+
+            <!-- Query Type input -->
+            <div class="form-check">
+              <input id="inferenceEnabled" name="inferenceEnabled" class="form-check-input" type="checkbox"
+                     [(ngModel)]="endpoint.inferenceEnabled">
+              <label class="form-check-label">Enable Inference</label>
+              <div class="small">Compute inferred types based on class hierarchies, properties domains and ranges.</div>
             </div>
 
           </div>
@@ -185,19 +195,25 @@
                     class="btn m-1 btn-warning">Review</button>
           </div>
 
-          <div *ngIf="endpoint.serverGraphs">
+          <div *ngIf="endpoint.serverGraphs || endpoint.ontologies">
 
             <!-- Graphs checkboxes -->
-            <label class="control-label">Dataset Graphs</label>
+            <label class="control-label">Select the Dataset's Data and Ontology Graphs</label>
+            <div>
+              <label class="form-check-label small">Data</label>
+              <label class="form-check-label ml-2 small">Ontology</label>
+            </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="Default Graph" [disabled]="true"
-                     [checked]="this.endpoint.graphs.length === 0" >
-              <label class="form-check-label">Default Graph</label>
+                     style="margin-left: -0.75em" [checked]="this.endpoint.graphs.length === 0" >
+              <label class="form-check-label" style="margin-left: 5em">Default Graph</label>
             </div>
             <div *ngFor="let graph of endpoint.serverGraphs" class="dataset-graph form-check">
-              <input class="form-check-input" type="checkbox" value="{{graph}}"
-                     (change)="graphChange(graph, $event.target.checked)" [checked]="isSelected(graph)">
-              <label class="form-check-label">{{graph}}</label>
+              <input class="form-check-input" style="margin-left: -0.75em" type="checkbox" value="{{graph}}"
+                     (change)="graphChange(graph, $event.target.checked)" [checked]="isSelectedData(graph)">
+              <input class="form-check-input" style="margin-left: 2em" type="checkbox" value="{{graph}}"
+                     (change)="ontologyChange(graph, $event.target.checked)" [checked]="isSelectedOntology(graph)">
+              <label class="form-check-label" style="margin-left: 5em">{{graph}}</label>
               <span *ngIf="endpoint.writable" class="badge badge-pill badge-secondary pull-right"
                     style="cursor: pointer; margin-top: 3px;" (click)="loadModal(graph)">Load Data</span>
             </div>

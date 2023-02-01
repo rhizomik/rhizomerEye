@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of, OperatorFunction } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatasetService } from '../../dataset/dataset.service';
 import { ClassService } from '../class.service';
@@ -12,6 +12,7 @@ import * as d3Scale from 'd3-scale';
 import * as d3ScaleChromatic from 'd3-scale-chromatic';
 import { AuthenticationBasicService } from '../../login-basic/authentication-basic.service';
 import { Dataset } from '../../dataset/dataset';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-word-cloud',
@@ -31,11 +32,13 @@ export class WordCloudComponent implements OnInit {
   topClasses = 300;
   searching = false;
   searchFailed = false;
+  emptyAutocomplete = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthenticationBasicService,
+    public translate: TranslateService,
     private datasetService: DatasetService,
     private classService: ClassService) {
   }
@@ -58,28 +61,31 @@ export class WordCloudComponent implements OnInit {
   }
 
   loadClassList() {
-    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe(
-      (classes: Class[]) => {
-        this.classes = classes;
+    this.classService.getTopClasses(this.datasetId, this.topClasses).subscribe({
+      next: (classes: Class[]) => {
+        this.classes = classes.map(cls => new Class(cls));
         this.populate();
       },
-      () => this.router.navigate(['/about']));
+      error: () => this.router.navigate(['/about'])});
   }
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  autocomplete: OperatorFunction<string, readonly Class[]> = (text$: Observable<string>) =>
     text$.pipe(
+      tap(() => this.emptyAutocomplete = false),
       debounceTime(500),
       distinctUntilChanged(),
       tap(() => this.searching = true),
       switchMap(term => term.length < 3 ? of([]) :
-          this.classService.getTopClassesContaining(this.datasetId, 10, term).pipe(
-          tap(() => this.searchFailed = false),
-          catchError(() => {
-            this.searchFailed = true;
-            return of([]);
-          }))
+          this.classService.getTopClassesContaining(this.datasetId, 10, term, this.translate.currentLang).pipe(
+            tap(() => this.searchFailed = false),
+            map(response => response.map(cls => new Class(cls))),
+            catchError(() => {
+              this.searchFailed = true;
+              return of([]);
+            })
+          )
       ),
-      tap(() => this.searching = false)
+      tap((results) => { this.searching = false; this.emptyAutocomplete = results.length < 1 })
     )
 
   private setup() {
@@ -105,14 +111,12 @@ export class WordCloudComponent implements OnInit {
     .padding(3)
     .rotate(() => 0)
     // .rotate(() => Math.floor(Math.random() * 3) * 30 - 30)
-    .text(d => d.label)
+    .text(d => d.getLabel(this.translate.currentLang))
     .font(fontFace)
     .fontStyle(fontWeight)
     .fontSize(d => ((d.instanceCount - minCount) / (maxCount - minCount)) * this.maxFontSize + this.minFontSize )
     .spiral(spiralType)
-    .on('end', () => {
-      this.draw();
-    })
+    .on('end', () => this.draw())
     .start();
   }
 
@@ -124,22 +128,22 @@ export class WordCloudComponent implements OnInit {
     .append('text')
     .style('font-family', d => d.font)
     .style('font-size', d => d.size + 'px')
-    .style('fill', (d, i) => {
-      return this.fillScale(i);
-    })
+    .style('fill', (d, i) => this.fillScale(i))
     .attr('cursor', 'pointer')
     .attr('text-anchor', 'middle')
     .attr('transform', d => 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')')
     .attr('class', 'word-cloud')
     .attr('title', d => d.uri)
-    .text(d => {
-      return d.label;
-    })
+    .text(d => d.getLabel(this.translate.currentLang))
     .on('click', this.browse.bind(this));
   }
 
-  browse(event) {
-    const curie = event.currentTarget ? event.currentTarget.__data__.curie : event.curie;
+  browse(item: any) {
+    const curie = item.currentTarget ? item.currentTarget.__data__?.curie : item?.curie;
+    if (!curie) {
+      item.preventDefault();
+      return;
+    }
     if (this.datasetId === 'default') {
       this.router.navigate(['/overview', curie]);
     } else {
@@ -149,5 +153,15 @@ export class WordCloudComponent implements OnInit {
 
   isLoggedIn() {
     return this.authService.isLoggedIn();
+  }
+
+  search(text: string) {
+    if (this.datasetId === 'default') {
+      this.router.navigate(['/overview/search'],
+        { queryParams: { 'text': text } });
+    } else {
+      this.router.navigate(['/datasets', this.datasetId, 'search'],
+        { queryParams: { 'text': text } });
+    }
   }
 }

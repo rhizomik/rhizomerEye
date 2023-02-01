@@ -6,8 +6,11 @@
       <span *ngIf="isLast">{{page.name}}</span>
     </li>
     <li *ngIf="filters.length" class="breadcrumb-item item"></li>
-    <li class="badge badge-warning badge-pill m-1" *ngFor="let filter of filters">
-      {{filter.facet.label}}<span *ngIf="filter.label">: {{filter.label}}</span>
+    <li class="badge badge-warning badge-pill m-1 text-truncate" *ngFor="let filter of filters">
+      <span class="fa fa-times-circle" (click)="removeFilter(filter)"></span>
+      {{filter.facet.getLabel(translate.currentLang)}}
+      <span *ngIf="filter.getLabel(translate) && filter.facet.getLabel(translate.currentLang)">: </span>
+      <span *ngIf="filter.getLabel(translate)">{{filter.getLabel(translate)}}</span>
     </li>
   </ul>
 </nav>

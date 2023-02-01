@@ -1,20 +1,30 @@
 <div id="faceted" class="row">
 
   <div id="facets" class="col-md-4 m-0">
-    <h5 class="p-1">Facets
+    <h5 class="p-1">{{ 'search.facets' | translate }}
       <span *ngIf="retrievedFacets > 0">
         <span class="badge badge-warning badge-pill">{{retrievedFacets}}</span>
         <a *ngIf="retrievedFacets < datasetClass.facetsCount" class="badge" [routerLink]=""
             (click)="loadAllFacets()" title="Load all facets"> of {{datasetClass.facetsCount}}</a>
       </span>
-      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">No facets retrieved</span>
-      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">Loading...</span>
+      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">{{ 'search.no-facets' | translate }}</span>
+      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
       <span class="d-block d-md-none d-lg-none d-xl-none float-right">
         <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
       </span>
     </h5>
-    <div style="margin-bottom:1.3em"></div>
+    <div class="card facet p-2 mb-2">
+      <div class="input-group">
+        <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #search
+               placeholder="{{ 'search.facet-search' | translate }}" (keyup.enter)="filterContains(search)"/>
+        <div class="input-group-append">
+          <button class="btn btn-sm btn-secondary" type="button" (click)="filterContains(search)">
+            <span class="fa fa-search"></span>
+          </button>
+        </div>
+      </div>
+    </div>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}" *ngFor="let facet of facets">
       <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
       </app-detail-facet>
@@ -23,15 +33,15 @@
 
   <div id="instances" class="col-md-8 m-0">
     <span *ngIf="!chartRepresentation">
-      <h5 class="p-1">The Instances
+      <h5 class="p-1">{{ 'search.Instances' | translate }}
         <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-        <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">No instances retrieved</span>
-        <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">Loading...</span> 
+        <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-instances' | translate }}</span>
+        <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
         <div style="float: right;">
           <p>
             <span *ngIf="possibleRepresentation">
-              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button> 
-              
+              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
+
               <!-- data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Chart View
               </button>-->
@@ -43,7 +53,6 @@
               <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Hide Details</button>
             </span>
           </p>
-          
           <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -66,29 +75,22 @@
               </div>
             </div>
           </div>
-          </div>
-          
+        </div>
       </h5>
-    
       <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
         <div id="spinner"></div>
       </div>
-      <div style="margin-top: 1.3em;">
-      </div>
       <div *ngFor="let resource of resources">
-        <app-description [datasetId]="datasetId" [description]="resource"
+        <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                          [anonDescriptions]="anonResources" [labels]="labels"></app-description>
       </div>
-  
       <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
                       [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
                       [directionLinks]="false" size="sm"
                       (pageChange)="goToPage($event)"></ngb-pagination>
-  
       <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
-        Showing {{resources?.length}} out of { filteredInstances, plural,
-        =1 {1 instance} other { {{filteredInstances}} instances} } filtered from {{totalInstances}}
-      </p>
+        {{ 'search.showing' | translate }} {{resources?.length}} {{ 'search.outof' | translate }} { filteredInstances, plural,
+        =1 {1 instance} other { {{filteredInstances}} {{ 'search.instances' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
     </span>
     <span *ngIf="chartRepresentation">
       <h5 class="p-1">Chart Representation
@@ -96,16 +98,16 @@
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
-      <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2" 
-      [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
-    
+      <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2"
+                                [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
+
       <br>
       <p i18n class="text-center">
         Representing {{ 20 }} out of {{ 500 }} instances.
         <br>
         <small><i>Introduce the range of instances to represent or represent them all</i></small> <span type="submit" (onclick)="changeChartPage(1, 500)">  </span>.
       </p>
-            
+
         <form class="row" style="margin-left: 25%; margin-right: 25%;" (ngSubmit)="changeChartPage(form_min.value, form_max.value)">
           <div class="col">
             <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_min>

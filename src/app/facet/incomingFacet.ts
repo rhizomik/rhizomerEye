@@ -1,15 +1,15 @@
 import { FacetDomain } from './facetDomain';
+import { Labelled } from '../shared/labelled';
 
-export class IncomingFacet {
+export class IncomingFacet extends Labelled {
   rangeUri: string;
   rangeCurie: string;
   uri: string;
-  label: string;
   curie: string;
   uses: number;
   domains: FacetDomain[];
 
   constructor(values: Object = {}) {
-    Object.assign(<any>this, values);
+    super(values);
   }
 }

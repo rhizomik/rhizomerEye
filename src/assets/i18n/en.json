@@ -1,0 +1,55 @@
+{
+    "navbar": {
+        "about": "About",
+        "datasets": "Datasets",
+        "list": "List",
+        "new": "New",
+        "administration": "Administration",
+        "users": "Users"
+    },
+    "overview": {
+        "details": "Details",
+        "searchAll": "Search all...",
+        "searchClasses": "Browse all classes",
+        "sorry": "Sorry, suggestions could not be loaded.",
+        "three-ch": "Type 3 chars...",
+        "no-classes": "No classes found",
+        "analyzing":"Analyzing all classes, this might require some time...",
+        "no-class-instances": "No class instances were found",
+        "showing": "Showing",
+        "top": "top",
+        "classes and": "classes and",
+        "relations": "relations with frequency",
+        "show-all": "show all relations",
+        "all-rel": "all relations",
+        "show-less": "show less relations",
+        "warning-showing-just": "Warning: showing just top",
+        "classes": "classes"
+    },
+    "search": {
+        "facets": "Facets",
+        "instances": "instances",
+        "no-facets": "No facets retrieved",
+        "no-instances": "No instances retrieved",
+        "loading": "Loading...",
+        "Instances": "Instances",
+        "showing": "Showing",
+        "outof": "out of",
+        "matches": "matches",
+        "explore":"Explore all matches using the Type facet",
+        "filter": "filtered from",
+        "facet-search": "Search all facets values",
+        "exclude": "exclude",
+        "And": "And",
+        "Or": "Or"
+    },
+    "resource": {
+        "is": "is",
+        "of": "of"
+    },
+    "breadcrumbs": {
+        "and": "and",
+        "or": "or",
+        "not": "not"
+    }
+}
