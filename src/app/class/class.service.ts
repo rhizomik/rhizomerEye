@@ -16,11 +16,9 @@ export class ClassService extends Rest2Service<Class> {
   }
 
   getDetails(did: string, cid: string, filters: Filter[], page: number, pageSize: number): Observable<any> {
-    let params = new HttpParams();
+    let params = Filter.toQuery(filters);
     params = params.append('page', (page - 1).toString());
     params = params.append('size', pageSize.toString());
-    filters.forEach((filter: Filter) =>
-      params = params.append(filter.facet.uri + (filter.range ? ' ' + filter.range.uri : ''), filter.value));
     return this.http.get<any>(
       `${environment.API}/datasets/${did}/classes/${cid}/describe`, {params: params});
   }
