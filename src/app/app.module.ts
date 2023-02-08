@@ -56,69 +56,68 @@ import { GoogleChartsModule } from 'angular-google-charts';
 import { environment } from '../environments/environment';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    AboutComponent,
-    UserListComponent,
-    UserDetailComponent,
-    UserCreateComponent,
-    UserEditComponent,
-    UserSearchComponent,
-    BreadcrumbComponent,
-    ListDatasetComponent,
-    ListClassComponent,
-    ListFacetComponent,
-    DetailDatasetComponent,
-    DetailClassComponent,
-    DetailFacetComponent,
-    DetailRangeComponent,
-    CreateDatasetComponent,
-    EditDatasetComponent,
-    WordCloudComponent,
-    NetworkComponent,
-    DatasetFormModalComponent,
-    ResourceComponent,
-    DetailIncomingFacetComponent,
-    SearchComponent,
-    TypeFacetComponent,
-    TypeRangeComponent,
-    ChartRepresentationComponent
-  ],
-  imports: [
-    AppRoutingModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    NgbCollapseModule,
-    NgbDropdownModule,
-    NgbPaginationModule,
-    NgbTypeaheadModule,
-    NgbModalModule,
-    NgbNavModule,
-    Angulartics2Module.forRoot(),
-    LoginBasicModule,
-    ErrorHandlerModule,
-    DescriptionModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    NgxSliderModule,
-    TranslateModule.forRoot({
-        loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-        }
-    }),
-    GoogleChartsModule
-  ],
-  providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
-    AuthenticationBasicService, LoggedInGuard, AdministratorGuard, AdminService, UserService
-  ],
-  bootstrap: [AppComponent],
-  entryComponents: [DatasetFormModalComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+    declarations: [
+        AppComponent,
+        NavbarComponent,
+        AboutComponent,
+        UserListComponent,
+        UserDetailComponent,
+        UserCreateComponent,
+        UserEditComponent,
+        UserSearchComponent,
+        BreadcrumbComponent,
+        ListDatasetComponent,
+        ListClassComponent,
+        ListFacetComponent,
+        DetailDatasetComponent,
+        DetailClassComponent,
+        DetailFacetComponent,
+        DetailRangeComponent,
+        CreateDatasetComponent,
+        EditDatasetComponent,
+        WordCloudComponent,
+        NetworkComponent,
+        DatasetFormModalComponent,
+        ResourceComponent,
+        DetailIncomingFacetComponent,
+        SearchComponent,
+        TypeFacetComponent,
+        TypeRangeComponent,
+        ChartRepresentationComponent
+    ],
+    imports: [
+        AppRoutingModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        NgbCollapseModule,
+        NgbDropdownModule,
+        NgbPaginationModule,
+        NgbTypeaheadModule,
+        NgbModalModule,
+        NgbNavModule,
+        Angulartics2Module.forRoot(),
+        LoginBasicModule,
+        ErrorHandlerModule,
+        DescriptionModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        NgxSliderModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        GoogleChartsModule
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+        AuthenticationBasicService, LoggedInGuard, AdministratorGuard, AdminService, UserService
+    ],
+    bootstrap: [AppComponent],
+    schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }
 

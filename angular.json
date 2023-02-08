@@ -119,7 +119,6 @@
       }
     }
   },
-  "defaultProject": "rhizomerEye",
   "schematics": {
     "@schematics/angular:class": {
       "skipTests": true
