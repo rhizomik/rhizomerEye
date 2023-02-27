@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { forkJoin, of, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
@@ -15,6 +15,8 @@ import { Range } from '../../range/range';
 import { TranslateService } from '@ngx-translate/core';
 import { RangeValue } from '../../range/rangeValue';
 import { ChartRole } from './chartRoleClassifier';
+
+import {ChartRepresentationComponent} from "../chart-representation/chart-representation.component";
 
 @Component({
   selector: 'app-list-facet',
@@ -54,6 +56,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   numericalInstancesInit = 1;
   numericalInstancesEnd  = 40;
 
+  /*
+  @Input() dataDisplayed: number = 0;
+  @Input() dataDisplayed2: number = 0;
+  @ViewChild(ChartRepresentationComponent) child;
+*/
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -69,7 +76,35 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.urlToMethod(this.route);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
+
+    //this.dataDisplayed = ChartRepresentationComponent.dataDisplayed;
   }
+/*
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("cambios")
+    console.log("dataDisplayed1: " + this.dataDisplayed)
+    console.log("dataDisplayed2: " + this.dataDisplayed2)
+  }
+
+
+  ngAfterViewChecked() {
+
+
+    this.dataDisplayed = this.child.dataDisplayed2;
+    console.log(typeof this.dataDisplayed);
+    console.log((this.dataDisplayed.valueOf()))
+ //   console.log((typeof this.dataDisplayed.valueOf()))
+  }
+
+  receiveDataDisplayed($event: number) {
+    this.dataDisplayed = $event;
+  }
+*/
+
+  /*
+  onSubmit(init: number, end: number) {
+    this.changeChartPage(init, end)
+  } */
 
   urlToMethod(route: ActivatedRoute){
     const url = route.snapshot.url;

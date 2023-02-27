@@ -98,31 +98,41 @@
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
-      <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2"
+      <app-chart-representation  [rows]="selectedAxe1" [columns]="selectedAxe2"
                                 [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
+<!--
+prueba: (dataDisplayed1)="dataDisplayed"
+-->
 
       <br>
       <p i18n class="text-center">
-        Representing {{ 20 }} out of {{ 500 }} instances.
+        Representing {{ allResources.length }} out of {{ totalInstances }} instances.
         <br>
         <small><i>Introduce the range of instances to represent or represent them all</i></small> <span type="submit" (onclick)="changeChartPage(1, 500)">  </span>.
       </p>
 
-        <form class="row" style="margin-left: 25%; margin-right: 25%;" (ngSubmit)="changeChartPage(form_min.value, form_max.value)">
+        <form class="row" style="margin-left: 25%; margin-right: 25%;"> <!-- (ngSubmit)="onSubmit(form_min.value, form_max.value)"> -->
           <div class="col">
-            <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_min>
+            <input class="form-control form-control-sm" type="number" value="1" placeholder="" aria-label=".form-control-sm example" #form_min>
           </div>
           <div class="col">
-            <input class="form-control form-control-sm" type="number" placeholder="" aria-label=".form-control-sm example" #form_max>
+            <input class="form-control form-control-sm" type="number" placeholder="{{allResources.length}}" aria-label=".form-control-sm example" #form_max>
+          </div>
+
+          <div class="col">
+            <button type="submit" style="width: auto;" class="btn btn-primary btn-sm" (click)="changeChartPage(form_min.value, form_max.value )">Get Data!</button>
           </div>
           <div class="col">
-            <button type="submit" style="width: auto;" class="btn btn-primary btn-sm">Get Data!</button>
-          </div>
-          <div class="col">
-            <button type="submit" class="btn btn-primary btn-sm">All Data!</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="changeChartPage(form_min.value, totalInstances )">All Data!</button>
           </div>
         </form>
+<!--
+      dataDisplayed: {{dataDisplayed}}
+    -->
+
     </span>
   </div>
+
+
 
 </div>

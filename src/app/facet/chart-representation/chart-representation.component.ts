@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, NgModule, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnInit, NgModule, OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { Description } from '../../description/description';
 import { GoogleChartsModule, ChartType, ChartEditorComponent, ChartBase } from 'angular-google-charts';
 import { HostListener } from "@angular/core";
@@ -29,16 +29,16 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   display = "none";
 
   print :string;
- 
+
   numerical_values: string[];
   correlation_fields: string[] = [];
   is_correlation_chart: boolean = false;
-  
+
   dataframe : any[][][];
   column_index: string[];
   layer : number = 0;
 
-  //Table, Line, BarChart, 
+  //Table, Line, BarChart,
   type =  ChartType.Table;
   legend: 'left';
   chartData = {
@@ -49,6 +49,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   height: 600
   };
 
+  //@Output() dataDisplayed1 = new EventEmitter(); //this.chartData.data.length;
+  //@Output() dataDisplayed2 = 23//this.chartData.data.length;
 
   constructor () {
     this.onResize();
@@ -61,16 +63,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       this.chartData.width =  Math.floor(window.innerWidth * 0.9);
     } else {
       this.chartData.width =  Math.floor(window.innerWidth * (800/1396));
-    }     
+    }
 }
 
   ngOnInit(): void {
-    if ((this.rows !== '' ||  this.rows !== undefined) 
+    if ((this.rows !== '' ||  this.rows !== undefined)
       && (this.columns !== '' || this.columns !== undefined)){
       this.createCharts();
       this.numerical_values_input[this.layer][1];
     }
-      
+
+    //mandar el dato
+    //this.dataDisplayed1.emit(this.chartData.data.length)
+    //this.dataDisplayed2 = this.chartData.data.length;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -106,7 +111,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   barChart(){
-    this.type = ChartType.Bar;    
+    this.type = ChartType.Bar;
   }
 
   lineChart(){
@@ -191,7 +196,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var row of dataframe){
       new_dataframe.push(this.deleteFromRow(row, col_to_delete));
     }
-    
+
     console.log(new_dataframe);
     return new_dataframe;
   }
@@ -239,7 +244,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
     let layer_i  = this.numerical_values.indexOf(attribute);
     let column_i = this.column_index.indexOf(column);
-    
+
     if (!this.exists_row(dataframe[layer_i], row)){
       this.add_row(dataframe[layer_i], row);
     }
@@ -282,7 +287,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       row_to_add = row_to_add.concat(undefined);
     }
     row_to_add[0] = row;
-    
+
     dataframe.push(row_to_add);
   }
 
@@ -371,7 +376,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   insert_into_correlation_table(table : any[][], attribute: string, row, column) {
 
     let column_i = this.column_index.indexOf(column);
-    
+
     if (!this.exists_row(table, row)){
       this.add_row(table, row);
     }
@@ -379,5 +384,5 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
     return [row_i, column_i];
   }
-    
+
   }

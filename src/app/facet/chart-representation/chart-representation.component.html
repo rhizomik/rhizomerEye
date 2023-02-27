@@ -72,10 +72,15 @@
     <google-chart
         #editable
         [type]="type"
-        [data]="chartData.data" 
-        [columns]="chartData.columnNames" 
-        [options]="chartData.options" 
+        [data]="chartData.data"
+        [columns]="chartData.columnNames"
+        [options]="chartData.options"
         [height]="chartData.height"
         [width]="chartData.width">
     </google-chart>
 </div>
+
+<!--
+chartdata height: {{chartData.data.length}}
+dataDisplayed2: {{dataDisplayed2}}
+-->
