@@ -26,6 +26,8 @@
       </div>
     </div>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}" *ngFor="let facet of facets">
+      esto es list facet
+      {{facet.defaultLabel}}
       <app-detail-facet [datasetId]="datasetId" [classId]="classId" [facet]="facet" [ngUnsubscribe]="ngUnsubscribe">
       </app-detail-facet>
     </div>

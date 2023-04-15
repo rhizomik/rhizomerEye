@@ -38,7 +38,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   column_index: string[];
   layer : number = 0;
 
-  //Table, Line, BarChart,
+  //Table, Line, BarChart ----> MapChart, TimelineChart
   type =  ChartType.Table;
   legend: 'left';
   chartData = {
@@ -120,6 +120,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   pieChart(){
     this.type = ChartType.PieChart;
+  }
+
+  mapChart() {
+    this.type = ChartType.Map;
+  }
+
+  timelineChart() {
+    this.type = ChartType.Timeline;
   }
 
   openModal() {

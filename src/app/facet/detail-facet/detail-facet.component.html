@@ -4,6 +4,8 @@
     <span class="badge badge-primary badge-pill float-right">{{facet.timesUsed}}</span>
   </h6>
   <div *ngFor="let range of facet.ranges">
+    esto es detail facet <br> {{range.defaultLabel}}
+    {{classId}}
     <app-detail-range
       [datasetId]="datasetId" [classId]="classId" [facet]="facet" [range]="range" [ngUnsubscribe]="ngUnsubscribe">
     </app-detail-range>

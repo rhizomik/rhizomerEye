@@ -34,6 +34,9 @@ export class DetailRangeComponent implements OnInit {
   private SLIDER_DATATYPES = ['xsd:int', 'xsd:integer', 'xsd:gYear', 'xsd:decimal', 'xsd:float', 'xsd:double'];
   private STEP1_DATATYPES = ['xsd:int', 'xsd:integer', 'xsd:gYear'];
 
+  //-----
+  isDateTime: Boolean = false;
+
   constructor(
     private breadcrumbService: BreadcrumbService,
     public translate: TranslateService,
@@ -43,6 +46,13 @@ export class DetailRangeComponent implements OnInit {
   ngOnInit() {
     if (this.range.expanded) {
       this.firstValues();
+    }
+
+    if (this.range.defaultLabel == "dateTime") {
+      console.log("FECHAAAAA" + this.range.defaultLabel)
+      this.isDateTime = true
+    } else {
+      console.log("NO ES FECHAAA" + this.range.defaultLabel)
     }
   }
 
