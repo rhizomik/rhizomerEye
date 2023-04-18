@@ -34,9 +34,6 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <p id="test">
-      peekaboo
-    </p>
     <span *ngIf="!chartRepresentation">
       <h5 class="p-1">{{ 'search.Instances' | translate }}
         <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
@@ -44,21 +41,27 @@
         <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
         <div style="float: right;">
           <p>
-            {{possibleRepresentation}}, {{dataProcessed}}
-            <span *ngIf="!dataProcessed; else elseblock">
-              <b>Processing</b>
+            <span *ngIf="!dataProcessed"> <!--; else elseblock" -->
+              <b style="margin-right: 0.5em;">Processing data...</b>
             </span>
+            <!--
             <ng-template #elseblock>
               <b>Chart View available/not</b>
             </ng-template>
+            -->
 
-            <span *ngIf="possibleRepresentation">
+            <span *ngIf="possibleRepresentation, else elseblock">
               <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
 
               <!-- data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Chart View
               </button>-->
             </span>
+            <ng-template #elseblock>
+              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm">Chart View not available</button>
+            </ng-template>
+
+
             <span *ngIf="!showDetails">
               <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
             </span>
@@ -93,6 +96,7 @@
       <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
         <div id="spinner"></div>
       </div>
+      <br>
       <div *ngFor="let resource of resources">
 
         <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
