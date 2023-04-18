@@ -34,6 +34,9 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
+    <p id="test">
+      peekaboo
+    </p>
     <span *ngIf="!chartRepresentation">
       <h5 class="p-1">{{ 'search.Instances' | translate }}
         <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
@@ -41,6 +44,14 @@
         <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
         <div style="float: right;">
           <p>
+            {{possibleRepresentation}}, {{dataProcessed}}
+            <span *ngIf="!dataProcessed; else elseblock">
+              <b>Processing</b>
+            </span>
+            <ng-template #elseblock>
+              <b>Chart View available/not</b>
+            </ng-template>
+
             <span *ngIf="possibleRepresentation">
               <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
 
@@ -83,6 +94,7 @@
         <div id="spinner"></div>
       </div>
       <div *ngFor="let resource of resources">
+
         <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                          [anonDescriptions]="anonResources" [labels]="labels"></app-description>
       </div>

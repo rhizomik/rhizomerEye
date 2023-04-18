@@ -42,7 +42,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   showFacets: boolean;
   showCharts: boolean;
   showDetails = false;
+
   possibleRepresentation = false;
+  dataProcessed = false;
+  possibleTimes = 0;
+
+  //dataProcessed: Promise<boolean>;
+
   chartRepresentation = false;//false;
   possibleaxes: String[] = [];
   possiblevalues: String[] = [];
@@ -78,6 +84,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
 
     //this.dataDisplayed = ChartRepresentationComponent.dataDisplayed;
+    //console.log(new Date())
+    //console.log(new Date().getUTCDate())
   }
 /*
   ngOnChanges(changes: SimpleChanges) {
@@ -239,6 +247,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             //var anonResources = Description.getAnonResources(instances, this.labels);
             var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
             this.possibleRepresentation = this.isChartRepresentable(resources);
+            this.dataProcessed = true;
+   //         this.dataProcessed = Promise.resolve(true);
+
             this.allResources = resources;
           } else if (instances['@type']) {
             var resources = [new Description(instances, instances['@context'], this.labels)];
@@ -287,19 +298,30 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isChartRepresentable(descriptions: Description[]){
-    //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical data.
+    //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical (or time) data.
     var axesClassification = {};
     var numericalClassification = {};
     var i = 0
     for (i; i < descriptions.length; i++){
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
-
     this.possibleaxes   = this.detectAxes(i, axesClassification);
     this.possiblevalues = this.detectNumericals(numericalClassification);
+    this.possibleTimes = this.detectTimeStamp(numericalClassification)
+
     this.urlAxes();
 
-    return this.possibleaxes.length >= 2 && this.possiblevalues.length >= 1;
+    return this.possibleaxes.length >= 2 && this.possiblevalues.length + this.possibleTimes >= 1;
+  }
+
+  detectTimeStamp(numericalClassification) {
+    var count = 0;
+    for(var attribute in numericalClassification) {
+      if (numericalClassification[attribute] == ChartRole.TimeStamp){
+        count++;
+      }
+    }
+    return count;
   }
 
   urlAxes() : void {
@@ -346,9 +368,19 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     return name;
   }
 
-  chartRoleClassifier(json_input, background_axes, background_numerical){
+  //                  resources,  ............................, numericalClassification: {}
+  chartRoleClassifier(json_input: Description, background_axes, background_numerical){
     var json_object = JSON.parse(json_input.asJsonLd());
+
+    //console.log(json_object)
     for (var attribute in json_object){
+      /*
+      if(attribute == "https://saref.etsi.org/core/hasTimestamp") {
+        console.log("ooole lo caracole ", this.getValue(json_object[attribute]).valueOf())
+      } else {
+        console.log("a tu casa", attribute)
+      }*/
+
       if (!background_axes[attribute]){
         background_axes[attribute] = 1;
       } else if (background_axes[attribute]){
@@ -356,13 +388,27 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       }
       if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing){
         background_numerical[attribute] = ChartRole.NumericalValue;
-      } else if (!this.isNumerical(json_object[attribute])){
+      } else if (!this.isNumerical(json_object[attribute]) || !this.isTimeStamp(attribute)){
         background_numerical[attribute] = ChartRole.Nothing;
       }
+
+      if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing){
+        background_numerical[attribute] = ChartRole.TimeStamp;
+      }
+
     }
   }
 
+  isTimeStamp(string): Boolean {
+    //console.log("fecha? ", string, "\n tipo: ", typeof string)
+    //var fecha = this.getValue(string).valueOf()
+    //console.log("ehto ke éh? ", fecha, "tipo: ", typeof fecha);
+    //console.log(string == "https://saref.etsi.org/core/hasTimestamp")
+    return string == "https://saref.etsi.org/core/hasTimestamp";
+  }
+
   isNumerical(string){
+    //console.log(string)
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 
