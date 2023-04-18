@@ -44,10 +44,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   showDetails = false;
 
   possibleRepresentation = false;
+  //to show a message when entities are being processed
   dataProcessed = false;
+  //to check if timeline may be available
   possibleTimes = 0;
-
-  //dataProcessed: Promise<boolean>;
+  //to check if map may be available
+  possiblePoints = 0;
 
   chartRepresentation = false;//false;
   possibleaxes: String[] = [];
@@ -62,11 +64,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   numericalInstancesInit = 1;
   numericalInstancesEnd  = 40;
 
-  /*
-  @Input() dataDisplayed: number = 0;
-  @Input() dataDisplayed2: number = 0;
-  @ViewChild(ChartRepresentationComponent) child;
-*/
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -83,36 +80,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.urlToMethod(this.route);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
 
-    //this.dataDisplayed = ChartRepresentationComponent.dataDisplayed;
-    //console.log(new Date())
-    //console.log(new Date().getUTCDate())
   }
-/*
-  ngOnChanges(changes: SimpleChanges) {
-    console.log("cambios")
-    console.log("dataDisplayed1: " + this.dataDisplayed)
-    console.log("dataDisplayed2: " + this.dataDisplayed2)
-  }
-
-
-  ngAfterViewChecked() {
-
-
-    this.dataDisplayed = this.child.dataDisplayed2;
-    console.log(typeof this.dataDisplayed);
-    console.log((this.dataDisplayed.valueOf()))
- //   console.log((typeof this.dataDisplayed.valueOf()))
-  }
-
-  receiveDataDisplayed($event: number) {
-    this.dataDisplayed = $event;
-  }
-*/
-
-  /*
-  onSubmit(init: number, end: number) {
-    this.changeChartPage(init, end)
-  } */
 
   urlToMethod(route: ActivatedRoute){
     const url = route.snapshot.url;
@@ -248,7 +216,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
             this.possibleRepresentation = this.isChartRepresentable(resources);
             this.dataProcessed = true;
-   //         this.dataProcessed = Promise.resolve(true);
 
             this.allResources = resources;
           } else if (instances['@type']) {
@@ -302,16 +269,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     var axesClassification = {};
     var numericalClassification = {};
     var i = 0
-    //console.log(numericalClassification)
     for (i; i < descriptions.length; i++){
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
-    //console.log(numericalClassification)
     this.possibleaxes   = this.detectAxes(i, axesClassification);
     this.possiblevalues = this.detectNumericals(numericalClassification);
-    //console.log(numericalClassification)
     this.possibleTimes = this.detectTimeStamp(numericalClassification)
-    //console.log(this.possibleTimes)
 
     this.urlAxes();
 
@@ -319,9 +282,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   detectTimeStamp(numericalClassification) {
+    //TODO: igual no deberia ser un contador, igual que detect numericals, para poder guardarme las fechas y parsearlas para la timeline
     var count = 0;
     for(var attribute in numericalClassification) {
-      //console.log(numericalClassification[attribute])
       if (numericalClassification[attribute] == ChartRole.TimeStamp){
         count++;
       }
@@ -376,22 +339,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
     var json_object = JSON.parse(json_input.asJsonLd());
-
-    //console.log(json_object)
     for (var attribute in json_object){
-      /*
-      if(attribute == "https://saref.etsi.org/core/hasTimestamp") {
-        console.log("ooole lo caracole ", this.getValue(json_object[attribute]).valueOf())
-      } else {
-        console.log("a tu casa", attribute)
-      }*/
 
       if (!background_axes[attribute]){
         background_axes[attribute] = 1;
       } else if (background_axes[attribute]){
         background_axes[attribute] += 1;
       }
-      //console.log("isTimeStamp ", this.isTimeStamp(attribute), attribute, background_numerical[attribute])
+
       if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing) {
         background_numerical[attribute] = ChartRole.NumericalValue;
       } else if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing) {
@@ -399,25 +354,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       } else if (!this.isNumerical(json_object[attribute]) || !this.isTimeStamp(attribute)){
         background_numerical[attribute] = ChartRole.Nothing;
       }
-      /*
-      console.log("isTimeStamp ", this.isTimeStamp(attribute), attribute, background_numerical[attribute])
-      if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing){
-        background_numerical[attribute] = ChartRole.TimeStamp;
-      }*/
-
     }
   }
 
   isTimeStamp(string): Boolean {
-    //console.log("fecha? ", string, "\n tipo: ", typeof string)
-    //var fecha = this.getValue(string).valueOf()
-    //console.log("ehto ke éh? ", fecha, "tipo: ", typeof fecha);
-    //console.log(string == "https://saref.etsi.org/core/hasTimestamp")
     return string == "https://saref.etsi.org/core/hasTimestamp";
   }
 
   isNumerical(string){
-    //console.log(string)
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 

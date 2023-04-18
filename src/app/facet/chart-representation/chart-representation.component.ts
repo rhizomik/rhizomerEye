@@ -49,9 +49,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   height: 600
   };
 
-  //@Output() dataDisplayed1 = new EventEmitter(); //this.chartData.data.length;
-  //@Output() dataDisplayed2 = 23//this.chartData.data.length;
-
   constructor () {
     this.onResize();
   }
@@ -73,9 +70,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       this.numerical_values_input[this.layer][1];
     }
 
-    //mandar el dato
-    //this.dataDisplayed1.emit(this.chartData.data.length)
-    //this.dataDisplayed2 = this.chartData.data.length;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -44,11 +44,6 @@
             <span *ngIf="!dataProcessed"> <!--; else elseblock" -->
               <b style="margin-right: 0.5em;">Processing data...</b>
             </span>
-            <!--
-            <ng-template #elseblock>
-              <b>Chart View available/not</b>
-            </ng-template>
-            -->
 
             <span *ngIf="possibleRepresentation, else elseblock">
               <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
@@ -116,11 +111,10 @@
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
+
       <app-chart-representation  [rows]="selectedAxe1" [columns]="selectedAxe2"
                                 [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
-<!--
-prueba: (dataDisplayed1)="dataDisplayed"
--->
+
 
       <br>
       <p i18n class="text-center">
@@ -144,9 +138,7 @@ prueba: (dataDisplayed1)="dataDisplayed"
             <button type="submit" class="btn btn-primary btn-sm" (click)="changeChartPage(form_min.value, totalInstances )">All Data!</button>
           </div>
         </form>
-<!--
-      dataDisplayed: {{dataDisplayed}}
-    -->
+
 
     </span>
   </div>
