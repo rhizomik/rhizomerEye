@@ -302,12 +302,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     var axesClassification = {};
     var numericalClassification = {};
     var i = 0
+    console.log(numericalClassification)
     for (i; i < descriptions.length; i++){
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
+    console.log(numericalClassification)
     this.possibleaxes   = this.detectAxes(i, axesClassification);
     this.possiblevalues = this.detectNumericals(numericalClassification);
+    console.log(numericalClassification)
     this.possibleTimes = this.detectTimeStamp(numericalClassification)
+    //console.log(this.possibleTimes)
 
     this.urlAxes();
 
@@ -317,6 +321,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   detectTimeStamp(numericalClassification) {
     var count = 0;
     for(var attribute in numericalClassification) {
+      console.log(numericalClassification[attribute])
       if (numericalClassification[attribute] == ChartRole.TimeStamp){
         count++;
       }
@@ -386,15 +391,19 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       } else if (background_axes[attribute]){
         background_axes[attribute] += 1;
       }
-      if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing){
+      console.log("isTimeStamp ", this.isTimeStamp(attribute), attribute, background_numerical[attribute])
+      if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing) {
         background_numerical[attribute] = ChartRole.NumericalValue;
+      } else if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing) {
+        background_numerical[attribute] = ChartRole.TimeStamp;
       } else if (!this.isNumerical(json_object[attribute]) || !this.isTimeStamp(attribute)){
         background_numerical[attribute] = ChartRole.Nothing;
       }
-
+      /*
+      console.log("isTimeStamp ", this.isTimeStamp(attribute), attribute, background_numerical[attribute])
       if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing){
         background_numerical[attribute] = ChartRole.TimeStamp;
-      }
+      }*/
 
     }
   }
