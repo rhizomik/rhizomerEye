@@ -24,6 +24,11 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   resources: Description[];
   @Input()
   numerical_values_input: string[][];
+
+  @Input()
+  possibleTimes
+
+
   tag_chart : string;
 
   display = "none";
@@ -45,8 +50,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     data: [],
     columnNames: [],
     options: {},
-  width: 800,
-  height: 600
+    width: 800,
+    height: 600
   };
 
   constructor () {
@@ -121,7 +126,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   timelineChart() {
-    this.type = ChartType.Timeline;
+    this.type = ChartType.Calendar;
   }
 
   openModal() {
@@ -153,8 +158,11 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   createDataFrame() {
+    console.log("numerical values: ",  this.numerical_values)
     this.column_index = this.createColumnIndex();
+    console.log("colum_index", this.column_index)
     var dataframe : any[][][] = this.initialize_array();
+
     for (var i = 0; i < this.resources.length; i++){
       var resource = JSON.parse(this.resources[i].asJsonLd());
       let column = this.getValue(resource[this.columns]);
@@ -167,6 +175,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
     }
     this.dataframe = dataframe;
+    console.log("dataframe: ", dataframe)
+    console.log("layer: ", this.layer)
     this.switchData(this.numerical_values[this.layer]);
   }
 
@@ -198,8 +208,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var row of dataframe){
       new_dataframe.push(this.deleteFromRow(row, col_to_delete));
     }
-
-    console.log(new_dataframe);
     return new_dataframe;
   }
 
@@ -239,19 +247,23 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var i = 0; i < this.numerical_values.length; i++){
       dataframe[i] = [];
     }
+    //console.log("dataframe: ", dataframe)
     return dataframe;
   }
 
   insert_into_df(dataframe : any[][][], attribute: string, row, column) {
 
+    //console.log("attribute, row, column: ", attribute, row, column)
     let layer_i  = this.numerical_values.indexOf(attribute);
     let column_i = this.column_index.indexOf(column);
+    //console.log("layer_i, column_i: ", layer_i, column_i)
 
     if (!this.exists_row(dataframe[layer_i], row)){
       this.add_row(dataframe[layer_i], row);
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
-
+    //console.log("row_i", row_i)
+    //console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
     return [layer_i, row_i, column_i];
   }
 
@@ -275,6 +287,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     return exists;
   }
 
+  //todo: controlar por aqui si no aparece el grafico porque las fechas no se parsean a Number.
+  //todo: hacer algo del estilo if possibleTimes > 0 then parsear a fecha else parsear number
   stringToNumber(string: string) : number {
     if (string == ": " || string == undefined || string == null){
       return undefined;
@@ -300,9 +314,11 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       var resource = JSON.parse(this.resources[i].asJsonLd());
       if (!index.includes(this.getValue(resource[this.columns]))){
         index = index.concat(this.getValue(resource[this.columns]));
+        //console.log("añadimos: ", this.getValue(resource[this.columns]))
       }
     }
     index.sort();
+    //console.log("rows: ", this.rows, "columns: ", this.columns, "rows+columnIndex: ", [this.extractFromURI(this.rows)].concat(index))
     return [this.extractFromURI(this.rows)].concat(index);
   }
 
@@ -324,7 +340,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   extractFromURI(uri: string) : string {
     var name = "";
-    console.log(uri);
     for (var i = (uri.length - 1); i >= 0; i--){
       if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#"){
         break;

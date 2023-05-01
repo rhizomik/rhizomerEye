@@ -34,7 +34,7 @@ export class DetailRangeComponent implements OnInit {
   private SLIDER_DATATYPES = ['xsd:int', 'xsd:integer', 'xsd:gYear', 'xsd:decimal', 'xsd:float', 'xsd:double'];
   private STEP1_DATATYPES = ['xsd:int', 'xsd:integer', 'xsd:gYear'];
 
-  //-----
+  //----- todo: limpiar lo que he tocado aqui, no se usa al final
   isDateTime: Boolean = false;
 
   constructor(
@@ -48,7 +48,7 @@ export class DetailRangeComponent implements OnInit {
       this.firstValues();
     }
 
-    if (this.range.defaultLabel == "dateTime") {
+    if (this.range.defaultLabel == "dateTime" || this.range.defaultLabel == "gYear") {
       console.log("FECHAAAAA" + this.range.defaultLabel)
       this.isDateTime = true
     } else {
