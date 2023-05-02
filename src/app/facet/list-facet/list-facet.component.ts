@@ -89,7 +89,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   addgYear(string) {
     //this.possiblegYear.concat(string)
-    //console.log(this.possiblegYear)
   }
 
   urlToMethod(route: ActivatedRoute){
@@ -112,7 +111,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         //comprobamos que haya fechas
         //todo: hacer lo mismo para los puntos
         this.checkDates(facets)
-        console.log("caca despues de checkdates: ", this.possibleTimes)
         this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
           a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
@@ -121,36 +119,21 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.rangeService.getAll(this.datasetId, this.classId, facet.curie))).subscribe(
             facetsRanges => {
               facetsRanges.map((ranges, i) => this.facets[i].ranges = ranges.map(range => new Range(range)));
-              console.log("caca antes de load filters")
               this.loadFilters(params);
             }
         );
       },
       error: () => this.router.navigate(['..'], {relativeTo: this.route})
     });
-    console.log("me la juego", this.facets)
   }
 
   checkDates(facets: Facet[]) {
 
-    //console.log("chan possibkeTimes begin: ", this.possibleTimes)
-    //console.log("chan chan", facets)
-
-    console.log("caca entering checkdates: ", this.possibleTimes)
     for(var i = 0; i < facets.length; i++ ) {
-    //for(var i = 0; i < this.possibleTimes.length; i++ ) {
-      //var uri = this.possibleTimes[i][1]
-      //console.log("caca checkdates uri", uri)
-      //console.log("chan", facets[i])
-      //console.log("chan chan 2", facets[i].range.includes("gYear"))
       if(facets[i].range.includes("gYear")) {
-        //console.log("chan 3", facets[i].uri)
         this.possibleTimes.push(['gYear', facets[i].uri])
-        console.log("caca added a gYear", this.possibleTimes)
-        //this.possiblegYear = facets[i].defaultLabel
       }
     }
-    //console.log("chan possibkeTimes end: ", this.possibleTimes)
   }
 
   loadFilters(params: ParamMap) {
@@ -179,7 +162,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       }
     });
     this.breadcrumbService.addFacetFilters(paramFilters);
-    console.log("caca dentro de load filters, antes de refresh instances", this.possibleTimes)
     this.breadcrumbService.filtersSelection.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (filters: Filter[]) => this.refreshInstances(this.datasetId, this.classId, filters));
   }
@@ -202,7 +184,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.filteredInstances = count;
         this.loadInstances(datasetId, classId, filters, this.page);
       });
-    console.log("caca en refresh instances, antes de isChartCompatible", this.possibleTimes)
     this.isChartCompatible(this.datasetId, this.classId, filters, this.possibleTimes);
   }
 
@@ -231,14 +212,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       });
   }
 
-  isChartCompatible(datasetId: string, classId: string, filters: Filter[], possibleTimes: String[]) {
+  isChartCompatible(datasetId: string, classId: string, filters: Filter[], possibleTimes: string[]) {
     this.filteredInstances = undefined;
     this.resources = undefined;
-    console.log("caca en chartcompatible, antes de getdetails", possibleTimes)
     this.getDetails(datasetId, classId, filters, possibleTimes);
   }
 
-  getDetails(datasetId: string, classId: string, filters: Filter[], possibleTimes: String[]){
+  getDetails(datasetId: string, classId: string, filters: Filter[], possibleTimes){
     //We check if there is a numerical Observation/observation
     forkJoin([
         this.classService.getDetails(datasetId, classId, filters,
@@ -255,17 +235,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           if (instances['@graph']) {
             //var anonResources = Description.getAnonResources(instances, this.labels);
             var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
-            //console.log("me la juego again: ", resources[0].properties[4].values)
             this.possibleRepresentation = this.isChartRepresentable(resources);
             this.dataProcessed = true;
 
             this.allResources = resources;
+            console.log("all resources", this.allResources)
 
-            //console.log("chan all resources: ", this.allResources[0].properties[4].uri, this.allResources[0].properties[4].label )
-            //console.log("chan previous: ", this.possibleTimes)
-            console.log("caca en get details, antes de checkallresources", possibleTimes)
             this.checkAllResourcesForPossibleTimes(possibleTimes)
-            console.log("caca final check", this.possibleTimes)
+            console.log("final check", this.possibleTimes)
 
 
 
@@ -278,26 +255,18 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
 
-  checkAllResourcesForPossibleTimes(possibleTimes: String[]) {
-    console.log("caca checking all resources for possible times", possibleTimes)
-    var properties = []
-    //console.log("caca allresources", this.allResources)
-    //console.log("chan chan chan chan", this.possibleTimes,this.possibleTimes.length)
+  checkAllResourcesForPossibleTimes(possibleTimes) {
     for (var i = 0; i < possibleTimes.length; i++) {
       for (var j = 0; j < this.allResources[0].properties.length; j++) {
-        console.log("caca all resources properties: ", this.allResources[1].properties[j])
-        var label = this.allResources[0].properties[j].label
+        var label: string = this.allResources[0].properties[j].label
         var uri = this.allResources[0].properties[j].uri
-        console.log("caca check", possibleTimes[i][1], uri, possibleTimes[i][1] == uri)
         if(possibleTimes[i][1] == uri) {
-          possibleTimes.push('gYear', label)// = ['gYear', label]
+          //this.possibleTimes.push(['gYear', facets[i].uri])
+          possibleTimes.pop()
+          possibleTimes.push(['gYear', label])
         }
-        //properties.push([label, uri])
-        //console.log("chan 4 possibleTimes", this.possibleTimes[i])
       }
-      console.log("caca all properties: ", properties)
     }
-    console.log("Caca finally possible times: ", possibleTimes)
     this.possibleTimes = possibleTimes
   }
 
@@ -381,11 +350,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   detectNumericals(numericalClassification){
-    //console.log("me la juego again: ", this.allResources)
     var returnNums = [];
     for (var attribute in numericalClassification){
       if (numericalClassification[attribute] == ChartRole.NumericalValue){
-        console.log("buat: ", this.extractFromURI(attribute))
         returnNums.push([attribute, this.extractFromURI(attribute)]);
       }
     }
@@ -416,11 +383,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
     var json_object = JSON.parse(json_input.asJsonLd());
-    console.log(json_object)
     for (var attribute in json_object){
-      console.log("quiero: ", this.getValue(json_object[attribute]))
-      console.log("atributo: ", attribute)
-      //console.log(new Date())
       if (!background_axes[attribute]){
         background_axes[attribute] = 1;
       } else if (background_axes[attribute]){
@@ -440,7 +403,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   // todo: tambien comprobar que un tipo gYear cuente como time
   // todo: cambiar los nombres a time en general, no solo timestamp
   isTimeStamp(string): Boolean {
-    console.log(string)
     return string == "https://saref.etsi.org/core/hasTimestamp";
   }
 

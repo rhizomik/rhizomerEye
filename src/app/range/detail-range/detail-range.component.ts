@@ -48,12 +48,12 @@ export class DetailRangeComponent implements OnInit {
       this.firstValues();
     }
 
-    if (this.range.defaultLabel == "dateTime" || this.range.defaultLabel == "gYear") {
-      console.log("FECHAAAAA" + this.range.defaultLabel)
-      this.isDateTime = true
-    } else {
-      console.log("NO ES FECHAAA" + this.range.defaultLabel)
-    }
+   // if (this.range.defaultLabel == "dateTime" || this.range.defaultLabel == "gYear") {
+   //   console.log("FECHAAAAA" + this.range.defaultLabel)
+   //   this.isDateTime = true
+   // } else {
+   //   console.log("NO ES FECHAAA" + this.range.defaultLabel)
+   // }
   }
 
   firstValues() {

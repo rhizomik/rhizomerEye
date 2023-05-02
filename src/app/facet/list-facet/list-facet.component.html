@@ -119,8 +119,16 @@
         </div>
       </h5>
 
+      vamos a ver si ha salido bien: {{possibleTimes}}
+
+      <span *ngFor="let possibleTime of possibleTimes">
+        {{possibleTime}}
+        {{possibleTime[0]}}
+      </span>
+
       <app-chart-representation  [rows]="selectedAxe1" [columns]="selectedAxe2"
-                                [resources]="allResources" [numerical_values_input]="possiblevalues"></app-chart-representation>
+                                [resources]="allResources" [numerical_values_input]="possiblevalues"
+                                [possibleTimes]="possibleTimes"    ></app-chart-representation>
 
 
       <br>
