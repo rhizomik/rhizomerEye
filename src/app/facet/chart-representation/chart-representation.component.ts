@@ -54,15 +54,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     height: 600
   };
 
+  //to check if chart type has been changed to timeline
   timelineType = false;
 
-  tmpChartData = {
-    data: [],
-    columnNames: [],
-    options: {},
-    width: 800,
-    height: 600
-  }
 
   constructor() {
     this.onResize();
@@ -120,22 +114,35 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   tableChart() {
     this.type = ChartType.Table;
-    this.createCharts()
+    if(this.timelineType) {
+      this.timelineType = false
+      this.createCharts()
+    }
+
   }
 
   barChart() {
     this.type = ChartType.Bar;
-    this.createCharts()
+    if(this.timelineType) {
+      this.timelineType = false
+      this.createCharts()
+    }
   }
 
   lineChart() {
     this.type = ChartType.Line;
-    this.createCharts()
+    if(this.timelineType) {
+      this.timelineType = false
+      this.createCharts()
+    }
   }
 
   pieChart() {
     this.type = ChartType.PieChart;
-    this.createCharts()
+    if(this.timelineType) {
+      this.timelineType = false
+      this.createCharts()
+    }
   }
 
   mapChart() {
@@ -145,15 +152,112 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   timelineChart() {
 
     this.type = ChartType.Timeline;
-    this.timelineType = true;
-    this.tmpChartData = this.chartData
+    this.createTimelineChart()
+  }
 
+  createTimelineChart() {
+    this.timelineType = true;
+
+    const dates = [];
+    //dates.push(['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)])
+    console.log("trial: ", dates)
+
+    const axe = this.column_index[0];
+    console.log("axe without time: ", axe)
+
+    for(let i = 0; i < this.resources.length; i++) {
+      const property = this.resources[i].properties;
+      console.log("resource: ", property)
+      const propertyName = this.findName(property, axe);
+      console.log("propertyName: ", propertyName)
+      const tmpPropertyFrom = this.findFrom(property);
+      console.log("propertyFrom: ", tmpPropertyFrom)
+      const customToFrom = this.findTo(tmpPropertyFrom)
+      const propertyFrom = customToFrom[0]
+      const propertyTo = customToFrom[1]
+      console.log("start and end: ", propertyFrom, propertyTo)
+      const newDate = [propertyName, propertyFrom, propertyTo]
+      dates.push(newDate)
+    }
+
+    console.log("dates: ", dates)
+    this.chartData.columnNames = ["Name", "To", "From"]
+    this.chartData.data = dates
+
+    /*
     this.chartData.columnNames = ["Name", "To", "From"]
     this.chartData.data = [
       ['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)],
       ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
-      ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]//["hello world", new Date(2023, 5, 1), new Date(2024, 5, 1)]
+      ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]
+     */
   }
+
+  findName(property, axe) {
+    let name = '';
+    for(let i = 0; i < property.length; i++) {
+      if(property[i].label == axe) {
+        name = property[i].values[0].value
+      }
+    }
+    return name
+  }
+
+  findFrom(property) {
+    const timeAxe = this.possibleTimes[0][1];
+    let from = '';
+    for(let i = 0; i < property.length; i++) {
+      if(property[i].label == timeAxe) {
+        from = property[i].values[0].value
+      }
+    }
+    return from
+  }
+
+  findTo(propertyFrom) {
+    //let's find the end time of the resource
+    if(this.possibleTimes.length < 2) {
+      console.log("onlyfrom: ", this.possibleTimes)
+      return this.customFromAndTo(propertyFrom)
+    } else {
+      console.log("only and from: ", this.possibleTimes)
+      //todo: customize start and end date in datetime format
+      return this.possibleTimes[1]
+    }
+  }
+
+  customFromAndTo(propertyFrom) {
+    //depending on the start date value, we find the appropriate end date
+    //todo: asumimos que solo tenemos start date
+    const timeType = this.possibleTimes[0][0]
+    switch (timeType) {
+      case 'gYear': {
+        //if start date is gYear (and we don't have end date), we assume a hole year in datetime format
+        var tmpEnd = Number(propertyFrom) + 1
+        console.log("end: ", tmpEnd)
+        return this.customizeYear(propertyFrom, tmpEnd)
+      }
+      //todo: completar con el tipo de wetcoin
+      case 'timestamp': {
+        break;
+      }
+
+      case 'dateTime': {
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+  }
+
+  customizeYear(startYear, endYear) {
+    const start = new Date(startYear, 0, 1);
+    const end = new Date(endYear, 0, 1);
+    return [start, end]
+  }
+
 
   openModal() {
     this.correlation_fields = [];
@@ -185,7 +289,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   createDataFrame() {
-    console.log("possible times: ", this.possibleTimes)
     console.log("numerical values: ", this.numerical_values)
     this.column_index = this.createColumnIndex();
     console.log("colum_index", this.column_index)
@@ -276,7 +379,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var i = 0; i < this.numerical_values.length; i++) {
       dataframe[i] = [];
     }
-    //console.log("dataframe: ", dataframe)
     return dataframe;
   }
 
