@@ -158,30 +158,38 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   createTimelineChart() {
     this.timelineType = true;
 
+    console.log()
+
     const dates = [];
     //dates.push(['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)])
-    console.log("trial: ", dates)
+    //console.log("trial: ", dates)
 
     const axe = this.column_index[0];
-    console.log("axe without time: ", axe)
+    //console.log("axe without time: ", axe)
 
     for(let i = 0; i < this.resources.length; i++) {
       const property = this.resources[i].properties;
       console.log("resource: ", property)
+      console.log("time content: ", this.tag_chart)
       const propertyName = this.findName(property, axe);
-      console.log("propertyName: ", propertyName)
+      //console.log("propertyName: ", propertyName)
       const tmpPropertyFrom = this.findFrom(property);
-      console.log("propertyFrom: ", tmpPropertyFrom)
-      const customToFrom = this.findTo(tmpPropertyFrom)
-      const propertyFrom = customToFrom[0]
-      const propertyTo = customToFrom[1]
-      console.log("start and end: ", propertyFrom, propertyTo)
-      const newDate = [propertyName, propertyFrom, propertyTo]
+      //console.log("propertyFrom: ", tmpPropertyFrom)
+      const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
+      //console.log("start and end: ", propertyFrom, propertyTo)
+      const propertyContent = this.findContent(property)
+      const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
+      if(this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
+        continue
+      }
+      //const newDate = [propertyName, propertyFrom, propertyTo]
+      console.log("vamos a añadir:\nName: ", propertyName, "\nContent: ", propertyContent, "\nFrom: ", propertyFrom, "\nTo: ", propertyTo)
       dates.push(newDate)
     }
 
     console.log("dates: ", dates)
-    this.chartData.columnNames = ["Name", "To", "From"]
+    //this.chartData.columnNames = ["Name", "To", "From"]
+    this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
 
     /*
@@ -191,6 +199,21 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
       ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]
      */
+  }
+
+  existUndefined(name, content, from, to) {
+    return name == undefined || content == undefined || from == undefined || to == undefined
+  }
+
+  findContent(property) {
+    const contentName = this.tag_chart
+    for(let i = 0; i < property.length; i++) {
+      //console.log("buscamos ", contentName, "\nhemos encontrado: ", property[i].label, "\nEsta?: ", property[i].label.includes(contentName))
+      if(property[i].label.includes(contentName)) {
+        //console.log("content found: ", property[i].values[0].value)
+        return property[i].values[0].value
+      }
+    }
   }
 
   findName(property, axe) {
@@ -217,10 +240,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findTo(propertyFrom) {
     //let's find the end time of the resource
     if(this.possibleTimes.length < 2) {
-      console.log("onlyfrom: ", this.possibleTimes)
+    //  console.log("onlyfrom: ", this.possibleTimes)
       return this.customFromAndTo(propertyFrom)
     } else {
-      console.log("only and from: ", this.possibleTimes)
+      //console.log("only and from: ", this.possibleTimes)
       //todo: customize start and end date in datetime format
       return this.possibleTimes[1]
     }
@@ -234,7 +257,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       case 'gYear': {
         //if start date is gYear (and we don't have end date), we assume a hole year in datetime format
         var tmpEnd = Number(propertyFrom) + 1
-        console.log("end: ", tmpEnd)
+      //  console.log("end: ", tmpEnd)
         return this.customizeYear(propertyFrom, tmpEnd)
       }
       //todo: completar con el tipo de wetcoin
@@ -302,6 +325,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         if (this.numerical_values.includes(attribute)) {
           let [layer, row_i, column_i] = this.insert_into_df(dataframe, attribute, row, column);
           dataframe[layer][row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
+          console.log("content: ", this.getValue(resource[attribute]))
         }
       }
     }
@@ -309,6 +333,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     console.log("dataframe: ", dataframe)
     console.log("layer: ", this.layer)
     console.log("chart data: ", this.chartData)
+    console.log("chart content: ", this.numerical_values[this.layer])
     this.switchData(this.numerical_values[this.layer]);
   }
 
@@ -318,7 +343,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if (this.is_correlation_chart) {
       //This situation happens when the user comes from the correlation chart
       this.is_correlation_chart = false;
+
       this.createCharts();
+    } else if (this.timelineType) {
+      this.createTimelineChart()
     } else {
       this.resizeColumns();
       this.resizeDataframe(this.dataframe[this.layer]);
@@ -384,7 +412,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   insert_into_df(dataframe: any[][][], attribute: string, row, column) {
 
-    //console.log("attribute, row, column: ", attribute, row, column)
+    console.log("attribute, row, column: ", attribute, row, column)
     let layer_i = this.numerical_values.indexOf(attribute);
     let column_i = this.column_index.indexOf(column);
     //console.log("layer_i, column_i: ", layer_i, column_i)
@@ -394,7 +422,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
     //console.log("row_i", row_i)
-    //console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
+    console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
+
     return [layer_i, row_i, column_i];
   }
 
@@ -418,8 +447,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     return exists;
   }
 
-  //todo: controlar por aqui si no aparece el grafico porque las fechas no se parsean a Number.
-  //todo: hacer algo del estilo if possibleTimes > 0 then parsear a fecha else parsear number
   stringToNumber(string: string): number {
     if (string == ": " || string == undefined || string == null) {
       return undefined;
