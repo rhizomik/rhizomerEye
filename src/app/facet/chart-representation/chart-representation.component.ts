@@ -87,6 +87,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.is_correlation_chart) {
       this.createCorrelationTable();
+    } else if(this.timelineType) {
+      console.log("que - pasamos por aqui, toca vaciar possibletimes?")
+      this.createTimelineChart()
     } else {
       this.createCharts();
     }
@@ -158,7 +161,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   createTimelineChart() {
     this.timelineType = true;
 
-    console.log()
+    console.log("que ta pachando con possibletimes: ", this.possibleTimes)
 
     const dates = [];
     //dates.push(['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)])
@@ -191,14 +194,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //this.chartData.columnNames = ["Name", "To", "From"]
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
+    this.chartData.options = {
+      timeline: { colorByRowLabel: true }
+    }
 
-    /*
-    this.chartData.columnNames = ["Name", "To", "From"]
-    this.chartData.data = [
-      ['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)],
-      ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
-      ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]
-     */
   }
 
   existUndefined(name, content, from, to) {
@@ -325,7 +324,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         if (this.numerical_values.includes(attribute)) {
           let [layer, row_i, column_i] = this.insert_into_df(dataframe, attribute, row, column);
           dataframe[layer][row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
-          console.log("content: ", this.getValue(resource[attribute]))
+          //console.log("content: ", this.getValue(resource[attribute]))
         }
       }
     }
@@ -412,7 +411,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   insert_into_df(dataframe: any[][][], attribute: string, row, column) {
 
-    console.log("attribute, row, column: ", attribute, row, column)
+    //console.log("attribute, row, column: ", attribute, row, column)
     let layer_i = this.numerical_values.indexOf(attribute);
     let column_i = this.column_index.indexOf(column);
     //console.log("layer_i, column_i: ", layer_i, column_i)
@@ -422,7 +421,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
     //console.log("row_i", row_i)
-    console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
+    //console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
 
     return [layer_i, row_i, column_i];
   }

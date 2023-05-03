@@ -49,10 +49,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   //to check if timeline may be available
   possibleTimes = [];
 
-  //@Input()
-  //possiblegYear: String[] = [];
-
-
   //to check if map may be available
   possiblePoints = 0;
 
@@ -85,10 +81,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.urlToMethod(this.route);
     this.refreshFacets(this.relevance, this.route.snapshot.queryParamMap);
 
-  }
-
-  addgYear(string) {
-    //this.possiblegYear.concat(string)
   }
 
   urlToMethod(route: ActivatedRoute){
@@ -128,7 +120,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   checkDates(facets: Facet[]) {
-
+    //checks if facets contains dates
+    //todo: comprobar que tambien incluya datetime/timestamp
     for(var i = 0; i < facets.length; i++ ) {
       if(facets[i].range.includes("gYear")) {
         this.possibleTimes.push(['gYear', facets[i].uri])
@@ -326,7 +319,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   detectTimeStamp(numericalClassification) {
-    //TODO: igual no deberia ser un contador, igual que detect numericals, para poder guardarme las fechas y parsearlas para la timeline
+    //TODO: useless
     var count = [];
     for(var attribute in numericalClassification) {
       if (numericalClassification[attribute] == ChartRole.TimeStamp){
@@ -400,8 +393,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
-  // todo: tambien comprobar que un tipo gYear cuente como time
-  // todo: cambiar los nombres a time en general, no solo timestamp
+  //todo: useless, lo hago con las facetas al final
   isTimeStamp(string): Boolean {
     return string == "https://saref.etsi.org/core/hasTimestamp";
   }
@@ -413,6 +405,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   changeChartPage(init: number, end: number){
     this.numericalInstancesInit = init;
     this.numericalInstancesEnd  = end;
+    console.log("que reiniciamos possibletimes")
+    this.possibleTimes = []
     this.ngOnInit();
   }
 
