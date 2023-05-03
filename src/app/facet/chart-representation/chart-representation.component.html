@@ -1,81 +1,116 @@
-
 <div style="margin-bottom: 1.4em;"></div>
 
 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-    <label class="btn btn-outline-primary btn-sm" for="btnradio1" (click)="tableChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x3" viewBox="0 0 16 16">
-      <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z"/>
-    </svg> Table</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+  <label class="btn btn-outline-primary btn-sm" for="btnradio1" (click)="tableChart()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x3"
+         viewBox="0 0 16 16">
+      <path
+        d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z"/>
+    </svg>
+    Table</label>
 
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-    <label class="btn btn-outline-primary btn-sm" for="btnradio2" (click)="lineChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
-    </svg> Line</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+  <label class="btn btn-outline-primary btn-sm" for="btnradio2" (click)="lineChart()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up"
+         viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+            d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+    </svg>
+    Line</label>
 
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-    <label class="btn btn-outline-primary btn-sm" for="btnradio3" (click)="barChart()"><i class="bi bi-bar-chart"></i> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
-      <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
-    </svg> Bar</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+  <label class="btn btn-outline-primary btn-sm" for="btnradio3" (click)="barChart()"><i class="bi bi-bar-chart"></i>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart"
+         viewBox="0 0 16 16">
+      <path
+        d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+    </svg>
+    Bar</label>
 
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-    <label class="btn btn-outline-primary btn-sm" for="btnradio4" (click)="pieChart()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pie-chart" viewBox="0 0 16 16">
-      <path d="M7.5 1.018a7 7 0 0 0-4.79 11.566L7.5 7.793V1.018zm1 0V7.5h6.482A7.001 7.001 0 0 0 8.5 1.018zM14.982 8.5H8.207l-4.79 4.79A7 7 0 0 0 14.982 8.5zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
-    </svg> Pie</label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+  <label class="btn btn-outline-primary btn-sm" for="btnradio4" (click)="pieChart()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pie-chart"
+         viewBox="0 0 16 16">
+      <path
+        d="M7.5 1.018a7 7 0 0 0-4.79 11.566L7.5 7.793V1.018zm1 0V7.5h6.482A7.001 7.001 0 0 0 8.5 1.018zM14.982 8.5H8.207l-4.79 4.79A7 7 0 0 0 14.982 8.5zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
+    </svg>
+    Pie</label>
 
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
-    <label class="btn btn-outline-primary btn-sm" for="btnradio6" (click)="mapChart()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
-      </svg>
-      Map
-    </label>
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+  <label class="btn btn-outline-primary btn-sm" for="btnradio6" (click)="mapChart()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map"
+         viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+            d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+    </svg>
+    Map
+  </label>
 
-    <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
+
+  <span *ngIf="possibleTimes.length > 0">
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
     <label class="btn btn-outline-primary btn-sm" for="btnradio7" (click)="timelineChart()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass" viewBox="0 0 16 16">
-        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5zm2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2h-7z"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass"
+           viewBox="0 0 16 16">
+        <path
+          d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5zm2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2h-7z"/>
       </svg>
       Timeline
     </label>
+       </span>
+
 
 </div>
 
 
 <div class="btn-group" role="group" aria-label="Button group with nested dropdown" style="float: right;">
 
-    <div class="dropdown">
-        <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-          {{ tag_chart }}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-          <li *ngFor="let variable of numerical_values_input.slice(0, layer).concat(numerical_values_input.slice(layer + 1, numerical_values_input.length))">
-              <button class="dropdown-item btn-sm" type="button" (click)="switchData(variable[0])">{{variable[1]}}</button>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-            <button class="dropdown-item btn-sm" type="button" (click)="openModal()">Multiple Facets</button>
-        </ul>
-      </div>
-    <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-      <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
-    </svg> Axes</button>
+  <div class="dropdown">
+    <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" id="dropdownMenu2"
+            data-bs-toggle="dropdown" aria-expanded="false">
+      {{ tag_chart }}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+      <li
+        *ngFor="let variable of numerical_values_input.slice(0, layer).concat(numerical_values_input.slice(layer + 1, numerical_values_input.length))">
+        <button class="dropdown-item btn-sm" type="button" (click)="switchData(variable[0])">{{variable[1]}}</button>
+      </li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <button class="dropdown-item btn-sm" type="button" (click)="openModal()">Multiple Facets</button>
+    </ul>
+  </div>
+  <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right"
+         viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+            d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
+    </svg>
+    Axes
+  </button>
 </div>
 
-<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-          <h6 class="modal-title">Select the facets you want to depict:</h6>
-            <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+        <h6 class="modal-title">Select the facets you want to depict:</h6>
+        <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
-        <i><small>You can select as many facets as you desire by pressing "Ctrl" button.<br>The outcome will be a single chart will all the data from the selected facets.</small></i>
+        <i><small>You can select as many facets as you desire by pressing "Ctrl" button.<br>The outcome will be a single
+          chart will all the data from the selected facets.</small></i>
         <div style="margin-bottom:1em"></div>
-        <select multiple class="form-select" size="{{numerical_values_input.length}}" aria-label="multiple select example">
+        <select multiple class="form-select" size="{{numerical_values_input.length}}"
+                aria-label="multiple select example">
           <option *ngFor="let variable of numerical_values_input"
-          [value]="variable[0]" (click)="correlationFacets($event.target.value)">{{variable[1]}}<br>
+                  [value]="variable[0]" (click)="correlationFacets($event.target.value)">{{variable[1]}}<br>
           </option>
         </select>
-      {{correlation_fields}}
+        {{correlation_fields}}
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-link" (click)="createCorrelationTable()">Create Chart</button>
@@ -103,14 +138,14 @@
   width: {{chartData.width}}
   <br>
   -->
-    <google-chart
-        #editable
-        [type]="type"
-        [data]="chartData.data"
-        [columns]="chartData.columnNames"
-        [options]="chartData.options"
-        [height]="chartData.height"
-        [width]="chartData.width">
-    </google-chart>
+  <google-chart
+    #editable
+    [type]="type"
+    [data]="chartData.data"
+    [columns]="chartData.columnNames"
+    [options]="chartData.options"
+    [height]="chartData.height"
+    [width]="chartData.width">
+  </google-chart>
 </div>
 
