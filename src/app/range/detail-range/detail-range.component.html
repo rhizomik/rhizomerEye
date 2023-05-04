@@ -1,12 +1,6 @@
 <div class="card range p-2 mb-1">
-  esto es detail range
   <div class="card-title p-1 m-0">
     <b title="{{range.uri}}">{{range.getLabel(translate.currentLang)}}</b>
-
-    titulo rango.uri: {{range.uri}} <br> rango: {{range.defaultLabel}} <br> <!--{{isDateTime}}-->
-    <span *ngIf="range.defaultLabel === 'dateTime'">True</span>
-
-
     <span *ngIf="facet.ranges.length > 1" class="badge badge-light badge-pill">{{range.timesUsed}}</span>
     <span *ngIf="status === rangeStatus.UNEXPANDED && !range.allBlank" class="fa fa-plus-circle ml-1"
           style="cursor: pointer" (click)="firstValues()"></span>

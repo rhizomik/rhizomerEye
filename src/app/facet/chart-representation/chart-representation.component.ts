@@ -194,10 +194,11 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //this.chartData.columnNames = ["Name", "To", "From"]
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
+    /*
     this.chartData.options = {
       timeline: { colorByRowLabel: true }
     }
-
+   */
   }
 
   existUndefined(name, content, from, to) {
@@ -252,12 +253,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //depending on the start date value, we find the appropriate end date
     //todo: asumimos que solo tenemos start date
     const timeType = this.possibleTimes[0][0]
+    const hasEnd = this.possibleTimes.length > 1
     switch (timeType) {
       case 'gYear': {
         //if start date is gYear (and we don't have end date), we assume a hole year in datetime format
-        var tmpEnd = Number(propertyFrom) + 1
+        if(hasEnd) {
+
+        } else {
+          var tmpEnd = Number(propertyFrom) + 1
+          return this.customizeYear(propertyFrom, tmpEnd)
+        }
+
       //  console.log("end: ", tmpEnd)
-        return this.customizeYear(propertyFrom, tmpEnd)
+
       }
       //todo: completar con el tipo de wetcoin
       case 'timestamp': {

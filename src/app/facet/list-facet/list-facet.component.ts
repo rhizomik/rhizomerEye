@@ -49,6 +49,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   //to check if timeline may be available
   possibleTimes = [];
 
+  //to check numerical values
+  possibleNumericals = []
+  tmpNumericals = []
+
   //to check if map may be available
   possiblePoints = 0;
 
@@ -103,6 +107,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         //comprobamos que haya fechas
         //todo: hacer lo mismo para los puntos
         this.checkDates(facets)
+        this.checkNumericals(facets)
+        console.log("numericals chekced: ", this.possibleNumericals)
         this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
           a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
@@ -119,11 +125,36 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     });
   }
 
+  checkNumericals(facets: Facet[]) {
+    //this.delay(500).then(r => )
+    //todo: comprobar que tambien incluya datetime/timestamp
+    var count = []
+    for(var i = 0; i < facets.length; i++ ) {
+      //console.log("me ha llegado: ", facets[i])
+      if(facets[i].range.includes("int")) {
+        this.possibleNumericals.push(['int', facets[i].uri])
+        count.push([facets[i].uri, 'int'])
+        //console.log("checkpoint int: ", this.possibleNumericals)
+      } else if(facets[i].range.includes("decimal")) {
+        //console.log("checkeamos y pusheamos: [decimal, ", facets[i].uri, "]")
+        this.possibleNumericals.push(['decimal', facets[i].uri])
+        //count.push([facets[i].uri, 'decimal'])
+        //console.log("checkpoint decimal: ", this.possibleNumericals)
+      }
+    }
+    //console.log("checkpoint: ", this.possibleNumericals)
+    //console.log("checkpoint 3: ", count)
+    this.tmpNumericals = count
+    //console.log("suerte: ", this.tmpNumericals)
+  }
+
   checkDates(facets: Facet[]) {
     //checks if facets contains dates
-    //todo: comprobar que tambien incluya datetime/timestamp
     for(var i = 0; i < facets.length; i++ ) {
       if(facets[i].range.includes("gYear")) {
+        this.possibleTimes.push(['gYear', facets[i].uri])
+      } else if(facets[i].range.includes("dateTime")) {
+        console.log("hay datetime: ", facets[i].range)
         this.possibleTimes.push(['gYear', facets[i].uri])
       }
     }
@@ -177,7 +208,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.filteredInstances = count;
         this.loadInstances(datasetId, classId, filters, this.page);
       });
-    this.isChartCompatible(this.datasetId, this.classId, filters, this.possibleTimes);
+    this.isChartCompatible(this.datasetId, this.classId, filters, this.possibleTimes, this.possibleNumericals);
   }
 
   delay(ms: number) {
@@ -205,13 +236,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       });
   }
 
-  isChartCompatible(datasetId: string, classId: string, filters: Filter[], possibleTimes: string[]) {
+  isChartCompatible(datasetId: string, classId: string, filters: Filter[], possibleTimes: string[], possibleNumericals: string[]) {
     this.filteredInstances = undefined;
     this.resources = undefined;
-    this.getDetails(datasetId, classId, filters, possibleTimes);
+    this.getDetails(datasetId, classId, filters, possibleTimes, possibleNumericals);
   }
 
-  getDetails(datasetId: string, classId: string, filters: Filter[], possibleTimes){
+  getDetails(datasetId: string, classId: string, filters: Filter[], possibleTimes, possibleNumericals){
     //We check if there is a numerical Observation/observation
     forkJoin([
         this.classService.getDetails(datasetId, classId, filters,
@@ -235,9 +266,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             console.log("all resources", this.allResources)
 
             this.checkAllResourcesForPossibleTimes(possibleTimes)
-            console.log("final check", this.possibleTimes)
+            console.log("final check possibleTimes", this.possibleTimes)
 
 
+            this.checkAllResourcesForPossibleNumericals(possibleNumericals)
+            console.log("final check possibleNumericals", this.possibleNumericals)
+            console.log("numericals canon: ", this.possiblevalues)
 
           } else if (instances['@type']) {
             var resources = [new Description(instances, instances['@context'], this.labels)];
@@ -247,12 +281,31 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         });
   }
 
+  checkAllResourcesForPossibleNumericals(possibeNumericals) {
+
+    const tmpNumericals = [];
+
+    for (let i = 0; i < possibeNumericals.length; i++) {
+      for (let j = 0; j < this.allResources.length; j++) {
+        for(let k = 0; k < this.allResources[j].properties.length; k++) {
+          const label: string = this.allResources[j].properties[k].label;
+          const uri = this.allResources[j].properties[k].uri;
+          if(possibeNumericals[i][1] == uri) {
+            tmpNumericals.push([uri, label])
+            j = this.allResources.length
+            break
+          }
+        }
+      }
+    }
+    this.possibleNumericals = tmpNumericals
+  }
 
   checkAllResourcesForPossibleTimes(possibleTimes) {
-    for (var i = 0; i < possibleTimes.length; i++) {
-      for (var j = 0; j < this.allResources[0].properties.length; j++) {
-        var label: string = this.allResources[0].properties[j].label
-        var uri = this.allResources[0].properties[j].uri
+    for (let i = 0; i < possibleTimes.length; i++) {
+      for (let j = 0; j < this.allResources[0].properties.length; j++) {
+        const label: string = this.allResources[0].properties[j].label;
+        const uri = this.allResources[0].properties[j].uri;
         if(possibleTimes[i][1] == uri) {
           //this.possibleTimes.push(['gYear', facets[i].uri])
           possibleTimes.pop()
@@ -310,12 +363,17 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
     this.possibleaxes   = this.detectAxes(i, axesClassification);
+    //console.log("antes de entrar: ", numericalClassification)
     this.possiblevalues = this.detectNumericals(numericalClassification);
-    this.possibleTimes = this.detectTimeStamp(numericalClassification)
+    //this.possibleTimes = this.detectTimeStamp(numericalClassification)
 
     this.urlAxes();
-
-    return this.possibleaxes.length >= 2 && this.possiblevalues.length + this.possibleTimes.length >= 1;
+    console.log("possibleaxes: ", this.possibleaxes.length)
+    console.log("possiblevalues: ", this.possiblevalues.length)
+    console.log("possiblenumericals: ", this.possibleNumericals)
+    console.log("isChartRepresentable: ", this.possibleaxes.length >= 2 && this.possiblevalues.length > 0)
+    //return this.possibleaxes.length >= 2 && this.possiblevalues.length > 0//+ this.possibleTimes.length >= 1;
+    return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0
   }
 
   detectTimeStamp(numericalClassification) {
@@ -343,12 +401,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   detectNumericals(numericalClassification){
+    //todo: maybe useless?
+    //console.log("numericalClassification: ", numericalClassification)
     var returnNums = [];
     for (var attribute in numericalClassification){
       if (numericalClassification[attribute] == ChartRole.NumericalValue){
+    //    console.log("pusheamos: ",attribute)
         returnNums.push([attribute, this.extractFromURI(attribute)]);
       }
     }
+    //console.log("detectNumericals: ", returnNums)
     return returnNums;
   }
 
@@ -375,6 +437,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
+    //todo: maybe useless?
     var json_object = JSON.parse(json_input.asJsonLd());
     for (var attribute in json_object){
       if (!background_axes[attribute]){
@@ -383,11 +446,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         background_axes[attribute] += 1;
       }
 
+      //console.log(json_object[attribute], " es numerical: ", this.isNumerical(json_object[attribute]), "\nbackground: ", background_numerical[attribute])
       if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing) {
+        //console.log("lo encontramos: ", background_numerical)
         background_numerical[attribute] = ChartRole.NumericalValue;
-      } else if(this.isTimeStamp(attribute) && background_numerical[attribute] != ChartRole.Nothing) {
-        background_numerical[attribute] = ChartRole.TimeStamp;
-      } else if (!this.isNumerical(json_object[attribute]) || !this.isTimeStamp(attribute)){
+      } else if (!this.isNumerical(json_object[attribute])) {
         background_numerical[attribute] = ChartRole.Nothing;
       }
     }
@@ -399,6 +462,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isNumerical(string){
+    //todo maybe useless?
+    const condition1 = !isNaN(Number(this.getValue(string)).valueOf()) && string != null
+    const condition2 = this.getValue(string) == ": "
+    //console.log("condition1: ", condition1, "\ncondition2: ", condition2)
+    //console.log("mamonada de isNumerical: ", this.getValue(string), Number(this.getValue(string)), Number(this.getValue(string)).valueOf(), !isNaN(Number(this.getValue(string)).valueOf()), !isNaN(Number(this.getValue(string)).valueOf()) && string != null, this.getValue(string) == ": ")
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 
