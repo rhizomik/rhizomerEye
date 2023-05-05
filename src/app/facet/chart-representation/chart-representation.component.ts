@@ -318,16 +318,16 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    //return [start, start]
-    return [start, end]
+    return [start, start]
+    //return [start, end]
   }
 
   customizeYear(startYear, endYear) {
     const start = new Date(startYear, 0, 1);
     const end = new Date(endYear, 0, 1);
 
-    //return [start, start]
-    return [start, end]
+    return [start, start]
+    //return [start, end]
   }
 
 
