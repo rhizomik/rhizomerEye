@@ -225,6 +225,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   findFrom(property) {
+    console.log("peta: ", this.possibleTimes)
     const timeAxe = this.possibleTimes[0][1];
     let from = '';
     for(let i = 0; i < property.length; i++) {
@@ -363,7 +364,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   createDataFrame() {
     console.log("numerical values: ", this.numerical_values)
     this.column_index = this.createColumnIndex();
-    console.log("colum_index", this.column_index)
+//    console.log("colum_index", this.column_index)
     var dataframe: any[][][] = this.initialize_array();
 
     for (var i = 0; i < this.resources.length; i++) {
@@ -373,9 +374,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       for (var attribute in resource) {
         if (this.numerical_values.includes(attribute)) {
           let [layer, row_i, column_i] = this.insert_into_df(dataframe, attribute, row, column);
-          console.log("tenemos: layer, row_i, column_i :", layer, row_i, column_i)
-          console.log("tambien tenemos: dataframe, attribute, row, column", dataframe, attribute, row, column)
-          console.log("wait: ", this.getValue(resource[attribute]))
+   //       console.log("tenemos: layer, row_i, column_i :", layer, row_i, column_i)
+   //       console.log("tambien tenemos: dataframe, attribute, row, column", dataframe, attribute, row, column)
+   //       console.log("wait: ", this.getValue(resource[attribute]))
           dataframe[layer][row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
           //console.log("content: ", this.getValue(resource[attribute]))
         }
@@ -393,7 +394,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   switchData(new_layer: string) {
     this.layer = this.numerical_values.indexOf(new_layer);
     console.log("estamos guardando: ", this.numerical_values_input)
+    console.log("buat ", this.layer, new_layer, this.numerical_values)
     this.tag_chart = this.numerical_values_input[this.layer][1]
+    console.log("switch data checkpoint")
     if (this.is_correlation_chart) {
       //This situation happens when the user comes from the correlation chart
       this.is_correlation_chart = false;
@@ -502,7 +505,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   stringToNumber(string: string): number {
-    if (string == ": " || string == undefined) {
+    console.log("NaN: ", string)
+    if (string == ": " || string == undefined || isNaN(Number(string).valueOf())) {
       return undefined;
     }
     return Number(string).valueOf();
