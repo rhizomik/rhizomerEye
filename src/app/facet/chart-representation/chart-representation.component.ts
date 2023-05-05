@@ -52,6 +52,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   //to check if chart type has been changed to timeline
   timelineType = false;
 
+  //to check if data is being processed
+  dataProcessed = false;
 
   constructor() {
     this.onResize();
@@ -381,6 +383,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     console.log("layer: ", this.layer)
     console.log("chart data: ", this.chartData)
     console.log("chart content: ", this.numerical_values[this.layer])
+    this.dataProcessed = true;
     this.switchData(this.numerical_values[this.layer]);
   }
 
@@ -507,8 +510,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var i = 0; i < length; i++) {
       row_to_add = row_to_add.concat(undefined);
     }
-    console.log("añadimos al dataframe: ", row.trim())
-    row_to_add[0] = row;
+    const parsedRow = row.split("/").pop()
+    //console.log("añadimos al dataframe: ", parsedRow, row_to_add)
+    row_to_add[0] = row//parsedRow//row;
 
     dataframe.push(row_to_add);
   }

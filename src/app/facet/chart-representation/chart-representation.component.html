@@ -121,6 +121,12 @@
 
 <div style="margin-bottom:1.5em"></div>
 
+<span *ngIf="!dataProcessed">
+  <h5>
+    Processing chart views...
+  </h5>
+</span>
+
 <div>
   <!--
   possibletimes: {{possibleTimes[0]}}

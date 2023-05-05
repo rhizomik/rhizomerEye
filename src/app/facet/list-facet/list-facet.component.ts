@@ -150,7 +150,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   checkDates(facets: Facet[]) {
     //checks if facets contains dates
-    for(var i = 0; i < facets.length; i++ ) {
+    for(let i = 0; i < facets.length; i++ ) {
       if(facets[i].range.includes("gYear")) {
         this.possibleTimes.push(['gYear', facets[i].uri])
       } else if(facets[i].range.includes("dateTime")) {
