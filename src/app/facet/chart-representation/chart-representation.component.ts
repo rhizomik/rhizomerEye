@@ -373,6 +373,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       for (var attribute in resource) {
         if (this.numerical_values.includes(attribute)) {
           let [layer, row_i, column_i] = this.insert_into_df(dataframe, attribute, row, column);
+          console.log("tenemos: layer, row_i, column_i :", layer, row_i, column_i)
+          console.log("tambien tenemos: dataframe, attribute, row, column", dataframe, attribute, row, column)
+          console.log("wait: ", this.getValue(resource[attribute]))
           dataframe[layer][row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
           //console.log("content: ", this.getValue(resource[attribute]))
         }
@@ -469,6 +472,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //console.log("layer_i, column_i: ", layer_i, column_i)
 
     if (!this.exists_row(dataframe[layer_i], row)) {
+      console.log("vamos a tocar: ", dataframe, layer_i, row)
       this.add_row(dataframe[layer_i], row);
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
@@ -480,7 +484,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   get_row_index(dataframe: any[][], row) {
     for (let i = 0; i < dataframe.length; i++) {
-      if (dataframe[i][0] == row) {
+      if (dataframe[i][0] == row.split("/").pop()) {
         return i;
       }
     }
@@ -511,9 +515,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       row_to_add = row_to_add.concat(undefined);
     }
     const parsedRow = row.split("/").pop()
-    //console.log("añadimos al dataframe: ", parsedRow, row_to_add)
-    row_to_add[0] = row//parsedRow//row;
 
+    row_to_add[0] = parsedRow//row;
+    console.log("añadimos al dataframe: ", parsedRow, row_to_add)
     dataframe.push(row_to_add);
   }
 
