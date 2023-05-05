@@ -60,8 +60,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event?) {
-    console.log(window.innerWidth);
+  onResize() {
     if (window.innerWidth < 770) {
       this.chartData.width = Math.floor(window.innerWidth * 0.9);
     } else {
@@ -72,12 +71,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     if ((this.rows !== '' || this.rows !== undefined)
       && (this.columns !== '' || this.columns !== undefined)) {
-      console.log(this.rows, this.columns, this.numerical_values_input)
       this.createCharts();
-
-      console.log("chart data", this.chartData)
-
-      this.numerical_values_input[this.layer][1];
     }
 
   }
@@ -86,7 +80,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if (this.is_correlation_chart) {
       this.createCorrelationTable();
     } else if(this.timelineType) {
-      console.log("que - pasamos por aqui, toca vaciar possibletimes?")
       this.createTimelineChart()
     } else {
       this.createCharts();
@@ -95,7 +88,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   createCharts(): void {
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
-    console.log("numerical values: ", this.numerical_values)
     this.deleteAxisFromNumericals();
     this.createDataFrame();
   }
@@ -148,6 +140,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   mapChart() {
+    //todo
     this.type = ChartType.Map;
   }
 
@@ -165,30 +158,17 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
     for(let i = 0; i < this.resources.length; i++) {
       const property = this.resources[i].properties;
-      console.log("resource: ", property)
-      console.log("time content: ", this.tag_chart)
-      console.log("arreglao: ")
       const propertyName = this.findName(property, axe);
-
-      //console.log("propertyName: ", propertyName)
       const tmpPropertyFrom = this.findFrom(property);
-
-      //console.log("propertyFrom: ", tmpPropertyFrom)
       const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
-      console.log("checkpoint ", propertyFrom, propertyTo)
-      //console.log("start and end: ", propertyFrom, propertyTo)
       const propertyContent = this.findContent(property)
       const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
       if(this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
         continue
       }
-      //const newDate = [propertyName, propertyFrom, propertyTo]
-      console.log("vamos a añadir:\nName: ", propertyName, "\nContent: ", propertyContent, "\nFrom: ", propertyFrom, "\nTo: ", propertyTo)
       dates.push(newDate)
     }
 
-    console.log("dates: ", dates)
-    //this.chartData.columnNames = ["Name", "To", "From"]
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
 
@@ -205,9 +185,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findContent(property) {
     const contentName = this.tag_chart
     for(let i = 0; i < property.length; i++) {
-      //console.log("buscamos ", contentName, "\nhemos encontrado: ", property[i].label, "\nEsta?: ", property[i].label.includes(contentName))
       if(property[i].label.includes(contentName)) {
-        //console.log("content found: ", property[i].values[0].value)
         return property[i].values[0].value
       }
     }
@@ -225,7 +203,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   findFrom(property) {
-    console.log("peta: ", this.possibleTimes)
     const timeAxe = this.possibleTimes[0][1];
     let from = '';
     for(let i = 0; i < property.length; i++) {
@@ -240,11 +217,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //todo: useless, pasaremos directamente a customizeFromAndTo
     //let's find the end time of the resource
     if(this.possibleTimes.length < 2) {
-      console.log("onlyfrom: ", this.possibleTimes)
       return this.customFromAndTo(propertyFrom)
     } else {
-      //console.log("only and from: ", this.possibleTimes)
-      //todo: customize start and end date in datetime format
       return this.possibleTimes[1]
     }
   }
@@ -252,33 +226,24 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   customFromAndTo(propertyFrom) {
     //depending on the start date value, we find the appropriate end date
     const timeType = this.possibleTimes[0][0]
-    console.log("vamos a customizar ", timeType)
     const hasEnd = this.possibleTimes.length > 1
-    console.log("vamos a customizar: ", hasEnd)
     switch (timeType) {
       case 'gYear': {
-        //if start date is gYear (and we don't have end date), we assume a hole year in datetime format
         if(hasEnd) {
           const tmpEnd = this.possibleTimes[1][1]
-          console.log("vamos a customizar")
           return this.customizeYear(propertyFrom, tmpEnd)
         } else {
           const tmpEnd = Number(propertyFrom) + 1;
           return this.customizeYear(propertyFrom, tmpEnd)
         }
 
-      //  console.log("end: ", tmpEnd)
 
       }
-      //todo: completar con el tipo de wetcoin
       case 'dateTime': {
-        console.log("timestamp detected: ", this.possibleTimes)
         if(hasEnd) {
-          console.log("datetime start and end")
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDateTime(propertyFrom, tmpEnd)
         } else {
-          console.log("parsed start: ", propertyFrom, " --> ", new Date(propertyFrom))
           return this.customizeEndDateTime(propertyFrom)
         }
 
@@ -299,18 +264,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const endHour = start.getHours()
     const endMinute = start.getMinutes()
     const endSecond = start.getSeconds()
-    console.log("customizing. start: ", start)
-    console.log("customizing. end data: ", endYear, endMonth, endDay, endHour, endMinute, endSecond)
-    //console.log("customizing. endYear: ", endYear)
     const end = new Date(endYear, endMonth, endDay, endHour, endMinute, endSecond)
-    //const end = new Date(start.setFullYear(endYear))
-    console.log("customizing. end: ", end)
-    console.log("customizing. end data: ", end.getFullYear(), end.getMonth(), end.getDay(), end.getHours(), end.getMinutes(), end.getSeconds())
-    //console.log("customizing. end2: ", end2)
-    //const end2 = new Date(endDate).setFullYear(endYear)
-    //console.log("customizing. end: ", end2)
     //return [start, start]
-    console.log("[", start, ", ", end, "]")
     return [start, end]
   }
 
@@ -362,41 +317,28 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   createDataFrame() {
-    console.log("numerical values: ", this.numerical_values)
     this.column_index = this.createColumnIndex();
-//    console.log("colum_index", this.column_index)
-    var dataframe: any[][][] = this.initialize_array();
+    const dataframe: any[][][] = this.initialize_array();
 
-    for (var i = 0; i < this.resources.length; i++) {
-      var resource = JSON.parse(this.resources[i].asJsonLd());
+    for (let i = 0; i < this.resources.length; i++) {
+      const resource = JSON.parse(this.resources[i].asJsonLd());
       let column = this.getValue(resource[this.columns]);
       let row = this.getValue(resource[this.rows]);
-      for (var attribute in resource) {
+      for (const attribute in resource) {
         if (this.numerical_values.includes(attribute)) {
           let [layer, row_i, column_i] = this.insert_into_df(dataframe, attribute, row, column);
-   //       console.log("tenemos: layer, row_i, column_i :", layer, row_i, column_i)
-   //       console.log("tambien tenemos: dataframe, attribute, row, column", dataframe, attribute, row, column)
-   //       console.log("wait: ", this.getValue(resource[attribute]))
           dataframe[layer][row_i][column_i] = this.stringToNumber(this.getValue(resource[attribute]));
-          //console.log("content: ", this.getValue(resource[attribute]))
         }
       }
     }
     this.dataframe = dataframe;
-    console.log("dataframe: ", dataframe)
-    console.log("layer: ", this.layer)
-    console.log("chart data: ", this.chartData)
-    console.log("chart content: ", this.numerical_values[this.layer])
     this.dataProcessed = true;
     this.switchData(this.numerical_values[this.layer]);
   }
 
   switchData(new_layer: string) {
     this.layer = this.numerical_values.indexOf(new_layer);
-    console.log("estamos guardando: ", this.numerical_values_input)
-    console.log("buat ", this.layer, new_layer, this.numerical_values)
     this.tag_chart = this.numerical_values_input[this.layer][1]
-    console.log("switch data checkpoint")
     if (this.is_correlation_chart) {
       //This situation happens when the user comes from the correlation chart
       this.is_correlation_chart = false;

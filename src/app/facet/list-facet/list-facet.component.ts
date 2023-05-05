@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { forkJoin, of, Subject } from 'rxjs';
 import { BreadcrumbService } from '../../breadcrumb/breadcrumb.service';
@@ -15,8 +15,6 @@ import { Range } from '../../range/range';
 import { TranslateService } from '@ngx-translate/core';
 import { RangeValue } from '../../range/rangeValue';
 import { ChartRole } from './chartRoleClassifier';
-
-import {ChartRepresentationComponent} from "../chart-representation/chart-representation.component";
 
 @Component({
   selector: 'app-list-facet',
@@ -104,11 +102,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
     this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
       next: (facets: Facet[]) => {
-        //comprobamos que haya fechas
         //todo: hacer lo mismo para los puntos
         this.checkDates(facets)
         this.checkNumericals(facets)
-        console.log("numericals chekced: ", this.possibleNumericals)
         this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
           a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
@@ -126,26 +122,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   checkNumericals(facets: Facet[]) {
-    //this.delay(500).then(r => )
-    //todo: comprobar que tambien incluya datetime/timestamp
-    var count = []
-    for(var i = 0; i < facets.length; i++ ) {
-      //console.log("me ha llegado: ", facets[i])
+    const count = [];
+    for(let i = 0; i < facets.length; i++ ) {
       if(facets[i].range.includes("int")) {
         this.possibleNumericals.push(['int', facets[i].uri])
         count.push([facets[i].uri, 'int'])
-        //console.log("checkpoint int: ", this.possibleNumericals)
       } else if(facets[i].range.includes("decimal")) {
-        //console.log("checkeamos y pusheamos: [decimal, ", facets[i].uri, "]")
         this.possibleNumericals.push(['decimal', facets[i].uri])
-        //count.push([facets[i].uri, 'decimal'])
-        //console.log("checkpoint decimal: ", this.possibleNumericals)
       }
     }
-    //console.log("checkpoint: ", this.possibleNumericals)
-    //console.log("checkpoint 3: ", count)
     this.tmpNumericals = count
-    //console.log("suerte: ", this.tmpNumericals)
   }
 
   checkDates(facets: Facet[]) {
@@ -154,7 +140,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       if(facets[i].range.includes("gYear")) {
         this.possibleTimes.push(['gYear', facets[i].uri])
       } else if(facets[i].range.includes("dateTime")) {
-        console.log("hay datetime: ", facets[i].range)
         this.possibleTimes.push(['dateTime', facets[i].uri])
       }
     }
@@ -263,16 +248,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.dataProcessed = true;
 
             this.allResources = resources;
-            console.log("all resources", this.allResources)
 
             //this.checkAllResourcesForPossibleTimes(possibleTimes)
             this.checkAllResourcesForPossibleTimes2(possibleTimes)
-            console.log("final check possibleTimes", this.possibleTimes)
-
 
             this.checkAllResourcesForPossibleNumericals(possibleNumericals)
-            console.log("final check possibleNumericals", this.possibleNumericals)
-            console.log("numericals canon: ", this.possiblevalues)
 
           } else if (instances['@type']) {
             var resources = [new Description(instances, instances['@context'], this.labels)];
@@ -292,7 +272,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           const label: string = this.allResources[j].properties[k].label;
           const uri = this.allResources[j].properties[k].uri;
           if(possibeNumericals[i][1] == uri) {
-  //          console.log("es la correcta?: ", label, this.extractFromURI(label))
             tmpNumericals.push([uri, this.extractFromURI(label)])
             j = this.allResources.length
             break
@@ -304,16 +283,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   checkAllResourcesForPossibleTimes(possibleTimes) {
+    //todo: useless
     for (let i = 0; i < possibleTimes.length; i++) {
       for (let j = 0; j < this.allResources[0].properties.length; j++) {
         const label: string = this.allResources[0].properties[j].label;
         const uri = this.allResources[0].properties[j].uri;
         if(possibleTimes[i][1] == uri) {
-          //this.possibleTimes.push(['gYear', facets[i].uri])
           possibleTimes.pop()
-  //        console.log("encontrado: ", possibleTimes)
-          //const type = possibleTimes[i][0]
-          //possibleTimes.push([type, label])
           possibleTimes.push(['gYear', label])
         }
       }
@@ -327,14 +303,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < possibleTimes.length; i++) {
       for (let j = 0; j < this.allResources.length; j++) {
-      //  console.log("resource: ", this.allResources[j].properties)
         for(let k = 0; k < this.allResources[j].properties.length; k++) {
           const label: string = this.allResources[j].properties[k].label;
           const uri = this.allResources[j].properties[k].uri;
           if(possibleTimes[i][1] == uri) {
-  //          console.log("pusheamos: ", uri, label)
-    //        console.log("es esto?: ", this.extractFromURI(uri), this.extractFromURI(label))
-      //      console.log("tipo: ", possibleTimes[i][0])
             const type = possibleTimes[i][0]
             tmpTimes.push([type, label])
             j = this.allResources.length
@@ -343,7 +315,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         }
       }
     }
-   // console.log("tmpTimes: ", tmpTimes)
     this.possibleTimes = tmpTimes
   }
 
@@ -387,30 +358,23 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   isChartRepresentable(descriptions: Description[]){
     //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical (or time) data.
-    var axesClassification = {};
-    var numericalClassification = {};
-    var i = 0
+    const axesClassification = {};
+    const numericalClassification = {};
+    let i = 0;
     for (i; i < descriptions.length; i++){
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
     this.possibleaxes   = this.detectAxes(i, axesClassification);
-    //console.log("antes de entrar: ", numericalClassification)
     this.possiblevalues = this.detectNumericals(numericalClassification);
-    //this.possibleTimes = this.detectTimeStamp(numericalClassification)
 
     this.urlAxes();
-    console.log("possibleaxes: ", this.possibleaxes.length)
-    console.log("possiblevalues: ", this.possiblevalues.length)
-    console.log("possiblenumericals: ", this.possibleNumericals)
-    console.log("isChartRepresentable: ", this.possibleaxes.length >= 2 && this.possiblevalues.length > 0)
-    //return this.possibleaxes.length >= 2 && this.possiblevalues.length > 0//+ this.possibleTimes.length >= 1;
     return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0
   }
 
   detectTimeStamp(numericalClassification) {
     //TODO: useless
-    var count = [];
-    for(var attribute in numericalClassification) {
+    const count = [];
+    for(const attribute in numericalClassification) {
       if (numericalClassification[attribute] == ChartRole.TimeStamp){
         count.push(attribute)
       }
@@ -433,15 +397,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   detectNumericals(numericalClassification){
     //todo: maybe useless?
-    //console.log("numericalClassification: ", numericalClassification)
-    var returnNums = [];
-    for (var attribute in numericalClassification){
+    const returnNums = [];
+    for (const attribute in numericalClassification){
       if (numericalClassification[attribute] == ChartRole.NumericalValue){
-    //    console.log("pusheamos: ",attribute)
         returnNums.push([attribute, this.extractFromURI(attribute)]);
       }
     }
-    //console.log("detectNumericals: ", returnNums)
     return returnNums;
   }
 
@@ -456,31 +417,28 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   extractFromURI(uri){
-    var name = "";
-    for (var i = (uri.length - 1); i >= 0; i--){
+    let name = "";
+    for (let i = (uri.length - 1); i >= 0; i--){
       if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#"){
         break;
       }
       name = uri[i] + name;
     }
-  //  console.log("Extract from uri: ", uri, " --> ", name)
     return name;
   }
 
   //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
     //todo: maybe useless?
-    var json_object = JSON.parse(json_input.asJsonLd());
-    for (var attribute in json_object){
+    const json_object = JSON.parse(json_input.asJsonLd());
+    for (const attribute in json_object){
       if (!background_axes[attribute]){
         background_axes[attribute] = 1;
       } else if (background_axes[attribute]){
         background_axes[attribute] += 1;
       }
 
-      //console.log(json_object[attribute], " es numerical: ", this.isNumerical(json_object[attribute]), "\nbackground: ", background_numerical[attribute])
       if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing) {
-        //console.log("lo encontramos: ", background_numerical)
         background_numerical[attribute] = ChartRole.NumericalValue;
       } else if (!this.isNumerical(json_object[attribute])) {
         background_numerical[attribute] = ChartRole.Nothing;
@@ -495,17 +453,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   isNumerical(string){
     //todo maybe useless?
-    const condition1 = !isNaN(Number(this.getValue(string)).valueOf()) && string != null
-    const condition2 = this.getValue(string) == ": "
-    //console.log("condition1: ", condition1, "\ncondition2: ", condition2)
-    //console.log("mamonada de isNumerical: ", this.getValue(string), Number(this.getValue(string)), Number(this.getValue(string)).valueOf(), !isNaN(Number(this.getValue(string)).valueOf()), !isNaN(Number(this.getValue(string)).valueOf()) && string != null, this.getValue(string) == ": ")
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
   }
 
   changeChartPage(init: number, end: number){
     this.numericalInstancesInit = init;
     this.numericalInstancesEnd  = end;
-    console.log("que reiniciamos possibletimes")
     this.possibleTimes = []
     //this.possibleNumericals = []
     this.ngOnInit();
