@@ -494,7 +494,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   exists_row(dataframe: any[][], row) {
     var exists = false;
     for (var i = 0; i < dataframe.length; i++) {
-      if (dataframe[i][0] == row) {
+      if (dataframe[i][0] == row.split("/").pop()) {
         exists = true;
       }
     }
