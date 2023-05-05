@@ -75,6 +75,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     if ((this.rows !== '' || this.rows !== undefined)
       && (this.columns !== '' || this.columns !== undefined)) {
+      console.log(this.rows, this.columns, this.numerical_values_input)
       this.createCharts();
 
       console.log("chart data", this.chartData)
@@ -97,6 +98,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   createCharts(): void {
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
+    console.log("numerical values: ", this.numerical_values)
     this.deleteAxisFromNumericals();
     this.createDataFrame();
   }
@@ -161,24 +163,22 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   createTimelineChart() {
     this.timelineType = true;
 
-    console.log("que ta pachando con possibletimes: ", this.possibleTimes)
-
     const dates = [];
-    //dates.push(['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)])
-    //console.log("trial: ", dates)
-
     const axe = this.column_index[0];
-    //console.log("axe without time: ", axe)
 
     for(let i = 0; i < this.resources.length; i++) {
       const property = this.resources[i].properties;
       console.log("resource: ", property)
       console.log("time content: ", this.tag_chart)
+      console.log("arreglao: ")
       const propertyName = this.findName(property, axe);
+
       //console.log("propertyName: ", propertyName)
       const tmpPropertyFrom = this.findFrom(property);
+
       //console.log("propertyFrom: ", tmpPropertyFrom)
       const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
+      console.log("checkpoint ", propertyFrom, propertyTo)
       //console.log("start and end: ", propertyFrom, propertyTo)
       const propertyContent = this.findContent(property)
       const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
@@ -240,7 +240,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findTo(propertyFrom) {
     //let's find the end time of the resource
     if(this.possibleTimes.length < 2) {
-    //  console.log("onlyfrom: ", this.possibleTimes)
+      console.log("onlyfrom: ", this.possibleTimes)
       return this.customFromAndTo(propertyFrom)
     } else {
       //console.log("only and from: ", this.possibleTimes)
@@ -253,12 +253,16 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //depending on the start date value, we find the appropriate end date
     //todo: asumimos que solo tenemos start date
     const timeType = this.possibleTimes[0][0]
+    console.log("vamos a customizar ", timeType)
     const hasEnd = this.possibleTimes.length > 1
+    console.log("vamos a customizar: ", hasEnd)
     switch (timeType) {
       case 'gYear': {
         //if start date is gYear (and we don't have end date), we assume a hole year in datetime format
         if(hasEnd) {
-
+          const tmpEnd = this.possibleTimes[1][1]
+          console.log("vamos a customizar")
+          return this.customizeYear(propertyFrom, tmpEnd)
         } else {
           var tmpEnd = Number(propertyFrom) + 1
           return this.customizeYear(propertyFrom, tmpEnd)
@@ -269,6 +273,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
       //todo: completar con el tipo de wetcoin
       case 'timestamp': {
+        console.log("timestamp detected: ", this.possibleTimes)
         break;
       }
 
@@ -346,6 +351,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   switchData(new_layer: string) {
     this.layer = this.numerical_values.indexOf(new_layer);
+    console.log("estamos guardando: ", this.numerical_values_input)
     this.tag_chart = this.numerical_values_input[this.layer][1]
     if (this.is_correlation_chart) {
       //This situation happens when the user comes from the correlation chart
@@ -511,6 +517,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
       name = uri[i] + name;
     }
+    console.log("Chart extract from uri: ", uri, name)
     return name;
   }
 

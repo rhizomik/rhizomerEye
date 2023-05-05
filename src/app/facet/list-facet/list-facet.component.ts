@@ -155,7 +155,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleTimes.push(['gYear', facets[i].uri])
       } else if(facets[i].range.includes("dateTime")) {
         console.log("hay datetime: ", facets[i].range)
-        this.possibleTimes.push(['gYear', facets[i].uri])
+        this.possibleTimes.push(['dateTime', facets[i].uri])
       }
     }
   }
@@ -265,7 +265,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
             this.allResources = resources;
             console.log("all resources", this.allResources)
 
-            this.checkAllResourcesForPossibleTimes(possibleTimes)
+            //this.checkAllResourcesForPossibleTimes(possibleTimes)
+            this.checkAllResourcesForPossibleTimes2(possibleTimes)
             console.log("final check possibleTimes", this.possibleTimes)
 
 
@@ -291,7 +292,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           const label: string = this.allResources[j].properties[k].label;
           const uri = this.allResources[j].properties[k].uri;
           if(possibeNumericals[i][1] == uri) {
-            tmpNumericals.push([uri, label])
+            console.log("es la correcta?: ", label, this.extractFromURI(label))
+            tmpNumericals.push([uri, this.extractFromURI(label)])
             j = this.allResources.length
             break
           }
@@ -309,11 +311,40 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         if(possibleTimes[i][1] == uri) {
           //this.possibleTimes.push(['gYear', facets[i].uri])
           possibleTimes.pop()
+          console.log("encontrado: ", possibleTimes)
+          //const type = possibleTimes[i][0]
+          //possibleTimes.push([type, label])
           possibleTimes.push(['gYear', label])
         }
       }
     }
     this.possibleTimes = possibleTimes
+  }
+
+  checkAllResourcesForPossibleTimes2(possibleTimes) {
+
+    const tmpTimes = [];
+
+    for (let i = 0; i < possibleTimes.length; i++) {
+      for (let j = 0; j < this.allResources.length; j++) {
+        console.log("resource: ", this.allResources[j].properties)
+        for(let k = 0; k < this.allResources[j].properties.length; k++) {
+          const label: string = this.allResources[j].properties[k].label;
+          const uri = this.allResources[j].properties[k].uri;
+          if(possibleTimes[i][1] == uri) {
+            console.log("pusheamos: ", uri, label)
+            console.log("es esto?: ", this.extractFromURI(uri), this.extractFromURI(label))
+            console.log("tipo: ", possibleTimes[i][0])
+            const type = possibleTimes[i][0]
+            tmpTimes.push([type, label])
+            j = this.allResources.length
+            break
+          }
+        }
+      }
+    }
+    console.log("tmpTimes: ", tmpTimes)
+    this.possibleTimes = tmpTimes
   }
 
   createDataFrame() {
@@ -432,6 +463,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       }
       name = uri[i] + name;
     }
+    console.log("Extract from uri: ", uri, " --> ", name)
     return name;
   }
 
