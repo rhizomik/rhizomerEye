@@ -1,12 +1,7 @@
-import {Component, Input, OnInit, NgModule, OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import {Description} from '../../description/description';
-import {GoogleChartsModule, ChartType, ChartEditorComponent, ChartBase} from 'angular-google-charts';
+import {ChartType} from 'angular-google-charts';
 import {HostListener} from "@angular/core";
-import {ViewChild} from '@angular/core';
-import {ThisReceiver} from '@angular/compiler';
-import {json} from 'd3';
-import {toJSDate} from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-calendar';
-
 
 @Component({
   selector: 'app-chart-representation',
@@ -194,15 +189,15 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //this.chartData.columnNames = ["Name", "To", "From"]
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
-    /*
+
     this.chartData.options = {
       timeline: { colorByRowLabel: true }
     }
-   */
+
   }
 
   existUndefined(name, content, from, to) {
-    return name == undefined || content == undefined || from == undefined || to == undefined
+    return name == undefined || content == undefined || content == ': ' || from == undefined || to == undefined
   }
 
   findContent(property) {
@@ -223,7 +218,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         name = property[i].values[0].value
       }
     }
-    return name
+    return this.extractFromURI(name)
+    //return name
   }
 
   findFrom(property) {
@@ -238,6 +234,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   findTo(propertyFrom) {
+    //todo: useless, pasaremos directamente a customizeFromAndTo
     //let's find the end time of the resource
     if(this.possibleTimes.length < 2) {
       console.log("onlyfrom: ", this.possibleTimes)
@@ -251,7 +248,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   customFromAndTo(propertyFrom) {
     //depending on the start date value, we find the appropriate end date
-    //todo: asumimos que solo tenemos start date
     const timeType = this.possibleTimes[0][0]
     console.log("vamos a customizar ", timeType)
     const hasEnd = this.possibleTimes.length > 1
@@ -264,7 +260,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
           console.log("vamos a customizar")
           return this.customizeYear(propertyFrom, tmpEnd)
         } else {
-          var tmpEnd = Number(propertyFrom) + 1
+          const tmpEnd = Number(propertyFrom) + 1;
           return this.customizeYear(propertyFrom, tmpEnd)
         }
 
@@ -272,24 +268,62 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
       }
       //todo: completar con el tipo de wetcoin
-      case 'timestamp': {
-        console.log("timestamp detected: ", this.possibleTimes)
-        break;
-      }
-
       case 'dateTime': {
-        break;
-      }
+        console.log("timestamp detected: ", this.possibleTimes)
+        if(hasEnd) {
+          console.log("datetime start and end")
+          const tmpEnd = this.possibleTimes[1][1]
+          return this.customizeDateTime(propertyFrom, tmpEnd)
+        } else {
+          console.log("parsed start: ", propertyFrom, " --> ", new Date(propertyFrom))
+          return this.customizeEndDateTime(propertyFrom)
+        }
 
+
+      }
       default: {
         break;
       }
     }
   }
 
+  customizeEndDateTime(startDate) {
+    const start = new Date(startDate)
+
+    const endYear = start.getFullYear() + 1
+    const endMonth = start.getMonth()
+    const endDay = start.getDate()
+    const endHour = start.getHours()
+    const endMinute = start.getMinutes()
+    const endSecond = start.getSeconds()
+    console.log("customizing. start: ", start)
+    console.log("customizing. end data: ", endYear, endMonth, endDay, endHour, endMinute, endSecond)
+    //console.log("customizing. endYear: ", endYear)
+    const end = new Date(endYear, endMonth, endDay, endHour, endMinute, endSecond)
+    //const end = new Date(start.setFullYear(endYear))
+    console.log("customizing. end: ", end)
+    console.log("customizing. end data: ", end.getFullYear(), end.getMonth(), end.getDay(), end.getHours(), end.getMinutes(), end.getSeconds())
+    //console.log("customizing. end2: ", end2)
+    //const end2 = new Date(endDate).setFullYear(endYear)
+    //console.log("customizing. end: ", end2)
+    //return [start, start]
+    console.log("[", start, ", ", end, "]")
+    return [start, end]
+  }
+
+  customizeDateTime(startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    //return [start, start]
+    return [start, end]
+  }
+
   customizeYear(startYear, endYear) {
     const start = new Date(startYear, 0, 1);
     const end = new Date(endYear, 0, 1);
+
+    //return [start, start]
     return [start, end]
   }
 
@@ -304,6 +338,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   getFirstColumn(array: any[][]) {
+    //todo maybe useless?
     var to_return: any[] = [];
     for (var i = 0; i < array.length; i++) {
       if (this.rows != array[i][0] && this.columns != array[i][0]) {
@@ -441,8 +476,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   get_row_index(dataframe: any[][], row) {
-    var i = 0;
-    for (i = 0; i < dataframe.length; i++) {
+    for (let i = 0; i < dataframe.length; i++) {
       if (dataframe[i][0] == row) {
         return i;
       }
@@ -461,7 +495,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   stringToNumber(string: string): number {
-    if (string == ": " || string == undefined || string == null) {
+    if (string == ": " || string == undefined) {
       return undefined;
     }
     return Number(string).valueOf();
@@ -473,6 +507,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var i = 0; i < length; i++) {
       row_to_add = row_to_add.concat(undefined);
     }
+    console.log("añadimos al dataframe: ", row.trim())
     row_to_add[0] = row;
 
     dataframe.push(row_to_add);
