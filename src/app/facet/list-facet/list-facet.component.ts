@@ -121,6 +121,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     });
   }
 
+  checkPoints(facets: Facet[]) {
+
+  }
+
   checkNumericals(facets: Facet[]) {
     const count = [];
     for(let i = 0; i < facets.length; i++ ) {
@@ -141,6 +145,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleTimes.push(['gYear', facets[i].uri])
       } else if(facets[i].range.includes("dateTime")) {
         this.possibleTimes.push(['dateTime', facets[i].uri])
+      } else if(facets[i].range.includes("gMonth")) {
+        this.possibleTimes.push(['gMonth', facets[i].uri])
+      } else if(facets[i].range.includes("gDay")) {
+        this.possibleTimes.push(['gDay', facets[i].uri])
       }
     }
   }
@@ -368,6 +376,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.possiblevalues = this.detectNumericals(numericalClassification);
 
     this.urlAxes();
+    //tiene que haber numericals, no vale que haya fechas y no valores numericos a representar
     return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0
   }
 

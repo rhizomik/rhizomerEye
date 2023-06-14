@@ -160,12 +160,15 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       const property = this.resources[i].properties;
       const propertyName = this.findName(property, axe);
       const tmpPropertyFrom = this.findFrom(property);
-      const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
+      // const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
+      const [propertyFrom, propertyTo] = this.customFromAndTo(tmpPropertyFrom)
       const propertyContent = this.findContent(property)
       const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
       if(this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
         continue
       }
+      // console.log("newDate to push: ", newDate)
+      // console.log("chartData: ", this.chartData)
       dates.push(newDate)
     }
 
@@ -186,20 +189,22 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const contentName = this.tag_chart
     for(let i = 0; i < property.length; i++) {
       if(property[i].label.includes(contentName)) {
-        return property[i].values[0].value
+        //now timeline requires column #1 to be of type 'String'
+        return property[i].values[0].value.toString()
       }
     }
   }
 
   findName(property, axe) {
+    //todo: dejar la label original
     let name = '';
     for(let i = 0; i < property.length; i++) {
       if(property[i].label == axe) {
         name = property[i].values[0].value
       }
     }
-    return this.extractFromURI(name)
-    //return name
+    // return this.extractFromURI(name)
+    return name
   }
 
   findFrom(property) {
@@ -230,24 +235,42 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     switch (timeType) {
       case 'gYear': {
         if(hasEnd) {
+          //todo: deberia hacer como en findFrom, no puedo coger para todas las entidades la primera fecha
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeYear(propertyFrom, tmpEnd)
         } else {
           const tmpEnd = Number(propertyFrom) + 1;
           return this.customizeYear(propertyFrom, tmpEnd)
         }
-
-
       }
       case 'dateTime': {
         if(hasEnd) {
+          //todo: lo mismo aquí
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDateTime(propertyFrom, tmpEnd)
         } else {
           return this.customizeEndDateTime(propertyFrom)
         }
-
-
+      }
+      case 'gMonth': {
+        if(hasEnd) {
+          //todo: lo mismo aqui
+          const tmpEnd = this.possibleTimes[1][1]
+          return this.customizeMonth(propertyFrom, tmpEnd)
+        } else {
+          const tmpEnd = Number(propertyFrom) + 1;
+          return this.customizeMonth(propertyFrom, tmpEnd)
+        }
+      }
+      case 'gDay': {
+        if(hasEnd) {
+          //todo: lo mismo aqui
+          const tmpEnd = this.possibleTimes[1][1]
+          return this.customizeDay(propertyFrom, tmpEnd)
+        } else {
+          const tmpEnd = Number(propertyFrom) + 1;
+          return this.customizeDay(propertyFrom, tmpEnd)
+        }
       }
       default: {
         break;
@@ -256,6 +279,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   customizeEndDateTime(startDate) {
+    //datetime with no specified end
     const start = new Date(startDate)
 
     const endYear = start.getFullYear() + 1
@@ -265,24 +289,42 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const endMinute = start.getMinutes()
     const endSecond = start.getSeconds()
     const end = new Date(endYear, endMonth, endDay, endHour, endMinute, endSecond)
-    //return [start, start]
-    return [start, end]
+    return [start, start]
+    // return [start, end]
   }
 
   customizeDateTime(startDate, endDate) {
+    //datetime with specified end
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    return [start, start]
-    //return [start, end]
+    // return [start, start]
+    return [start, end]
+  }
+
+  customizeMonth(startMonth, endMonth) {
+    //gMonth whether specified or not end
+    const currentYear = new Date().getFullYear();
+    const start = new Date(currentYear, startMonth, 1);
+    const end = new Date(currentYear, endMonth, 1);
+    return [start, end]
+  }
+
+  customizeDay(startDay, endDay) {
+    //gDay whether specified or not end
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+    const start = new Date(currentYear, currentMonth, startDay);
+    const end = new Date(currentYear, currentMonth, endDay);
+    return [start, end]
   }
 
   customizeYear(startYear, endYear) {
+    //gYear whether specified or not end
     const start = new Date(startYear, 0, 1);
     const end = new Date(endYear, 0, 1);
-
-    return [start, start]
-    //return [start, end]
+    // return [start, start]
+    return [start, end]
   }
 
 
@@ -417,7 +459,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     //console.log("layer_i, column_i: ", layer_i, column_i)
 
     if (!this.exists_row(dataframe[layer_i], row)) {
-      console.log("vamos a tocar: ", dataframe, layer_i, row)
+      // console.log("vamos a tocar: ", dataframe, layer_i, row)
       this.add_row(dataframe[layer_i], row);
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
@@ -429,7 +471,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   get_row_index(dataframe: any[][], row) {
     for (let i = 0; i < dataframe.length; i++) {
-      if (dataframe[i][0] == row.split("/").pop()) {
+      // if (dataframe[i][0] == row.split("/").pop()) {
+      if (dataframe[i][0] == row) {
         return i;
       }
     }
@@ -439,7 +482,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   exists_row(dataframe: any[][], row) {
     var exists = false;
     for (var i = 0; i < dataframe.length; i++) {
-      if (dataframe[i][0] == row.split("/").pop()) {
+      //label modificada
+      // if (dataframe[i][0] == row.split("/").pop()) {
+      if (dataframe[i][0] == row) {
         exists = true;
       }
     }
@@ -447,7 +492,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   stringToNumber(string: string): number {
-    console.log("NaN: ", string)
+    // console.log("NaN: ", string)
     if (string == ": " || string == undefined || isNaN(Number(string).valueOf())) {
       return undefined;
     }
@@ -460,10 +505,13 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (var i = 0; i < length; i++) {
       row_to_add = row_to_add.concat(undefined);
     }
-    const parsedRow = row.split("/").pop()
+    //label modificada
+    // const parsedRow = row.split("/").pop()
 
-    row_to_add[0] = parsedRow//row;
-    console.log("añadimos al dataframe: ", parsedRow, row_to_add)
+    // row_to_add[0] = parsedRow//row;
+    row_to_add[0] = row
+    // console.log("label original: ", row)
+    // console.log("añadimos al dataframe: ", parsedRow, row_to_add)
     dataframe.push(row_to_add);
   }
 
@@ -506,7 +554,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
       name = uri[i] + name;
     }
-    console.log("Chart extract from uri: ", uri, name)
+    // console.log("Chart extract from uri: ", uri, name)
     return name;
   }
 
