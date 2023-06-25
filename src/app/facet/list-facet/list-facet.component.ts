@@ -54,6 +54,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   //to check if map may be available
   possiblePoints = [];
   possibleMap = false
+  defaultMap = false
 
   chartRepresentation = false;//false;
   possibleaxes: String[] = [];
@@ -79,6 +80,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this.defaultMap = false;
+
     this.datasetId = this.route.snapshot.paramMap.get('did') || 'default';
     this.classId = this.route.snapshot.paramMap.get('cid');
     this.urlToMethod(this.route);
@@ -375,6 +378,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   navigateMap() {
     console.log("naaa")
+    this.defaultMap = true;
+    console.log("default navigate map: ", this.defaultMap)
     const url = this.route.snapshot.url.toString().split(',');
     const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
       + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id'

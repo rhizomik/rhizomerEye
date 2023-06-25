@@ -1,7 +1,6 @@
-import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
+import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Description} from '../../description/description';
 import {ChartType} from 'angular-google-charts';
-import {MapChartComponent} from "./map-chart/map-chart.component";
 
 // import * as L from 'leaflet';
 
@@ -26,6 +25,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   possibleTimes = []
   @Input()
   possiblePoints = []
+  @Input()
+  defaultMap = false
 
 
   tag_chart: string;
@@ -108,6 +109,13 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     console.log("points: ", this.possiblePoints)
     // this.numerical_values_input.push(["1", "2"])
+    console.log("default chart rep: ", this.defaultMap, this.type)
+    if(this.defaultMap) {
+      this.type = ChartType.Map // todo  no se por que no funciona
+      this.mapType = true
+      this.createMapChart()
+    }
+
     if (this.is_correlation_chart) {
       console.log("correlation chart")
       this.createCorrelationTable();
@@ -204,6 +212,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   createMapChart() {
     const points = []
+    let propertyContent = ""
+    let showUri = false;
     for (let i = 0; i < this.resources.length; i++) {
 
 
@@ -215,9 +225,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       console.log("create map lat long: ", lat, long)
       console.log("numerical_values_input???: ", this.numerical_values_input)
       // const propertyContent = this.numerical_values_input[0][0]
-      const propertyContent = "hello world"
+      if(this.numerical_values_input.length == 0) {
+        //no hay numericos, pondremos la uri
+        showUri = true;
+        propertyContent = this.resources[i]["@id"]
+      } else {
+        propertyContent = this.findContent(property)
+      }
+      // const propertyContent = "hello world"
+      console.log("content? ", this.tag_chart)
+      console.log("uri: ", property[0].uri)
+      console.log("uri in  resource: ", this.resources[i]["@id"])
       console.log("propertyContent: ", propertyContent)
-      const newPoint = [lat, long, propertyContent]
+      const newPoint = [lat, long, propertyContent, showUri]
       points.push(newPoint)
     }
     console.log("points: ", points)
@@ -247,11 +267,11 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         const coords: string = property[i].values[1].value
 
         console.log("finding coords: ", coords, typeof coords)
-        const [long, lat] = coords.slice(6, -1).split(" ")
+        const [lat, long] = coords.slice(6, -1).split(" ")
         // if(!isNaN(lat) || !isNaN(long)) {
         if (coords.includes("https")) {
           const coords = property[i].values[0].value
-          const [long, lat] = coords.slice(6, -1).split(" ")
+          const [lat, long] = coords.slice(6, -1).split(" ")
           console.log("finding coords: 2", lat, long)
           return [Number(lat), Number(long)]
         }
@@ -324,12 +344,13 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     let name = '';
     for (let i = 0; i < property.length; i++) {
       if (property[i].label == axe) {
-        name = property[i].values[0].value
+        // name = property[i].values[0].value
+        return property[i].values[0].value
         //break o return
       }
     }
     // return this.extractFromURI(name)
-    return name
+    // return name
   }
 
   findFrom(property) {
@@ -337,11 +358,12 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     let from = '';
     for (let i = 0; i < property.length; i++) {
       if (property[i].label == timeAxe) {
-        from = property[i].values[0].value
+        // from = property[i].values[0].value
+        return property[i].values[0].value
         //break o return
       }
     }
-    return from
+    // return from
   }
 
   findTo(propertyFrom) {

@@ -139,7 +139,7 @@
 </span>
 
 
-<span *ngIf="mapType, else elseblock">
+<span *ngIf="mapType || defaultMap, else elseblock">
   <div style="height: 500px; width: 100%">
   <app-map-chart [myPoints]="chartData.data" >
 

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import * as L from 'leaflet';
 import {MapPopupService} from "./map-popup.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +14,19 @@ export class MapMarkerService {
   // capitals: string = '/assets/data/usa-capitals.geojson';
   constructor(private http: HttpClient,
               private mapPopupService: MapPopupService,
+              private router: Router,
+              private route: ActivatedRoute,
   ) {
   }
 
   makeCapitalMarkers(map: L.map, points): void {
-    // this.http.get(this.capitals).subscribe((res: any) => {
-    //   for (const c of res.features) {
-    //     const lon = c.geometry.coordinates[0];
-    //     const lat = c.geometry.coordinates[1];
-    //     const marker = L.marker([lat, lon]);
     for (const point of points) {
-      const lon = point[1]
-      const lat = point[0];
+      const lon = point[0]
+      const lat = point[1]
+      const content = point[2]
+      const showUri = point[3]
       const marker = L.marker([lat, lon]);
-      marker.bindPopup(this.mapPopupService.makeCapitalPopup(point[2]));
+      marker.bindPopup(this.mapPopupService.makeCapitalPopup(lat, lon, content, showUri));
       marker.addTo(map);
     }
 
@@ -35,6 +35,7 @@ export class MapMarkerService {
 
     // marker.addTo(map);
   }
+
 
   // }
   // }
