@@ -1,7 +1,9 @@
-import {Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
 import {Description} from '../../description/description';
 import {ChartType} from 'angular-google-charts';
-import {HostListener} from "@angular/core";
+import {MapChartComponent} from "./map-chart/map-chart.component";
+
+// import * as L from 'leaflet';
 
 @Component({
   selector: 'app-chart-representation',
@@ -22,6 +24,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   @Input()
   possibleTimes = []
+  @Input()
+  possiblePoints = []
 
 
   tag_chart: string;
@@ -59,6 +63,28 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     this.onResize();
   }
 
+  // private map;
+  //
+  // private initMap(): void {
+  //   this.map = L.map('map', {
+  //     center: [ 39.8282, -98.5795 ],
+  //     zoom: 3
+  //   });
+  //   // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //   const tiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  //
+  //     maxZoom: 18,
+  //     minZoom: 3,
+  //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community</a>'
+  //   });
+  //
+  //   tiles.addTo(this.map);
+  // }
+
+  // ngAfterViewInit(): void {
+  //   this.initMap();
+  // }
+
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (window.innerWidth < 770) {
@@ -69,24 +95,35 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    // console.log("points: ", this.possiblePoints)
     if ((this.rows !== '' || this.rows !== undefined)
       && (this.columns !== '' || this.columns !== undefined)) {
+      console.log("points: ", this.possiblePoints)
       this.createCharts();
     }
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log("points: ", this.possiblePoints)
+    // this.numerical_values_input.push(["1", "2"])
     if (this.is_correlation_chart) {
+      console.log("correlation chart")
       this.createCorrelationTable();
-    } else if(this.timelineType) {
+    } else if (this.timelineType) {
       this.createTimelineChart()
+    } else if (this.type == ChartType.Map) {
+      console.log("creando mapa")
     } else {
+      console.log("else")
       this.createCharts();
     }
   }
 
   createCharts(): void {
+    // console.log("createCharts: ", this.possiblePoints, this.numerical_values_input)
+    console.log("type: ", this.type)
+
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
     this.deleteAxisFromNumericals();
     this.createDataFrame();
@@ -108,7 +145,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   tableChart() {
     this.type = ChartType.Table;
-    if(this.timelineType) {
+    if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
     }
@@ -117,7 +154,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   barChart() {
     this.type = ChartType.Bar;
-    if(this.timelineType) {
+    if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
     }
@@ -125,7 +162,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   lineChart() {
     this.type = ChartType.Line;
-    if(this.timelineType) {
+    if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
     }
@@ -133,7 +170,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   pieChart() {
     this.type = ChartType.PieChart;
-    if(this.timelineType) {
+    if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
     }
@@ -142,10 +179,73 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   mapChart() {
     //todo
     this.type = ChartType.Map;
+    this.createMapChart()
+  }
+
+  createMapChart() {
+    const points = []
+    for (let i = 0; i < this.resources.length; i++) {
+
+
+      const property = this.resources[i].properties
+      console.log("resource: ", property)
+      const [lat, long] = this.findCoords(property)
+      console.log("lat: ", lat)
+      console.log("long: ", long)
+      console.log("create map lat long: ", lat, long)
+      console.log("numerical_values_input???: ", this.numerical_values_input)
+      // const propertyContent = this.numerical_values_input[0][0]
+      const propertyContent = "hello world"
+      console.log("propertyContent: ", propertyContent)
+      const newPoint = [lat, long, propertyContent]
+      points.push(newPoint)
+    }
+    console.log("points: ", points)
+    this.chartData.columnNames = ["Lat", "Long", "Content"]
+    this.chartData.data = points
+    // this.chartData.data = [
+    //   [41.536341645995, 1.9227935884038, '1'],
+    //   [41.551356292377, 1.8868243402613, '1'],
+    // ]
+
+    this.chartData.options = {
+      showTooltip: true,
+      showInfoWindow: true
+    }
+
+    console.log("mapa: ", this.chartData.data, this.type)
+
+
+  }
+
+  findCoords(property) {
+    const type = this.possiblePoints[0][1]
+    console.log("find coords type: ", type)
+    for (let i = 0; i < property.length; i++) {
+      if (property[i].label.includes(type)) {
+        console.log("finding: ", property[i])
+        const coords: string = property[i].values[1].value
+
+        console.log("finding coords: ", coords, typeof coords)
+        const [long, lat] = coords.slice(6, -1).split(" ")
+        // if(!isNaN(lat) || !isNaN(long)) {
+        if (coords.includes("https")) {
+          const coords = property[i].values[0].value
+          const [long, lat] = coords.slice(6, -1).split(" ")
+          console.log("finding coords: 2", lat, long)
+          return [Number(lat), Number(long)]
+        }
+        return [Number(lat), Number(long)]
+      }
+      //   //now timeline requires column #1 to be of type 'String'
+      //   return property[i].values[0].value.toString()
+      // }
+    }
+
+
   }
 
   timelineChart() {
-
     this.type = ChartType.Timeline;
     this.createTimelineChart()
   }
@@ -156,7 +256,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const dates = [];
     const axe = this.column_index[0];
 
-    for(let i = 0; i < this.resources.length; i++) {
+    for (let i = 0; i < this.resources.length; i++) {
       const property = this.resources[i].properties;
       const propertyName = this.findName(property, axe);
       const tmpPropertyFrom = this.findFrom(property);
@@ -164,19 +264,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       const [propertyFrom, propertyTo] = this.customFromAndTo(tmpPropertyFrom)
       const propertyContent = this.findContent(property)
       const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
-      if(this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
+      if (this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
         continue
       }
       // console.log("newDate to push: ", newDate)
       // console.log("chartData: ", this.chartData)
       dates.push(newDate)
     }
-
+    console.log("dates: ", dates)
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
 
     this.chartData.options = {
-      timeline: { colorByRowLabel: true }
+      timeline: {colorByRowLabel: true}
     }
 
   }
@@ -187,8 +287,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   findContent(property) {
     const contentName = this.tag_chart
-    for(let i = 0; i < property.length; i++) {
-      if(property[i].label.includes(contentName)) {
+    for (let i = 0; i < property.length; i++) {
+      if (property[i].label.includes(contentName)) {
         //now timeline requires column #1 to be of type 'String'
         return property[i].values[0].value.toString()
       }
@@ -198,9 +298,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findName(property, axe) {
     //todo: dejar la label original
     let name = '';
-    for(let i = 0; i < property.length; i++) {
-      if(property[i].label == axe) {
+    for (let i = 0; i < property.length; i++) {
+      if (property[i].label == axe) {
         name = property[i].values[0].value
+        //break o return
       }
     }
     // return this.extractFromURI(name)
@@ -210,9 +311,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findFrom(property) {
     const timeAxe = this.possibleTimes[0][1];
     let from = '';
-    for(let i = 0; i < property.length; i++) {
-      if(property[i].label == timeAxe) {
+    for (let i = 0; i < property.length; i++) {
+      if (property[i].label == timeAxe) {
         from = property[i].values[0].value
+        //break o return
       }
     }
     return from
@@ -221,7 +323,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   findTo(propertyFrom) {
     //todo: useless, pasaremos directamente a customizeFromAndTo
     //let's find the end time of the resource
-    if(this.possibleTimes.length < 2) {
+    if (this.possibleTimes.length < 2) {
       return this.customFromAndTo(propertyFrom)
     } else {
       return this.possibleTimes[1]
@@ -234,8 +336,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const hasEnd = this.possibleTimes.length > 1
     switch (timeType) {
       case 'gYear': {
-        if(hasEnd) {
+        if (hasEnd) {
           //todo: deberia hacer como en findFrom, no puedo coger para todas las entidades la primera fecha
+          //mentira, ya esta bien, en caso de tener fecha de fin, será otra entrada en possibletimes
+          //eso si, estamos asumiendo que esas 2 nos vendrán en orden y serán del mismo tipo
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeYear(propertyFrom, tmpEnd)
         } else {
@@ -244,7 +348,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         }
       }
       case 'dateTime': {
-        if(hasEnd) {
+        if (hasEnd) {
           //todo: lo mismo aquí
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDateTime(propertyFrom, tmpEnd)
@@ -253,7 +357,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         }
       }
       case 'gMonth': {
-        if(hasEnd) {
+        if (hasEnd) {
           //todo: lo mismo aqui
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeMonth(propertyFrom, tmpEnd)
@@ -263,7 +367,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
         }
       }
       case 'gDay': {
-        if(hasEnd) {
+        if (hasEnd) {
           //todo: lo mismo aqui
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDay(propertyFrom, tmpEnd)

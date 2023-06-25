@@ -52,7 +52,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   tmpNumericals = []
 
   //to check if map may be available
-  possiblePoints = 0;
+  possiblePoints = [];
 
   chartRepresentation = false;//false;
   possibleaxes: String[] = [];
@@ -105,6 +105,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         //todo: hacer lo mismo para los puntos
         this.checkDates(facets)
         this.checkNumericals(facets)
+        this.checkPoints(facets)
         this.facets = facets.map(result => new Facet(result)).sort((a, b) =>
           a.getLabel(this.translate.currentLang).localeCompare(b.getLabel(this.translate.currentLang)));
         this.retrievedFacets = facets.length;
@@ -122,7 +123,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   checkPoints(facets: Facet[]) {
-
+    //checks if facets contains geometry points
+    for(let i = 0; i < facets.length; i++ ) {
+      console.log("facets[i]: ", facets[i])
+      if(facets[i].range.includes("Geometry")) {
+        this.possiblePoints.push(['Geometry', facets[i].uri])
+      }
+    }
+    console.log("posiblePoints:", this.possiblePoints)
   }
 
   checkNumericals(facets: Facet[]) {
@@ -132,9 +140,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleNumericals.push(['int', facets[i].uri])
         count.push([facets[i].uri, 'int'])
       } else if(facets[i].range.includes("decimal")) {
+        //TODO por que no pusheo a count aqui? creo que por esto no funciona si coexisten los dos tipos
+        //TODO: no seria suficiente con guardarnos aqui los tipos? total, luego en chart-representation la segunda columna se tira
         this.possibleNumericals.push(['decimal', facets[i].uri])
       }
     }
+    console.log("facetas numericas: ", count)
     this.tmpNumericals = count
   }
 
@@ -151,6 +162,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleTimes.push(['gDay', facets[i].uri])
       }
     }
+    console.log("facetas temporales: ", this.possibleTimes)
   }
 
   loadFilters(params: ParamMap) {
@@ -262,12 +274,41 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
             this.checkAllResourcesForPossibleNumericals(possibleNumericals)
 
+            this.checkAllResourcesForPossiblePoints()
+            console.log("checked for points: ", this.possiblePoints)
+            console.log("checked for times: ", this.possibleTimes)
+            console.log("checked for numericals: ", this.possibleNumericals)
+
           } else if (instances['@type']) {
             var resources = [new Description(instances, instances['@context'], this.labels)];
           } else {
             resources = [];
           }
         });
+  }
+
+  checkAllResourcesForPossiblePoints() {
+
+    const tmpPoints = []
+
+    for (let i = 0; i < this.possiblePoints.length; i++) {
+      for (let j = 0; j < this.allResources.length; j++) {
+        for(let k = 0; k < this.allResources[j].properties.length; k++) {
+          const uri = this.allResources[j].properties[k].uri;
+          const label: string = this.allResources[j].properties[k].label;
+          if(this.possiblePoints[i][1] == uri) {
+            const type = this.possiblePoints[i][0]
+            const coords = this.allResources[j].properties[k].values[0].value
+            const [long, lat] = coords.slice(6, -1).split(" ")
+            // tmpPoints.push([type, lat, long])
+            tmpPoints.push([type, label])
+            j = this.allResources.length
+            break
+          }
+        }
+      }
+    }
+    this.possiblePoints = tmpPoints
   }
 
   checkAllResourcesForPossibleNumericals(possibeNumericals) {
@@ -279,6 +320,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         for(let k = 0; k < this.allResources[j].properties.length; k++) {
           const label: string = this.allResources[j].properties[k].label;
           const uri = this.allResources[j].properties[k].uri;
+          console.log("resource: ", this.allResources[j])
           if(possibeNumericals[i][1] == uri) {
             tmpNumericals.push([uri, this.extractFromURI(label)])
             j = this.allResources.length
@@ -377,7 +419,8 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
     this.urlAxes();
     //tiene que haber numericals, no vale que haya fechas y no valores numericos a representar
-    return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0
+    //aceptamos solo marcar puntos en el mapa
+    return this.possibleaxes.length >= 2 && (this.possibleNumericals.length > 0 || this.possiblePoints.length > 0)
   }
 
   detectTimeStamp(numericalClassification) {
@@ -412,6 +455,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         returnNums.push([attribute, this.extractFromURI(attribute)]);
       }
     }
+    console.log("original: ", returnNums)
     return returnNums;
   }
 
