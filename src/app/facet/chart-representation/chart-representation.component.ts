@@ -55,6 +55,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   //to check if chart type has been changed to timeline
   timelineType = false;
+  mapType = false;
 
   //to check if data is being processed
   dataProcessed = false;
@@ -113,6 +114,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     } else if (this.timelineType) {
       this.createTimelineChart()
     } else if (this.type == ChartType.Map) {
+      this.createMapChart()
       console.log("creando mapa")
     } else {
       console.log("else")
@@ -122,6 +124,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   createCharts(): void {
     // console.log("createCharts: ", this.possiblePoints, this.numerical_values_input)
+    this.chartData.columnNames = []
+    this.chartData.data = []
     console.log("type: ", this.type)
 
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
@@ -145,8 +149,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   tableChart() {
     this.type = ChartType.Table;
-    if (this.timelineType) {
+    if (this.timelineType || this.mapType) {
       this.timelineType = false
+      this.mapType = false
       this.createCharts()
     }
 
@@ -154,8 +159,12 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   barChart() {
     this.type = ChartType.Bar;
+
     if (this.timelineType) {
       this.timelineType = false
+      this.createCharts()
+    } else if(this.mapType) {
+      this.mapType = false
       this.createCharts()
     }
   }
@@ -165,6 +174,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
+    } else if(this.mapType) {
+      this.mapType = false
+      this.createCharts()
     }
   }
 
@@ -173,12 +185,20 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if (this.timelineType) {
       this.timelineType = false
       this.createCharts()
+    } else if(this.mapType) {
+      this.mapType = false
+      this.createCharts()
     }
   }
 
   mapChart() {
     //todo
+    this.mapType = true;
     this.type = ChartType.Map;
+
+    if(this.timelineType) {
+      this.timelineType = false
+    }
     this.createMapChart()
   }
 
@@ -247,6 +267,10 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   timelineChart() {
     this.type = ChartType.Timeline;
+    this.mapType = false
+    if(this.mapType) {
+      this.mapType = false
+    }
     this.createTimelineChart()
   }
 
@@ -492,6 +516,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       this.createCharts();
     } else if (this.timelineType) {
       this.createTimelineChart()
+    } else if(this.mapType) {
+      this.createMapChart()
     } else {
       this.resizeColumns();
       this.resizeDataframe(this.dataframe[this.layer]);

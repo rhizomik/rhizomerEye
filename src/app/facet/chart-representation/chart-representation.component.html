@@ -4,7 +4,10 @@
 
 <div style="margin-bottom: 1.4em;"></div>
 
+
+
 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+  <span *ngIf="numerical_values_input.length > 0">
   <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
   <label class="btn btn-outline-primary btn-sm" for="btnradio1" (click)="tableChart()">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x3"
@@ -40,6 +43,8 @@
         d="M7.5 1.018a7 7 0 0 0-4.79 11.566L7.5 7.793V1.018zm1 0V7.5h6.482A7.001 7.001 0 0 0 8.5 1.018zM14.982 8.5H8.207l-4.79 4.79A7 7 0 0 0 14.982 8.5zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/>
     </svg>
     Pie</label>
+
+  </span>
 
   <span *ngIf="possiblePoints.length > 0">
   <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
@@ -133,37 +138,57 @@
   </h5>
 </span>
 
-<div style="height: 500px; width: 100%">
-  <app-map-chart></app-map-chart>
 
-<!--  <div id="mapDiv" style="width: 800px; height: 500px"></div>-->
-<!--  <script>-->
-<!--    // position we will use later-->
-<!--    var lat = 40.73;-->
-<!--    var lon = -74.00;-->
+<span *ngIf="mapType, else elseblock">
+  <div style="height: 500px; width: 100%">
+  <app-map-chart [myPoints]="chartData.data" >
 
-<!--    // initialize map-->
-<!--    map = L.map('mapDiv').setView([lat, lon], 13);-->
+  </app-map-chart>
+    </div>
+  </span>
+<ng-template #elseblock>
+  <div>
+      <google-chart
+        #editable
+        [type]="type"
+        [data]="chartData.data"
+        [columns]="chartData.columnNames"
+        [options]="chartData.options"
+        [height]="chartData.height"
+        [width]="chartData.width">
+      </google-chart>
+  </div>
+</ng-template>
 
-<!--    // set map tiles source-->
-<!--    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {-->
-<!--      attribution: 'xxx',-->
-<!--      maxZoom: 18,-->
-<!--    }).addTo(map);-->
 
-<!--    // add marker to the map-->
-<!--    marker = L.marker([lat, lon]).addTo(map);-->
+  <!--  <div id="mapDiv" style="width: 800px; height: 500px"></div>-->
+  <!--  <script>-->
+  <!--    // position we will use later-->
+  <!--    var lat = 40.73;-->
+  <!--    var lon = -74.00;-->
 
-<!--    // add popup to the marker-->
-<!--    marker.bindPopup("<b>ACME CO.</b><br />This st. 48<br />New York").openPopup();-->
+  <!--    // initialize map-->
+  <!--    map = L.map('mapDiv').setView([lat, lon], 13);-->
 
-<!--  </script>-->
-<!--  <div class="map-container">-->
-<!--    <div class="map-frame">-->
-<!--      <div id="map"></div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  aaaaaaaaaaaaaaaa-->
+  <!--    // set map tiles source-->
+  <!--    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {-->
+  <!--      attribution: 'xxx',-->
+  <!--      maxZoom: 18,-->
+  <!--    }).addTo(map);-->
+
+  <!--    // add marker to the map-->
+  <!--    marker = L.marker([lat, lon]).addTo(map);-->
+
+  <!--    // add popup to the marker-->
+  <!--    marker.bindPopup("<b>ACME CO.</b><br />This st. 48<br />New York").openPopup();-->
+
+  <!--  </script>-->
+  <!--  <div class="map-container">-->
+  <!--    <div class="map-frame">-->
+  <!--      <div id="map"></div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--  aaaaaaaaaaaaaaaa-->
 
 
   <!--
@@ -182,16 +207,16 @@
   width: {{chartData.width}}
   <br>
   -->
-<!--  <google-chart-->
+  <!--  <google-chart-->
   <!--    #editable-->
-<!--    [type]="type"-->
-<!--    [data]="chartData.data"-->
-<!--    [columns]="chartData.columnNames"-->
-<!--    [options]="chartData.options"-->
-<!--    [height]="chartData.height"-->
-<!--    [width]="chartData.width">-->
-<!--  </google-chart>-->
+  <!--    [type]="type"-->
+  <!--    [data]="chartData.data"-->
+  <!--    [columns]="chartData.columnNames"-->
+  <!--    [options]="chartData.options"-->
+  <!--    [height]="chartData.height"-->
+  <!--    [width]="chartData.width">-->
+  <!--  </google-chart>-->
 
 
-</div>
+
 

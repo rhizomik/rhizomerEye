@@ -53,6 +53,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   //to check if map may be available
   possiblePoints = [];
+  possibleMap = false
 
   chartRepresentation = false;//false;
   possibleaxes: String[] = [];
@@ -309,6 +310,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       }
     }
     this.possiblePoints = tmpPoints
+    if (this.possiblePoints.length > 0) {
+      this.possibleMap = true
+      // todo: no se si habra que ponerlo a falso en algun momento
+    }
   }
 
   checkAllResourcesForPossibleNumericals(possibeNumericals) {
@@ -368,6 +373,16 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.possibleTimes = tmpTimes
   }
 
+  navigateMap() {
+    console.log("naaa")
+    const url = this.route.snapshot.url.toString().split(',');
+    const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
+      + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id'
+    console.log("navegando a mapa", new_url)
+    this.router.navigate([new_url])
+
+  }
+
   createDataFrame() {
     if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
       alert("Not OK!")
@@ -381,6 +396,9 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
                       + '/charts:' + this.extractFromURI(this.selectedAxe1) + '&' + this.extractFromURI(this.selectedAxe2)
 
+      console.log("navegando: ", [new_url], { queryParams: this.createQueryDict(params)})
+      console.log("navegado a mi: ", url[0]+ '/' + url[1]+ '/' + url[2]
+        + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id')
       this.router.navigate(
           [new_url],
           { queryParams: this.createQueryDict(params)});//{'rdf:employmentRate xsd:string' : '"75.4"'}});
@@ -420,7 +438,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.urlAxes();
     //tiene que haber numericals, no vale que haya fechas y no valores numericos a representar
     //aceptamos solo marcar puntos en el mapa
-    return this.possibleaxes.length >= 2 && (this.possibleNumericals.length > 0 || this.possiblePoints.length > 0)
+    return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0 //|| this.possiblePoints.length > 0)
   }
 
   detectTimeStamp(numericalClassification) {

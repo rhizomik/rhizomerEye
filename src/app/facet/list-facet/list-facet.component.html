@@ -51,7 +51,12 @@
               </button>-->
             </span>
             <ng-template #elseblock>
-              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm">Chart View not available</button>
+              <span *ngIf="possibleRepresentation, else elseblock2">
+                <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm">Chart View not available</button>
+               </span>
+              <ng-template #elseblock2>
+                <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="navigateMap()">View on Map</button>
+              </ng-template>
             </ng-template>
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import {Component, OnInit, AfterViewInit, OnChanges, Input} from '@angular/core';
 import * as L from 'leaflet';
 import { MapMarkerService } from './map-marker.service';
 
@@ -22,9 +22,25 @@ L.Marker.prototype.options.icon = iconDefault;
   templateUrl: './map-chart.component.html',
   styleUrls: ['./map-chart.component.css']
 })
-export class MapChartComponent implements OnInit, AfterViewInit {
+export class MapChartComponent implements OnInit, AfterViewInit, OnChanges {
 
   private map;
+
+  @Input()
+  myPoints = []
+
+  ngOnInit(): void {
+  }
+
+  ngOnChanges() {
+    console.log("puntos: ", this.myPoints)
+  }
+
+  ngAfterViewInit(): void {
+    this.initMap();
+    this.mapMarkerService.makeCapitalMarkers(this.map, this.myPoints);
+
+  }
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -48,13 +64,6 @@ export class MapChartComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngOnInit(): void {
-  }
 
-  ngAfterViewInit(): void {
-    this.initMap();
-    this.mapMarkerService.makeCapitalMarkers(this.map);
-
-  }
 
 }
