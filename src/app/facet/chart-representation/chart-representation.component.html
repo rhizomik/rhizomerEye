@@ -1,9 +1,4 @@
-<!--<link rel="stylesheet" href="leaflet.css"  />-->
-<!--<script src="leaflet.js" ></script>-->
-
-
 <div style="margin-bottom: 1.4em;"></div>
-
 
 
 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -93,7 +88,10 @@
       <button class="dropdown-item btn-sm" type="button" (click)="openModal()">Multiple Facets</button>
     </ul>
   </div>
-  <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()">
+
+
+  <span *ngIf="type !== 'Timeline'">
+    <button type="button" class="btn btn-outline-primary btn-sm" name="btnradio" id="btnradio5" (click)="switchAxes()">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right"
          viewBox="0 0 16 16">
       <path fill-rule="evenodd"
@@ -101,6 +99,8 @@
     </svg>
     Axes
   </button>
+  </span>
+
 </div>
 
 <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
@@ -141,82 +141,20 @@
 
 <span *ngIf="mapType || defaultMap, else elseblock">
   <div style="height: 500px; width: 100%">
-  <app-map-chart [myPoints]="chartData.data" >
+  <app-map-chart [myPoints]="chartData.data">
 
   </app-map-chart>
     </div>
   </span>
 <ng-template #elseblock>
   <div>
-      <google-chart
-        #editable
-        [type]="type"
-        [data]="chartData.data"
-        [columns]="chartData.columnNames"
-        [options]="chartData.options"
-        [height]="chartData.height"
-        [width]="chartData.width">
-      </google-chart>
+    <google-chart
+      [type]="type"
+      [data]="chartData.data"
+      [columns]="chartData.columnNames"
+      [options]="chartData.options"
+      [height]="chartData.height"
+      [width]="chartData.width">
+    </google-chart>
   </div>
 </ng-template>
-
-
-  <!--  <div id="mapDiv" style="width: 800px; height: 500px"></div>-->
-  <!--  <script>-->
-  <!--    // position we will use later-->
-  <!--    var lat = 40.73;-->
-  <!--    var lon = -74.00;-->
-
-  <!--    // initialize map-->
-  <!--    map = L.map('mapDiv').setView([lat, lon], 13);-->
-
-  <!--    // set map tiles source-->
-  <!--    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {-->
-  <!--      attribution: 'xxx',-->
-  <!--      maxZoom: 18,-->
-  <!--    }).addTo(map);-->
-
-  <!--    // add marker to the map-->
-  <!--    marker = L.marker([lat, lon]).addTo(map);-->
-
-  <!--    // add popup to the marker-->
-  <!--    marker.bindPopup("<b>ACME CO.</b><br />This st. 48<br />New York").openPopup();-->
-
-  <!--  </script>-->
-  <!--  <div class="map-container">-->
-  <!--    <div class="map-frame">-->
-  <!--      <div id="map"></div>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--  aaaaaaaaaaaaaaaa-->
-
-
-  <!--
-  possibletimes: {{possibleTimes[0]}}
-  <br>
-  data: {{chartData.data}}
-  <br>
-  type: {{type}}
-  <br>
-  columnNames: {{chartData.columnNames}}
-  <br>
-  options: {{chartData.options}}
-  <br>
-  height: {{chartData.height}}
-  <br>
-  width: {{chartData.width}}
-  <br>
-  -->
-  <!--  <google-chart-->
-  <!--    #editable-->
-  <!--    [type]="type"-->
-  <!--    [data]="chartData.data"-->
-  <!--    [columns]="chartData.columnNames"-->
-  <!--    [options]="chartData.options"-->
-  <!--    [height]="chartData.height"-->
-  <!--    [width]="chartData.width">-->
-  <!--  </google-chart>-->
-
-
-
-

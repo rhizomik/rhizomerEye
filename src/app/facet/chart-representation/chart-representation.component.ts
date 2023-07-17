@@ -2,8 +2,6 @@ import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '
 import {Description} from '../../description/description';
 import {ChartType} from 'angular-google-charts';
 
-// import * as L from 'leaflet';
-
 @Component({
   selector: 'app-chart-representation',
   templateUrl: './chart-representation.component.html',
@@ -33,8 +31,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   display = "none";
 
-  print: string;
-
   numerical_values: string[];
   correlation_fields: string[] = [];
   is_correlation_chart: boolean = false;
@@ -43,7 +39,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   column_index: string[];
   layer: number = 0;
 
-  //Table, Line, BarChart ----> MapChart, TimelineChart
   type = ChartType.Table;
   legend: 'left';
   chartData = {
@@ -65,28 +60,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     this.onResize();
   }
 
-  // private map;
-  //
-  // private initMap(): void {
-  //   this.map = L.map('map', {
-  //     center: [ 39.8282, -98.5795 ],
-  //     zoom: 3
-  //   });
-  //   // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //   const tiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  //
-  //     maxZoom: 18,
-  //     minZoom: 3,
-  //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community</a>'
-  //   });
-  //
-  //   tiles.addTo(this.map);
-  // }
-
-  // ngAfterViewInit(): void {
-  //   this.initMap();
-  // }
-
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (window.innerWidth < 770) {
@@ -97,19 +70,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // console.log("points: ", this.possiblePoints)
     if ((this.rows !== '' || this.rows !== undefined)
       && (this.columns !== '' || this.columns !== undefined)) {
-      console.log("points: ", this.possiblePoints)
       this.createCharts();
     }
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("points: ", this.possiblePoints)
-    // this.numerical_values_input.push(["1", "2"])
-    console.log("default chart rep: ", this.defaultMap, this.type)
     if(this.defaultMap) {
       this.type = ChartType.Map // todo  no se por que no funciona
       this.mapType = true
@@ -117,37 +85,30 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     }
 
     if (this.is_correlation_chart) {
-      console.log("correlation chart")
       this.createCorrelationTable();
     } else if (this.timelineType) {
       this.createTimelineChart()
     } else if (this.type == ChartType.Map) {
       this.createMapChart()
-      console.log("creando mapa")
     } else {
-      console.log("else")
       this.createCharts();
     }
   }
 
   createCharts(): void {
-    // console.log("createCharts: ", this.possiblePoints, this.numerical_values_input)
     this.chartData.columnNames = []
     this.chartData.data = []
-    console.log("type: ", this.type)
-
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
     this.deleteAxisFromNumericals();
     this.createDataFrame();
   }
 
   switchAxes() {
-    var aux = this.rows;
+    const aux = this.rows;
     this.rows = this.columns;
     this.columns = aux;
     this.numerical_values = this.getFirstColumn(this.numerical_values_input);
     this.deleteAxisFromNumericals();
-
     if (this.is_correlation_chart) {
       this.createCorrelationTable();
     } else {
@@ -162,7 +123,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       this.mapType = false
       this.createCharts()
     }
-
   }
 
   barChart() {
@@ -200,10 +160,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   mapChart() {
-    //todo
     this.mapType = true;
     this.type = ChartType.Map;
-
     if(this.timelineType) {
       this.timelineType = false
     }
@@ -215,16 +173,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     let propertyContent = ""
     let showUri = false;
     for (let i = 0; i < this.resources.length; i++) {
-
-
       const property = this.resources[i].properties
-      console.log("resource: ", property)
       const [lat, long] = this.findCoords(property)
-      console.log("lat: ", lat)
-      console.log("long: ", long)
-      console.log("create map lat long: ", lat, long)
-      console.log("numerical_values_input???: ", this.numerical_values_input)
-      // const propertyContent = this.numerical_values_input[0][0]
       if(this.numerical_values_input.length == 0) {
         //no hay numericos, pondremos la uri
         showUri = true;
@@ -232,54 +182,25 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       } else {
         propertyContent = this.findContent(property)
       }
-      // const propertyContent = "hello world"
-      console.log("content? ", this.tag_chart)
-      console.log("uri: ", property[0].uri)
-      console.log("uri in  resource: ", this.resources[i]["@id"])
-      console.log("propertyContent: ", propertyContent)
       const newPoint = [lat, long, propertyContent, showUri]
       points.push(newPoint)
     }
-    console.log("points: ", points)
-    this.chartData.columnNames = ["Lat", "Long", "Content"]
     this.chartData.data = points
-    // this.chartData.data = [
-    //   [41.536341645995, 1.9227935884038, '1'],
-    //   [41.551356292377, 1.8868243402613, '1'],
-    // ]
-
-    this.chartData.options = {
-      showTooltip: true,
-      showInfoWindow: true
-    }
-
-    console.log("mapa: ", this.chartData.data, this.type)
-
-
   }
 
   findCoords(property) {
     const type = this.possiblePoints[0][1]
-    console.log("find coords type: ", type)
     for (let i = 0; i < property.length; i++) {
       if (property[i].label.includes(type)) {
-        console.log("finding: ", property[i])
         const coords: string = property[i].values[1].value
-
-        console.log("finding coords: ", coords, typeof coords)
-        const [lat, long] = coords.slice(6, -1).split(" ")
-        // if(!isNaN(lat) || !isNaN(long)) {
+        const [long, lat] = coords.slice(6, -1).split(" ")
         if (coords.includes("https")) {
           const coords = property[i].values[0].value
-          const [lat, long] = coords.slice(6, -1).split(" ")
-          console.log("finding coords: 2", lat, long)
+          const [long, lat] = coords.slice(6, -1).split(" ")
           return [Number(lat), Number(long)]
         }
         return [Number(lat), Number(long)]
       }
-      //   //now timeline requires column #1 to be of type 'String'
-      //   return property[i].values[0].value.toString()
-      // }
     }
 
 
@@ -304,18 +225,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       const property = this.resources[i].properties;
       const propertyName = this.findName(property, axe);
       const tmpPropertyFrom = this.findFrom(property);
-      // const [propertyFrom, propertyTo] = this.findTo(tmpPropertyFrom)
       const [propertyFrom, propertyTo] = this.customFromAndTo(tmpPropertyFrom)
       const propertyContent = this.findContent(property)
       const newDate = [propertyName, propertyContent, propertyFrom, propertyTo]
       if (this.existUndefined(propertyName, propertyContent, propertyFrom, propertyTo)) {
         continue
       }
-      // console.log("newDate to push: ", newDate)
-      // console.log("chartData: ", this.chartData)
       dates.push(newDate)
     }
-    console.log("dates: ", dates)
     this.chartData.columnNames = ["Name", "Content", "To", "From"]
     this.chartData.data = dates
 
@@ -340,39 +257,19 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   findName(property, axe) {
-    //todo: dejar la label original
-    let name = '';
     for (let i = 0; i < property.length; i++) {
       if (property[i].label == axe) {
-        // name = property[i].values[0].value
         return property[i].values[0].value
-        //break o return
       }
     }
-    // return this.extractFromURI(name)
-    // return name
   }
 
   findFrom(property) {
     const timeAxe = this.possibleTimes[0][1];
-    let from = '';
     for (let i = 0; i < property.length; i++) {
       if (property[i].label == timeAxe) {
-        // from = property[i].values[0].value
         return property[i].values[0].value
-        //break o return
       }
-    }
-    // return from
-  }
-
-  findTo(propertyFrom) {
-    //todo: useless, pasaremos directamente a customizeFromAndTo
-    //let's find the end time of the resource
-    if (this.possibleTimes.length < 2) {
-      return this.customFromAndTo(propertyFrom)
-    } else {
-      return this.possibleTimes[1]
     }
   }
 
@@ -383,9 +280,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     switch (timeType) {
       case 'gYear': {
         if (hasEnd) {
-          //todo: deberia hacer como en findFrom, no puedo coger para todas las entidades la primera fecha
-          //mentira, ya esta bien, en caso de tener fecha de fin, será otra entrada en possibletimes
-          //eso si, estamos asumiendo que esas 2 nos vendrán en orden y serán del mismo tipo
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeYear(propertyFrom, tmpEnd)
         } else {
@@ -395,7 +289,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
       case 'dateTime': {
         if (hasEnd) {
-          //todo: lo mismo aquí
+          const tmpEnd = this.possibleTimes[1][1]
+          return this.customizeDateTime(propertyFrom, tmpEnd)
+        } else {
+          return this.customizeEndDateTime(propertyFrom)
+        }
+      }
+      case 'date': {
+        if (hasEnd) {
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDateTime(propertyFrom, tmpEnd)
         } else {
@@ -404,22 +305,18 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       }
       case 'gMonth': {
         if (hasEnd) {
-          //todo: lo mismo aqui
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeMonth(propertyFrom, tmpEnd)
         } else {
-          const tmpEnd = Number(propertyFrom) + 1;
-          return this.customizeMonth(propertyFrom, tmpEnd)
+          return this.customizeEndMonth(propertyFrom)
         }
       }
       case 'gDay': {
         if (hasEnd) {
-          //todo: lo mismo aqui
           const tmpEnd = this.possibleTimes[1][1]
           return this.customizeDay(propertyFrom, tmpEnd)
         } else {
-          const tmpEnd = Number(propertyFrom) + 1;
-          return this.customizeDay(propertyFrom, tmpEnd)
+          return this.customizeEndDay(propertyFrom)
         }
       }
       default: {
@@ -431,49 +328,92 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   customizeEndDateTime(startDate) {
     //datetime with no specified end
     const start = new Date(startDate)
-
-    const endYear = start.getFullYear() + 1
-    const endMonth = start.getMonth()
-    const endDay = start.getDate()
-    const endHour = start.getHours()
-    const endMinute = start.getMinutes()
-    const endSecond = start.getSeconds()
-    const end = new Date(endYear, endMonth, endDay, endHour, endMinute, endSecond)
     return [start, start]
-    // return [start, end]
   }
 
   customizeDateTime(startDate, endDate) {
     //datetime with specified end
     const start = new Date(startDate);
     const end = new Date(endDate);
-
-    // return [start, start]
     return [start, end]
   }
 
   customizeMonth(startMonth, endMonth) {
+    let currentYear = new Date().getFullYear();
+    const start = new Date(currentYear, startMonth, 1);
+    let end = new Date(currentYear, endMonth, 1);
+
+    if(endMonth < startMonth) {
+      end = new Date(currentYear + 1, endMonth, 1);
+    }
+
+    return [start, end]
+  }
+
+  customizeEndMonth(startMonth) {
     //gMonth whether specified or not end
-    const currentYear = new Date().getFullYear();
+    let currentYear = new Date().getFullYear();
+    let endMonth = startMonth + 1;
+    if(startMonth == 11) {
+      endMonth = 0
+      currentYear += 1
+    }
     const start = new Date(currentYear, startMonth, 1);
     const end = new Date(currentYear, endMonth, 1);
     return [start, end]
   }
 
   customizeDay(startDay, endDay) {
-    //gDay whether specified or not end
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+
     const start = new Date(currentYear, currentMonth, startDay);
-    const end = new Date(currentYear, currentMonth, endDay);
+    let end = new Date(currentYear, currentMonth, endDay);
+
+    if(endDay < startDay) {
+      if(currentMonth == 11) {
+        //next year, next month
+        end = new Date(currentYear + 1, 0, endDay);
+      } else {
+        //next month
+        end = new Date(currentYear, currentMonth + 1, endDay);
+      }
+    }
+
     return [start, end]
+  }
+
+  customizeEndDay(startDay) {
+    //gDay whether specified or not end
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let endDay = startDay + 1;
+
+    const start = new Date(currentYear, currentMonth, startDay);
+    let end = new Date(currentYear, currentMonth, endDay);
+
+    if(endDay == this.getLastDay(currentYear, currentMonth)) {
+      if(currentMonth == 11) {
+        //next year, first month, first day
+        end = new Date(currentYear + 1, 0, 1);
+      } else {
+        //current year, next month, first day
+        end = new Date(currentYear, currentMonth + 1, 1);
+      }
+    }
+
+    return [start, end]
+  }
+
+  getLastDay(year, month) {
+    const tmpDate = new Date(year, month, 0)
+    return tmpDate.getDate()
   }
 
   customizeYear(startYear, endYear) {
     //gYear whether specified or not end
     const start = new Date(startYear, 0, 1);
     const end = new Date(endYear, 0, 1);
-    // return [start, start]
     return [start, end]
   }
 
@@ -488,9 +428,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   getFirstColumn(array: any[][]) {
-    //todo maybe useless?
-    var to_return: any[] = [];
-    for (var i = 0; i < array.length; i++) {
+    let to_return: any[] = [];
+    for (let i = 0; i < array.length; i++) {
       if (this.rows != array[i][0] && this.columns != array[i][0]) {
         to_return = to_return.concat(array[i][0]);
       }
@@ -499,8 +438,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   deleteAxisFromNumericals() {
-    var array: string[][] = [];
-    for (var i = 0; i < this.numerical_values_input.length; i++) {
+    const array: string[][] = [];
+    for (let i = 0; i < this.numerical_values_input.length; i++) {
       if (this.numerical_values_input[i][0] != this.columns && this.numerical_values_input[i][0] != this.rows) {
         array.push(this.numerical_values_input[i])
       }
@@ -534,7 +473,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     if (this.is_correlation_chart) {
       //This situation happens when the user comes from the correlation chart
       this.is_correlation_chart = false;
-
       this.createCharts();
     } else if (this.timelineType) {
       this.createTimelineChart()
@@ -547,8 +485,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   resizeDataframe(dataframe: any[][]): void {
-    var void_columns = [];
-    for (var i = 0; i < this.column_index.length; i++) {
+    let void_columns = [];
+    for (let i = 0; i < this.column_index.length; i++) {
       if (this.voidColumn(i, this.dataframe[this.layer])) {
         void_columns = void_columns.concat(i);
       }
@@ -557,16 +495,16 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   deleteColumns(dataframe: any[][], col_to_delete: number[]): any[][] {
-    var new_dataframe: any[][] = [];
-    for (var row of dataframe) {
+    const new_dataframe: any[][] = [];
+    for (const row of dataframe) {
       new_dataframe.push(this.deleteFromRow(row, col_to_delete));
     }
     return new_dataframe;
   }
 
   deleteFromRow(row: any[], col_to_delete: number[]): any[] {
-    var array = [];
-    for (var i = 0; i < row.length; i++) {
+    let array = [];
+    for (let i = 0; i < row.length; i++) {
       if (!col_to_delete.includes(i)) {
         array = array.concat(row[i]);
       }
@@ -576,8 +514,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   resizeColumns(): void {
     this.column_index = this.createColumnIndex();
-    var columns: string[] = [];
-    for (var i = 0; i < this.column_index.length; i++) {
+    let columns: string[] = [];
+    for (let i = 0; i < this.column_index.length; i++) {
       if (!this.voidColumn(i, this.dataframe[this.layer])) {
         columns = columns.concat(this.column_index[i]);
       }
@@ -586,7 +524,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   voidColumn(index: number, dataframe: any[][]): boolean {
-    for (var i = 0; i < dataframe.length; i++) {
+    for (let i = 0; i < dataframe.length; i++) {
       if (dataframe[i][index] != undefined) {
         return false;
       }
@@ -596,34 +534,25 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
 
   initialize_array(): any[][][] {
-    var dataframe = Array(this.numerical_values.length);
-    for (var i = 0; i < this.numerical_values.length; i++) {
+    const dataframe = Array(this.numerical_values.length);
+    for (let i = 0; i < this.numerical_values.length; i++) {
       dataframe[i] = [];
     }
     return dataframe;
   }
 
   insert_into_df(dataframe: any[][][], attribute: string, row, column) {
-
-    //console.log("attribute, row, column: ", attribute, row, column)
     let layer_i = this.numerical_values.indexOf(attribute);
     let column_i = this.column_index.indexOf(column);
-    //console.log("layer_i, column_i: ", layer_i, column_i)
-
     if (!this.exists_row(dataframe[layer_i], row)) {
-      // console.log("vamos a tocar: ", dataframe, layer_i, row)
       this.add_row(dataframe[layer_i], row);
     }
     let row_i = this.get_row_index(dataframe[layer_i], row);
-    //console.log("row_i", row_i)
-    //console.log("layer_i, row_i, column_i", layer_i, row_i, column_i)
-
     return [layer_i, row_i, column_i];
   }
 
   get_row_index(dataframe: any[][], row) {
     for (let i = 0; i < dataframe.length; i++) {
-      // if (dataframe[i][0] == row.split("/").pop()) {
       if (dataframe[i][0] == row) {
         return i;
       }
@@ -632,10 +561,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   exists_row(dataframe: any[][], row) {
-    var exists = false;
-    for (var i = 0; i < dataframe.length; i++) {
-      //label modificada
-      // if (dataframe[i][0] == row.split("/").pop()) {
+    let exists = false;
+    for (let i = 0; i < dataframe.length; i++) {
       if (dataframe[i][0] == row) {
         exists = true;
       }
@@ -644,7 +571,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   stringToNumber(string: string): number {
-    // console.log("NaN: ", string)
     if (string == ": " || string == undefined || isNaN(Number(string).valueOf())) {
       return undefined;
     }
@@ -653,32 +579,24 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   add_row(dataframe: any[][], row): void {
     let length = this.column_index.length;
-    var row_to_add = [];
-    for (var i = 0; i < length; i++) {
+    let row_to_add = [];
+    for (let i = 0; i < length; i++) {
       row_to_add = row_to_add.concat(undefined);
     }
-    //label modificada
-    // const parsedRow = row.split("/").pop()
-
-    // row_to_add[0] = parsedRow//row;
     row_to_add[0] = row
-    // console.log("label original: ", row)
-    // console.log("añadimos al dataframe: ", parsedRow, row_to_add)
     dataframe.push(row_to_add);
   }
 
   createColumnIndex() {
-    var index: string[];
+    let index: string[];
     index = [];
-    for (var i = 0; i < this.resources.length; i++) {
-      var resource = JSON.parse(this.resources[i].asJsonLd());
+    for (let i = 0; i < this.resources.length; i++) {
+      const resource = JSON.parse(this.resources[i].asJsonLd());
       if (!index.includes(this.getValue(resource[this.columns]))) {
         index = index.concat(this.getValue(resource[this.columns]));
-        //console.log("añadimos: ", this.getValue(resource[this.columns]))
       }
     }
     index.sort();
-    //console.log("rows: ", this.rows, "columns: ", this.columns, "rows+columnIndex: ", [this.extractFromURI(this.rows)].concat(index))
     return [this.extractFromURI(this.rows)].concat(index);
   }
 
@@ -699,25 +617,24 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   extractFromURI(uri: string): string {
-    var name = "";
-    for (var i = (uri.length - 1); i >= 0; i--) {
+    let name = "";
+    for (let i = (uri.length - 1); i >= 0; i--) {
       if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#") {
         break;
       }
       name = uri[i] + name;
     }
-    // console.log("Chart extract from uri: ", uri, name)
     return name;
   }
 
   createCorrelationTable() {
-    var table: any[][] = [];
+    const table: any[][] = [];
     this.column_index = this.createColumnIndexCorrelation();
-    for (var i = 0; i < this.resources.length; i++) {
-      var resource = JSON.parse(this.resources[i].asJsonLd());
+    for (let i = 0; i < this.resources.length; i++) {
+      const resource = JSON.parse(this.resources[i].asJsonLd());
       let column = this.getValue(resource[this.columns]);
       let row = this.getValue(resource[this.rows]);
-      for (var attribute in resource) {
+      for (const attribute in resource) {
         if (this.correlation_fields.includes(attribute)) {
           let attribute_column = column + "_" + this.extractFromURI(attribute);
           let [row_i, column_i] = this.insert_into_correlation_table(table, attribute, row, attribute_column);
@@ -733,12 +650,12 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   createColumnIndexCorrelation() {
-    var index: string[];
+    let index: string[];
     index = [];
-    for (var i = 0; i < this.resources.length; i++) {
-      for (var j = 0; j < this.correlation_fields.length; j++) {
-        var resource = JSON.parse(this.resources[i].asJsonLd());
-        var columnName = this.getValue(resource[this.columns]) + "_" + this.extractFromURI(this.correlation_fields[j]);
+    for (let i = 0; i < this.resources.length; i++) {
+      for (let j = 0; j < this.correlation_fields.length; j++) {
+        const resource = JSON.parse(this.resources[i].asJsonLd());
+        const columnName = this.getValue(resource[this.columns]) + "_" + this.extractFromURI(this.correlation_fields[j]);
         if (!index.includes(columnName)) {
           index = index.concat(columnName);
         }

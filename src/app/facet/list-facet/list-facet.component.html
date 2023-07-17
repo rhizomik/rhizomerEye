@@ -39,19 +39,16 @@
         <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
         <div style="float: right;">
           <p>
-            <span *ngIf="!dataProcessed"> <!--; else elseblock" -->
+            <span *ngIf="!dataProcessed">
               <b style="margin-right: 0.5em;">Processing data...</b>
             </span>
 
             <span *ngIf="possibleRepresentation, else elseblock">
               <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
 
-              <!-- data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Chart View
-              </button>-->
             </span>
             <ng-template #elseblock>
-              <span *ngIf="possibleRepresentation, else elseblock2">
+              <span *ngIf="!dataProcessed || !possibleMap, else elseblock2">
                 <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm">Chart View not available</button>
                </span>
               <ng-template #elseblock2>
@@ -100,6 +97,7 @@
         <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                          [anonDescriptions]="anonResources" [labels]="labels"></app-description>
       </div>
+
       <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
                       [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
                       [directionLinks]="false" size="sm"
@@ -127,7 +125,6 @@
         <br>
         <small><i>Introduce the range of instances to represent or represent them all</i></small> <span type="submit" (onclick)="changeChartPage(1, 500)">  </span>.
       </p>
-
         <form class="row" style="margin-left: 25%; margin-right: 25%;"> <!-- (ngSubmit)="onSubmit(form_min.value, form_max.value)"> -->
           <div class="col">
             <input class="form-control form-control-sm" type="number" value="1" placeholder="" aria-label=".form-control-sm example" #form_min>

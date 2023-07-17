@@ -29,14 +29,14 @@ export class MapChartComponent implements OnInit, AfterViewInit, OnChanges {
   @Input()
   myPoints = []
 
-  @Input()
-  showUri = false
+  constructor(private mapMarkerService: MapMarkerService) {
+
+  }
 
   ngOnInit(): void {
   }
 
   ngOnChanges() {
-    console.log("puntos: ", this.myPoints)
   }
 
   ngAfterViewInit(): void {
@@ -50,8 +50,7 @@ export class MapChartComponent implements OnInit, AfterViewInit, OnChanges {
     const long = firstPoint[1]
     console.log("map lat long: ", lat, long)
     this.map = L.map('map', {
-      // center: [ 47.71, 11.71 ],
-      center: [long, lat],
+      center: [lat, long],
       zoom: 3
     });
 
@@ -64,13 +63,4 @@ export class MapChartComponent implements OnInit, AfterViewInit, OnChanges {
     tiles.addTo(this.map);
 
   }
-
-
-
-  constructor(private mapMarkerService: MapMarkerService) {
-
-  }
-
-
-
 }

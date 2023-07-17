@@ -38,7 +38,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   anonResources: Map<string, Description> = new Map<string, Description>();
   labels: Map<string, Value> = new Map<string, Value>();
   showFacets: boolean;
-  showCharts: boolean;
   showDetails = false;
 
   possibleRepresentation = false;
@@ -56,14 +55,13 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   possibleMap = false
   defaultMap = false
 
-  chartRepresentation = false;//false;
+  chartRepresentation = false;
   possibleaxes: String[] = [];
   possiblevalues: String[] = [];
   selectedAxe1: String;
   selectedAxe2: String;
   uriAxe1: String;
   uriAxe2: String;
-  selectedValue: String;
   display = "none";
 
   numericalInstancesInit = 1;
@@ -106,7 +104,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
     this.facetService.getAllRelevant(this.datasetId, this.classId, relevance).subscribe({
       next: (facets: Facet[]) => {
-        //todo: hacer lo mismo para los puntos
         this.checkDates(facets)
         this.checkNumericals(facets)
         this.checkPoints(facets)
@@ -129,12 +126,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   checkPoints(facets: Facet[]) {
     //checks if facets contains geometry points
     for(let i = 0; i < facets.length; i++ ) {
-      console.log("facets[i]: ", facets[i])
       if(facets[i].range.includes("Geometry")) {
         this.possiblePoints.push(['Geometry', facets[i].uri])
       }
     }
-    console.log("posiblePoints:", this.possiblePoints)
   }
 
   checkNumericals(facets: Facet[]) {
@@ -144,12 +139,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleNumericals.push(['int', facets[i].uri])
         count.push([facets[i].uri, 'int'])
       } else if(facets[i].range.includes("decimal")) {
-        //TODO por que no pusheo a count aqui? creo que por esto no funciona si coexisten los dos tipos
-        //TODO: no seria suficiente con guardarnos aqui los tipos? total, luego en chart-representation la segunda columna se tira
         this.possibleNumericals.push(['decimal', facets[i].uri])
+        count.push([facets[i].uri, 'decimal'])
       }
     }
-    console.log("facetas numericas: ", count)
     this.tmpNumericals = count
   }
 
@@ -160,13 +153,18 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         this.possibleTimes.push(['gYear', facets[i].uri])
       } else if(facets[i].range.includes("dateTime")) {
         this.possibleTimes.push(['dateTime', facets[i].uri])
+      } else if(facets[i].range.includes("date")) {
+        this.possibleTimes.push(['date', facets[i].uri])
       } else if(facets[i].range.includes("gMonth")) {
         this.possibleTimes.push(['gMonth', facets[i].uri])
       } else if(facets[i].range.includes("gDay")) {
         this.possibleTimes.push(['gDay', facets[i].uri])
+      } else if(facets[i].range.includes("gYearMonth")) {
+        this.possibleTimes.push(['gYearMonth', facets[i].uri])
+      } else if(facets[i].range.includes("gMonthDay")) {
+        this.possibleTimes.push(['gMonthDay', facets[i].uri])
       }
     }
-    console.log("facetas temporales: ", this.possibleTimes)
   }
 
   loadFilters(params: ParamMap) {
@@ -231,6 +229,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       (instances) => {
         this.labels = new Map([...Description.getLabels(instances)]);
         if (instances['@graph']) {
+
           this.anonResources =
             Description.getAnonResources(instances, this.labels, this.translate.currentLang);
           this.resources =
@@ -256,35 +255,30 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     forkJoin([
         this.classService.getDetails(datasetId, classId, filters,
           this.numericalInstancesInit, this.numericalInstancesEnd).pipe(
-        catchError(err => of({})),
+        catchError(() => of({})),
       ),
       this.classService.getInstancesLabels(datasetId, classId, filters, 1, this.pageSize).pipe(
-        catchError(err => of({})),
+        catchError(() => of({})),
       ) ])
       .subscribe(
         ([instances, labels]) => {
+          let resources;
           const linkedResourcesLabels: Map<string, Value> = Description.getLabels(labels);
-          labels = new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
+          new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
           if (instances['@graph']) {
-            //var anonResources = Description.getAnonResources(instances, this.labels);
-            var resources =  Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
+            resources = Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
             this.possibleRepresentation = this.isChartRepresentable(resources);
             this.dataProcessed = true;
 
             this.allResources = resources;
 
-            //this.checkAllResourcesForPossibleTimes(possibleTimes)
-            this.checkAllResourcesForPossibleTimes2(possibleTimes)
+            this.checkAllResourcesForPossibleTimes(possibleTimes)
 
             this.checkAllResourcesForPossibleNumericals(possibleNumericals)
 
             this.checkAllResourcesForPossiblePoints()
-            console.log("checked for points: ", this.possiblePoints)
-            console.log("checked for times: ", this.possibleTimes)
-            console.log("checked for numericals: ", this.possibleNumericals)
-
           } else if (instances['@type']) {
-            var resources = [new Description(instances, instances['@context'], this.labels)];
+            resources = [new Description(instances, instances['@context'], this.labels)];
           } else {
             resources = [];
           }
@@ -302,9 +296,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           const label: string = this.allResources[j].properties[k].label;
           if(this.possiblePoints[i][1] == uri) {
             const type = this.possiblePoints[i][0]
-            const coords = this.allResources[j].properties[k].values[0].value
-            const [long, lat] = coords.slice(6, -1).split(" ")
-            // tmpPoints.push([type, lat, long])
             tmpPoints.push([type, label])
             j = this.allResources.length
             break
@@ -328,7 +319,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         for(let k = 0; k < this.allResources[j].properties.length; k++) {
           const label: string = this.allResources[j].properties[k].label;
           const uri = this.allResources[j].properties[k].uri;
-          console.log("resource: ", this.allResources[j])
           if(possibeNumericals[i][1] == uri) {
             tmpNumericals.push([uri, this.extractFromURI(label)])
             j = this.allResources.length
@@ -341,21 +331,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   checkAllResourcesForPossibleTimes(possibleTimes) {
-    //todo: useless
-    for (let i = 0; i < possibleTimes.length; i++) {
-      for (let j = 0; j < this.allResources[0].properties.length; j++) {
-        const label: string = this.allResources[0].properties[j].label;
-        const uri = this.allResources[0].properties[j].uri;
-        if(possibleTimes[i][1] == uri) {
-          possibleTimes.pop()
-          possibleTimes.push(['gYear', label])
-        }
-      }
-    }
-    this.possibleTimes = possibleTimes
-  }
-
-  checkAllResourcesForPossibleTimes2(possibleTimes) {
 
     const tmpTimes = [];
 
@@ -377,13 +352,10 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   navigateMap() {
-    console.log("naaa")
     this.defaultMap = true;
-    console.log("default navigate map: ", this.defaultMap)
     const url = this.route.snapshot.url.toString().split(',');
     const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
       + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id'
-    console.log("navegando a mapa", new_url)
     this.router.navigate([new_url])
 
   }
@@ -401,17 +373,14 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
                       + '/charts:' + this.extractFromURI(this.selectedAxe1) + '&' + this.extractFromURI(this.selectedAxe2)
 
-      console.log("navegando: ", [new_url], { queryParams: this.createQueryDict(params)})
-      console.log("navegado a mi: ", url[0]+ '/' + url[1]+ '/' + url[2]
-        + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id')
       this.router.navigate(
           [new_url],
-          { queryParams: this.createQueryDict(params)});//{'rdf:employmentRate xsd:string' : '"75.4"'}});
+          { queryParams: this.createQueryDict(params)});
     }
   }
 
   createQueryDict(params: ParamMap) {
-    var dict = {};
+    const dict = {};
     for (const key of params.keys){
       dict[key] = params.get(key);
     }
@@ -430,6 +399,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isChartRepresentable(descriptions: Description[]){
+    //todo quitar todo y solo contar si hay facetas numericas
     //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical (or time) data.
     const axesClassification = {};
     const numericalClassification = {};
@@ -441,20 +411,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.possiblevalues = this.detectNumericals(numericalClassification);
 
     this.urlAxes();
-    //tiene que haber numericals, no vale que haya fechas y no valores numericos a representar
-    //aceptamos solo marcar puntos en el mapa
     return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0 //|| this.possiblePoints.length > 0)
-  }
-
-  detectTimeStamp(numericalClassification) {
-    //TODO: useless
-    const count = [];
-    for(const attribute in numericalClassification) {
-      if (numericalClassification[attribute] == ChartRole.TimeStamp){
-        count.push(attribute)
-      }
-    }
-    return count;
   }
 
   urlAxes() : void {
@@ -478,13 +435,12 @@ export class ListFacetComponent implements OnInit, OnDestroy {
         returnNums.push([attribute, this.extractFromURI(attribute)]);
       }
     }
-    console.log("original: ", returnNums)
     return returnNums;
   }
 
   detectAxes(top, axesClassification){
-    var returnAxes = [];
-    for (var attribute in axesClassification){
+    const returnAxes = [];
+    for (const attribute in axesClassification){
       if (axesClassification[attribute] == top){
         returnAxes.push([attribute, this.extractFromURI(attribute)]);
       }
@@ -522,11 +478,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
-  //todo: useless, lo hago con las facetas al final
-  isTimeStamp(string): Boolean {
-    return string == "https://saref.etsi.org/core/hasTimestamp";
-  }
-
   isNumerical(string){
     //todo maybe useless?
     return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
@@ -536,6 +487,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.numericalInstancesInit = init;
     this.numericalInstancesEnd  = end;
     this.possibleTimes = []
+    //todo this.possiblePoints = [] ??
     //this.possibleNumericals = []
     this.ngOnInit();
   }
