@@ -14,7 +14,6 @@ import { Value } from '../../description/value';
 import { Range } from '../../range/range';
 import { TranslateService } from '@ngx-translate/core';
 import { RangeValue } from '../../range/rangeValue';
-import { ChartRole } from './chartRoleClassifier';
 
 @Component({
   selector: 'app-list-facet',
@@ -306,7 +305,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.possiblePoints = tmpPoints
     if (this.possiblePoints.length > 0) {
       this.possibleMap = true
-      // todo: no se si habra que ponerlo a falso en algun momento
     }
   }
 
@@ -352,6 +350,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   navigateMap() {
+    this.dataProcessed = true;
     this.defaultMap = true;
     const url = this.route.snapshot.url.toString().split(',');
     const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
@@ -399,7 +398,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   }
 
   isChartRepresentable(descriptions: Description[]){
-    //todo quitar todo y solo contar si hay facetas numericas
     //The conditions for being represented in a chart are: Having 2 axes and at least one property of numerical (or time) data.
     const axesClassification = {};
     const numericalClassification = {};
@@ -408,7 +406,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       this.chartRoleClassifier(descriptions[i], axesClassification, numericalClassification);
     }
     this.possibleaxes   = this.detectAxes(i, axesClassification);
-    this.possiblevalues = this.detectNumericals(numericalClassification);
 
     this.urlAxes();
     return this.possibleaxes.length >= 2 && this.possibleNumericals.length > 0 //|| this.possiblePoints.length > 0)
@@ -427,16 +424,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
-  detectNumericals(numericalClassification){
-    //todo: maybe useless?
-    const returnNums = [];
-    for (const attribute in numericalClassification){
-      if (numericalClassification[attribute] == ChartRole.NumericalValue){
-        returnNums.push([attribute, this.extractFromURI(attribute)]);
-      }
-    }
-    return returnNums;
-  }
 
   detectAxes(top, axesClassification){
     const returnAxes = [];
@@ -461,7 +448,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
 
   //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
-    //todo: maybe useless?
     const json_object = JSON.parse(json_input.asJsonLd());
     for (const attribute in json_object){
       if (!background_axes[attribute]){
@@ -469,26 +455,15 @@ export class ListFacetComponent implements OnInit, OnDestroy {
       } else if (background_axes[attribute]){
         background_axes[attribute] += 1;
       }
-
-      if(this.isNumerical(json_object[attribute]) && background_numerical[attribute] != ChartRole.Nothing) {
-        background_numerical[attribute] = ChartRole.NumericalValue;
-      } else if (!this.isNumerical(json_object[attribute])) {
-        background_numerical[attribute] = ChartRole.Nothing;
-      }
     }
   }
 
-  isNumerical(string){
-    //todo maybe useless?
-    return (!isNaN(Number(this.getValue(string)).valueOf()) && string != null ) || this.getValue(string) == ": ";
-  }
 
   changeChartPage(init: number, end: number){
     this.numericalInstancesInit = init;
     this.numericalInstancesEnd  = end;
     this.possibleTimes = []
-    //todo this.possiblePoints = [] ??
-    //this.possibleNumericals = []
+    this.possiblePoints = []
     this.ngOnInit();
   }
 

@@ -79,7 +79,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(this.defaultMap) {
-      this.type = ChartType.Map // todo  no se por que no funciona
+      // esto deberia ser para generar la vista view on map automaticamente
+      this.type = ChartType.Map
       this.mapType = true
       this.createMapChart()
     }
