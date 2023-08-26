@@ -1,6 +1,7 @@
 import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Description} from '../../description/description';
 import {ChartType} from 'angular-google-charts';
+import { UriUtils } from '../../shared/uriutils';
 
 @Component({
   selector: 'app-chart-representation',
@@ -451,7 +452,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   createDataFrame() {
     this.column_index = this.createColumnIndex();
     const dataframe: any[][][] = this.initialize_array();
-
+    if (!this.resources) return;
     for (let i = 0; i < this.resources.length; i++) {
       const resource = JSON.parse(this.resources[i].asJsonLd());
       let column = this.getValue(resource[this.columns]);
@@ -469,6 +470,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   switchData(new_layer: string) {
+    if (!this.numerical_values[this.layer]) return;
     this.layer = this.numerical_values.indexOf(new_layer);
     this.tag_chart = this.numerical_values_input[this.layer][1]
     if (this.is_correlation_chart) {
@@ -589,8 +591,8 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
   }
 
   createColumnIndex() {
-    let index: string[];
-    index = [];
+    let index: string[] = [];
+    if (!this.resources) return index;
     for (let i = 0; i < this.resources.length; i++) {
       const resource = JSON.parse(this.resources[i].asJsonLd());
       if (!index.includes(this.getValue(resource[this.columns]))) {
@@ -609,7 +611,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
       return json_object[0]["@value"];
     }
     if (json_object[0]["@id"]) {
-      return json_object[0]["@id"];
+      return UriUtils.localName(json_object[0]["@id"]);
     }
     if (json_object[0]) {
       return json_object[0];
@@ -619,6 +621,7 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
 
   extractFromURI(uri: string): string {
     let name = "";
+    if (!uri) return undefined;
     for (let i = (uri.length - 1); i >= 0; i--) {
       if (uri[i] == "@" || uri[i] == "/" || uri[i] == "#") {
         break;

@@ -39,7 +39,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   showFacets: boolean;
   showDetails = false;
 
-  possibleRepresentation = false;
+  chartable = false;
   //to show a message when entities are being processed
   dataProcessed = false;
   //to check if timeline may be available
@@ -64,7 +64,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
   display = "none";
 
   numericalInstancesInit = 1;
-  numericalInstancesEnd  = 40;
+  numericalInstancesEnd  = 100;
 
   constructor(
     private router: Router,
@@ -266,7 +266,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
           new Map([...linkedResourcesLabels, ...Description.getLabels(instances)]);
           if (instances['@graph']) {
             resources = Description.getResourcesOfType(instances, this.datasetClass.uri, this.labels);
-            this.possibleRepresentation = this.isChartRepresentable(resources);
+            this.chartable = this.isChartRepresentable(resources);
             this.dataProcessed = true;
 
             this.allResources = resources;
@@ -464,6 +464,7 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     this.numericalInstancesEnd  = end;
     this.possibleTimes = []
     this.possiblePoints = []
+    this.allResources = undefined;
     this.ngOnInit();
   }
 

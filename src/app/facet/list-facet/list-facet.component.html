@@ -3,20 +3,20 @@
   <div id="facets" class="col-md-4 m-0">
     <h5 class="p-1">{{ 'search.facets' | translate }}
       <span *ngIf="retrievedFacets > 0">
-        <span class="badge badge-warning badge-pill">{{retrievedFacets}}</span>
+        <span class="badge text-bg-warning rounded-pill badge-pill">{{retrievedFacets}}</span>
         <a *ngIf="retrievedFacets < datasetClass.facetsCount" class="badge" [routerLink]=""
             (click)="loadAllFacets()" title="Load all facets"> of {{datasetClass.facetsCount}}</a>
       </span>
-      <span *ngIf="retrievedFacets === 0" class="badge badge-danger badge-pill">{{ 'search.no-facets' | translate }}</span>
-      <span *ngIf="retrievedFacets === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
-      <span class="d-block d-md-none d-lg-none d-xl-none float-right">
-        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
-        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
+      <span *ngIf="retrievedFacets === 0" class="badge text-bg-danger rounded-pill badge-pill">{{ 'search.no-facets' | translate }}</span>
+      <span *ngIf="retrievedFacets === undefined" class="badge text-bg-warning rounded-pill badge-pill">{{ 'search.loading' | translate }}</span>
+      <span class="d-block d-md-none d-lg-none d-xl-none float-end">
+        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ms-1"></span></a>
+        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ms-1"></span></a>
       </span>
     </h5>
     <div class="card facet p-2 mb-2">
       <div class="input-group">
-        <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #search
+        <input id="search" name="search" type="text" class="ps-3 form-control form-control-sm" #search
                placeholder="{{ 'search.facet-search' | translate }}" (keyup.enter)="filterContains(search)"/>
         <div class="input-group-append">
           <button class="btn btn-sm btn-secondary" type="button" (click)="filterContains(search)">
@@ -32,72 +32,33 @@
   </div>
 
   <div id="instances" class="col-md-8 m-0">
-    <span *ngIf="!chartRepresentation">
+    <div *ngIf="!chartRepresentation">
       <h5 class="p-1">{{ 'search.Instances' | translate }}
-        <span *ngIf="filteredInstances > 0" class="badge badge-warning badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
-        <span *ngIf="filteredInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-instances' | translate }}</span>
-        <span *ngIf="filteredInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
-        <div style="float: right;">
-          <p>
-            <span *ngIf="!dataProcessed">
-              <b style="margin-right: 0.5em;">Processing data...</b>
-            </span>
-
-            <span *ngIf="possibleRepresentation, else elseblock">
-              <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="openModal()">Chart View</button>
-
-            </span>
-            <ng-template #elseblock>
-              <span *ngIf="!dataProcessed || !possibleMap, else elseblock2">
-                <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm">Chart View not available</button>
-               </span>
-              <ng-template #elseblock2>
-                <button type="button" style="margin-right: 0.5em;" class="btn btn-primary btn-sm" (click)="navigateMap()">View on Map</button>
-              </ng-template>
-            </ng-template>
-
-
-            <span *ngIf="!showDetails">
-              <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Show Details</button>
-            </span>
-            <span *ngIf="showDetails">
-              <button type="button" (click)="changeDetails()" class="btn btn-primary btn-sm">Hide Details</button>
-            </span>
-          </p>
-          <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title">Select the attributes that will work as axes:</h6>
-                      <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                  <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
-                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
-                  </select>
-                  <div style="margin-bottom: 0.2em;"></div>
-                  <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
-                    <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
-                  </select>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-link" (click)="createDataFrame()">Create Charts</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <span *ngIf="filteredInstances > 0" class="badge text-bg-warning rounded-pill badge-pill">{{filteredInstances}}/{{totalInstances}}</span>
+        <span *ngIf="filteredInstances === 0" class="badge text-bg-danger rounded-pill badge-pill">{{ 'search.no-instances' | translate }}</span>
+        <span *ngIf="filteredInstances === undefined" class="badge text-bg-warning rounded-pill badge-pill">{{ 'search.loading' | translate }}</span>
+        <span style="float: right;">
+          <span *ngIf="chartable, else elseblock" style="cursor: pointer;" class="badge text-bg-primary fw-normal ms-1"
+                (click)="openModal()">Charts</span>
+          <ng-template #elseblock>
+            <span *ngIf="possibleMap" style="cursor: pointer;" class="badge text-bg-primary fw-normal ms-1"
+                  (click)="navigateMap()">Map</span>
+          </ng-template>
+          <span *ngIf="!showDetails" style="cursor: pointer;" class="badge text-bg-primary fw-normal ms-1"
+                (click)="changeDetails()">Details</span>
+          <span *ngIf="showDetails" style="cursor: pointer;" class="badge text-bg-primary fw-normal ms-1"
+                (click)="changeDetails()">Hide Details</span>
+        </span>
       </h5>
-      <div *ngIf="resources === undefined" id="loading" class="text-center mb-3">
+
+      <div *ngIf="resources === undefined" id="loading" class="position-relative start-50 mb-3">
         <div id="spinner"></div>
       </div>
-      <br>
-      <div *ngFor="let resource of resources">
 
+      <div *ngFor="let resource of resources">
         <app-description [datasetId]="datasetId" [description]="resource" [details]="false"
                          [anonDescriptions]="anonResources" [labels]="labels"></app-description>
       </div>
-
       <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize"
                       [collectionSize]="filteredInstances" [rotate]="true" [maxSize]="5"
                       [directionLinks]="false" size="sm"
@@ -105,46 +66,55 @@
       <p *ngIf="totalInstances && filteredInstances" i18n class="text-center">
         {{ 'search.showing' | translate }} {{resources?.length}} {{ 'search.outof' | translate }} { filteredInstances, plural,
         =1 {1 instance} other { {{filteredInstances}} {{ 'search.instances' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
-    </span>
-    <span *ngIf="chartRepresentation">
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':display}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Select the attributes that will work as axes:</h6>
+            <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <select class="form-select" [(ngModel)]="selectedAxe1" aria-label="Default select example" id="select-algo">
+              <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+            </select>
+            <div style="margin-bottom: 0.2em;"></div>
+            <select class="form-select" [(ngModel)]="selectedAxe2" aria-label="Default select example" id="select-algo">
+              <option *ngFor="let axe of possibleaxes" value="{{axe[0]}}"> {{ axe[1] }} </option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link" (click)="createDataFrame()">Create Charts</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="chartRepresentation">
       <h5 class="p-1">Chart Representation
         <div style="float: right;">
           <button type="button" (click)="goToInstancesMode()" class="btn btn-primary btn-sm">Instances Mode</button>
         </div>
       </h5>
-
-      <app-chart-representation  [rows]="selectedAxe1" [columns]="selectedAxe2"
+      <app-chart-representation [rows]="selectedAxe1" [columns]="selectedAxe2"
                                 [resources]="allResources" [numerical_values_input]="possibleNumericals"
-                                [possibleTimes]="possibleTimes" [possiblePoints]="possiblePoints" [defaultMap]="defaultMap"
-      ></app-chart-representation>
-
-
-      <br>
-      <p i18n class="text-center">
-        Representing {{ allResources.length }} out of {{ totalInstances }} instances.
-        <br>
-        <small><i>Introduce the range of instances to represent or represent them all</i></small> <span type="submit" (onclick)="changeChartPage(1, 500)">  </span>.
+                                [possibleTimes]="possibleTimes" [possiblePoints]="possiblePoints" [defaultMap]="defaultMap">
+      </app-chart-representation>
+      <p *ngIf="totalInstances && filteredInstances" i18n class="text-center mt-5">
+        {{ 'search.showing' | translate }} {{allResources?.length}} {{ 'search.outof' | translate }} { filteredInstances, plural,
+        =1 {1 instance} other { {{filteredInstances}} {{ 'search.instances' | translate }}} } {{ 'search.filter' | translate }} {{totalInstances}}</p>
+      <p class="text-center">
+        <small><i>Range of instances to display</i></small>.
       </p>
-        <form class="row" style="margin-left: 25%; margin-right: 25%;"> <!-- (ngSubmit)="onSubmit(form_min.value, form_max.value)"> -->
-          <div class="col">
-            <input class="form-control form-control-sm" type="number" value="1" placeholder="" aria-label=".form-control-sm example" #form_min>
-          </div>
-          <div class="col">
-            <input class="form-control form-control-sm" type="number" placeholder="{{allResources.length}}" aria-label=".form-control-sm example" #form_max>
-          </div>
+        <div class="ps-5 pe-5 row">
+          <input class="form-control form-control-sm col me-1 text-center" type="number" min="1" value="1" #form_min>-
+          <input class="form-control form-control-sm col ms-1 text-center" type="number" value="{{allResources?.length}}" #form_max>
+          <button type="submit" class="btn btn-primary btn-sm col ms-4" (click)="changeChartPage(form_min.value, form_max.value )">Show</button>
+          <button type="submit" class="btn btn-primary btn-sm col ms-2" (click)="changeChartPage(form_min.value, filteredInstances )">All</button>
+        </div>
+    </div>
 
-          <div class="col">
-            <button type="submit" style="width: auto;" class="btn btn-primary btn-sm" (click)="changeChartPage(form_min.value, form_max.value )">Get Data!</button>
-          </div>
-          <div class="col">
-            <button type="submit" class="btn btn-primary btn-sm" (click)="changeChartPage(form_min.value, totalInstances )">All Data!</button>
-          </div>
-        </form>
-
-
-    </span>
   </div>
-
-
 
 </div>
