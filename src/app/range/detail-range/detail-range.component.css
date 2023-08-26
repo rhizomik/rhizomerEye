@@ -1,3 +1,8 @@
+.value {
+  font-size: small;
+  cursor: pointer;
+}
+
 ::ng-deep .range-slider {
 }
 

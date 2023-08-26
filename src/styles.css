@@ -34,3 +34,7 @@
 p {
   text-align: justify !important
 }
+
+a {
+  text-decoration: none;
+}

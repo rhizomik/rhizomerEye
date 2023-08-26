@@ -18,7 +18,6 @@ import { NetworkComponent } from './class/network/network.component';
 import { ResourceComponent } from './resource/resource.component';
 import { LoginFormComponent } from './login-basic/login-form.component';
 import { SearchComponent } from './search/search.component';
-import { ChartRepresentationComponent } from './facet/chart-representation/chart-representation.component';
 
 const routes: Routes = [
   { path: 'datasets/new', component: CreateDatasetComponent, canActivate: [LoggedInGuard] },

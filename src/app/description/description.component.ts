@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Description } from './description';
 import { UriUtils } from '../shared/uriutils';
 import { ActivatedRoute, Router } from '@angular/router';

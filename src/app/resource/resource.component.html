@@ -1,6 +1,6 @@
 <div id="describe" class="row">
   <div *ngIf="loading" class="col-12 m-0">
-    <h1 class="badge badge-warning badge-pill">Loading...</h1>
+    <h1 class="badge text-bg-warning rounded-pill badge-pill">Loading...</h1>
   </div>
 
   <div id="metadata" *ngIf="!loading && resource && resource['@id']"
@@ -14,8 +14,8 @@
   </div>
 
   <div id="incoming" *ngIf="!loading && incomings && incomings.length" class="col-md-3 order-md-12 m-0 small">
-    <h5 class="p-1">{{ 'search.facets' | translate }} <span class="badge badge-warning badge-pill">{{incomings.length}}</span>
-      <span class="d-block d-md-none d-lg-none d-xl-none float-right">
+    <h5 class="p-1">{{ 'search.facets' | translate }} <span class="badge text-bg-warning rounded-pill badge-pill">{{incomings.length}}</span>
+      <span class="d-block d-md-none d-lg-none d-xl-none float-end">
         <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle"></span></a>
         <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle"></span></a>
       </span>
@@ -36,7 +36,7 @@
 </div>
 
 <div id="edit" class="row">
-  <div class="col-12 text-right">
+  <div class="col-12 text-end">
     <i class="resource-btn fa fa-pencil-square-o" [routerLink]="'../edit-resource'" [queryParams]="{uri: resourceUri}"
        [state]="{ 'resource': resource }"></i>
   </div>

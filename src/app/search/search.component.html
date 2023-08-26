@@ -2,16 +2,16 @@
 
   <div id="facets" class="col-md-4 m-0">
     <h5 class="p-1">{{ 'search.facets' | translate }}
-      <span class="badge badge-warning badge-pill">1</span>
-      <span class="d-block d-md-none d-lg-none d-xl-none float-right">
-        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ml-1"></span></a>
-        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ml-1"></span></a>
+      <span class="badge text-bg-warning rounded-pill badge-pill">1</span>
+      <span class="d-block d-md-none d-lg-none d-xl-none float-end">
+        <a *ngIf="!showFacets" (click)="showFacets = true"><span class="fa fa-plus-circle ms-1"></span></a>
+        <a *ngIf="showFacets" (click)="showFacets = false"><span class="fa fa-minus-circle ms-1"></span></a>
       </span>
     </h5>
     <div [ngClass]="{'d-none d-sm-none d-md-block': !showFacets, 'd-block': showFacets}">
       <div class="card facet p-2 mb-2">
         <div class="input-group">
-          <input id="search" name="search" type="text" class="pl-3 form-control form-control-sm" #inputText
+          <input id="search" name="search" type="text" class="ps-3 form-control form-control-sm" #inputText
                  [ngModel]="currentText()" placeholder="Search all..." (keyup.enter)="searchContains(inputText.value)"/>
           <div class="input-group-append">
             <button class="btn btn-sm btn-secondary" type="button" (click)="searchContains(inputText.value)">
@@ -26,9 +26,9 @@
 
   <div id="instances" class="col-md-8 m-0">
     <h5 class="p-1">{{ 'search.Instances' | translate }}
-      <span *ngIf="totalInstances > 0" class="badge badge-warning badge-pill">{{totalInstances}}</span>
-      <span *ngIf="totalInstances === 0" class="badge badge-danger badge-pill">{{ 'search.no-facets' | translate }}</span>
-      <span *ngIf="totalInstances === undefined" class="badge badge-warning badge-pill">{{ 'search.loading' | translate }}</span>
+      <span *ngIf="totalInstances > 0" class="badge text-bg-warning rounded-pill badge-pill">{{totalInstances}}</span>
+      <span *ngIf="totalInstances === 0" class="badge text-bg-danger rounded-pill badge-pill">{{ 'search.no-facets' | translate }}</span>
+      <span *ngIf="totalInstances === undefined" class="badge text-bg-warning rounded-pill badge-pill">{{ 'search.loading' | translate }}</span>
     </h5>
     <div *ngIf="resources === undefined && totalInstances !== 0" id="loading" class="text-center mb-3">
       <div id="spinner"></div>
