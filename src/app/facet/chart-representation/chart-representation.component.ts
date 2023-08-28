@@ -177,6 +177,9 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     for (let i = 0; i < this.resources.length; i++) {
       const property = this.resources[i].properties
       const [lat, long] = this.findCoords(property)
+      if (lat == undefined || long == undefined) {
+        continue;
+      }
       if(this.numerical_values_input.length == 0) {
         //no hay numericos, pondremos la uri
         showUri = true;
@@ -194,18 +197,14 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     const type = this.possiblePoints[0][1]
     for (let i = 0; i < property.length; i++) {
       if (property[i].label.includes(type)) {
-        const coords: string = property[i].values[1].value
-        const [long, lat] = coords.slice(6, -1).split(" ")
+        const coords: string = property[i].values[0].value
         if (coords.includes("https")) {
-          const coords = property[i].values[0].value
-          const [long, lat] = coords.slice(6, -1).split(" ")
-          return [Number(lat), Number(long)]
+          return [];
         }
+        const [long, lat] = coords.slice(6, -1).split(" ")
         return [Number(lat), Number(long)]
       }
     }
-
-
   }
 
   timelineChart() {
@@ -241,7 +240,6 @@ export class ChartRepresentationComponent implements OnInit, OnChanges {
     this.chartData.options = {
       timeline: {colorByRowLabel: true}
     }
-
   }
 
   existUndefined(name, content, from, to) {
