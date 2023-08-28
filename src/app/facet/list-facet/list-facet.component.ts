@@ -356,12 +356,11 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     const new_url = url[0]+ '/' + url[1]+ '/' + url[2]
       + '/charts:' + this.extractFromURI(this.possiblePoints[0][1]) + '&id'
     this.router.navigate([new_url])
-
   }
 
   createDataFrame() {
     if (this.selectedAxe1 == this.selectedAxe2 || this.selectedAxe1 == null || this.selectedAxe2 == null){
-      alert("Not OK!")
+      alert("Error creating data frame based on the selected axes")
     } else {
       this.chartRepresentation = true;
       const url = this.route.snapshot.url.toString().split(',');
@@ -424,7 +423,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     }
   }
 
-
   detectAxes(top, axesClassification){
     const returnAxes = [];
     for (const attribute in axesClassification){
@@ -446,7 +444,6 @@ export class ListFacetComponent implements OnInit, OnDestroy {
     return name;
   }
 
-  //                  resources,  ............................, numericalClassification: {}
   chartRoleClassifier(json_input: Description, background_axes, background_numerical){
     const json_object = JSON.parse(json_input.asJsonLd());
     for (const attribute in json_object){
