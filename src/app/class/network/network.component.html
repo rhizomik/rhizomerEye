@@ -5,10 +5,10 @@
       <span class="fa fa-info-circle"></span> {{ 'overview.details' | translate }}</button>
   </div>
   <div class="col-md form-group input-group">
-    <input id="search" type="text" class="form-control" #text placeholder="{{ 'overview.searchAll' | translate }}"
-           (keyup.enter)="search(text.value)"/>
+    <input id="search" type="text" class="form-control" #text
+           placeholder="{{ 'overview.searchAll' | translate }}" (keyup.enter)="search(text.value)"/>
     <div class="input-group-append">
-      <button class="btn btn-sm btn-secondary" type="button" (click)="search(text.value)">
+      <button class="btn btn-secondary" type="button" (click)="search(text.value)">
         <span class="fa fa-search"></span>
       </button>
     </div>
@@ -19,17 +19,8 @@
            placeholder="{{ 'overview.searchClasses' | translate }}"
            [class.loading]="searching" (selectItem)="browse($event.item)"/>
     <div class="invalid-feedback" *ngIf="searchFailed">{{ 'overview.sorry' | translate }}</div>
-  </div>
-</div>
-
-<div class="row" style="margin-top: -20px">
-  <div *ngIf="isLoggedIn()" class="col-sm-3 pull-left"></div>
-  <div class="col-sm">&nbsp;</div>
-  <div class="col-sm-3">
-    <small class="form-text text-muted" *ngIf="typeahead.value.length > 0 && typeahead.value.length < 3">
-      {{ 'overview.three-ch' | translate }}</small>
-    <small class="form-text text-muted" *ngIf="typeahead.value.length > 2 && emptyAutocomplete && !searching">
-      {{ 'overview.no-classes' | translate }}</small>
+    <div class="invalid-feedback" *ngIf="typeahead.value.length > 0 && typeahead.value.length < 3">{{ 'overview.three-ch' | translate }}</div>
+    <div class="invalid-feedback" *ngIf="typeahead.value.length > 2 && emptyAutocomplete && !searching">{{ 'overview.no-classes' | translate }}</div>
   </div>
 </div>
 
@@ -45,10 +36,10 @@
   <div class="col alert-danger m-3 text-center" >{{ 'overview.no-class-instances' | translate }}</div>
 </div>
 
-<svg style="width: 100%; height: auto; margin-top: -58px"></svg>
+<svg style="width: 100%; height: auto"></svg>
 
-<div *ngIf="links !== undefined" style="margin-top: -50px">
-    <div class="fa fa-minus-square me-1" (click)="contract()"></div>
+<div *ngIf="links !== undefined" style="margin-top: -75px">
+    <div class="fa fa-minus-square mr-1" (click)="contract()"></div>
     <div class="fa fa-plus-square" (click)="expand()"></div>
 </div>
 
