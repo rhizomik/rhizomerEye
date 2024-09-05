@@ -46,3 +46,11 @@ circle {
   stroke: white;
   stroke-width: 2;
 }
+
+#search {
+  height: fit-content;
+}
+
+.invalid-feedback {
+  display: block;
+}

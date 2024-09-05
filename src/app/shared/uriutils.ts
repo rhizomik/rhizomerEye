@@ -3,6 +3,7 @@ import { Value } from '../description/value';
 export class UriUtils {
 
   static localName(uri: string): string {
+    uri = decodeURI(uri);
     if (uri.endsWith('/')) {
       uri = uri.substring(0, uri.length - 1);
     }

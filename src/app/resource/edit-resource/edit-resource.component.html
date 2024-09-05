@@ -2,7 +2,7 @@
 
   <div id="localmetadata-edit" *ngIf="resource && resource['@id']"
        [ngClass]="{'col-md-4 m-0': resource.anonBody, 'col-12 m-0': !resource.anonBody}">
-    <div class="text-right" *ngIf="!resource.anonBody">
+    <div class="text-end" *ngIf="!resource.anonBody">
       <i class="resource-btn fa fa-close" [routerLink]="'../resource'" [queryParams]="{uri: resourceUri}"></i>
       <i class="resource-btn fa fa-save" (click)="saveContent()"></i>
     </div>
@@ -10,7 +10,7 @@
   </div>
 
   <div id="localcontent-edit" *ngIf="resource && resource.anonBody" class="col-md-8 m-0">
-    <div class="text-right">
+    <div class="text-end">
       <i class="resource-btn fa fa-refresh" (click)="jsonld = resource.asJsonLd()"></i>
       <i class="resource-btn fa fa-close" [routerLink]="'../resource'" [queryParams]="{uri: resourceUri}"></i>
       <i class="resource-btn fa fa-save" (click)="saveContent()"></i>

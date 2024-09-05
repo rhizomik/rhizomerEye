@@ -3,18 +3,18 @@
 <button (click)="useLanguage('ca')">ca</button>
 <button (click)="useLanguage('es')">es</button>
 -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ps-2 pe-2">
   <a class="navbar-left">
     <img alt="Rhizomer Logo" class="pull-left" style="max-width:45px" src="assets/rhizomikEye.svg"/>
   </a>
-  <a class="navbar-brand" [routerLink]="['']">Rhizomer<b>Eye</b></a>
+  <a class="navbar-brand ms-1" [routerLink]="['']">Rhizomer<b>Eye</b></a>
   <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed"
           [attr.aria-expanded]="!isCollapsed" aria-controls="navbarContent" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarContent" [ngbCollapse]="isCollapsed">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav me-auto">
       <li class="nav-item" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }">
         <a class="nav-link" [routerLink]="['/about']">{{ 'navbar.about' | translate }}</a>
       </li>

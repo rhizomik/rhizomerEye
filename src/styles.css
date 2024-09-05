@@ -35,6 +35,10 @@ p {
   text-align: justify !important
 }
 
+a {
+  text-decoration: none;
+}
+
 /*==============================================================================================*/
 body {
   font-family: "Open Sans", "Trebuchet MS", sans-serif;

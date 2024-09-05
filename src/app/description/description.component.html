@@ -2,17 +2,15 @@
   <img *ngIf="description.depiction.length > 0" class="card-img-top"
        style="cursor: pointer" [class.expanded]="depictionExpanded" (click)="clickDescriptionDepiction()"
        [src]="description.depiction[0].asString()" alt="resource depiction">
-  <div class="card-header">
-    <p class="card-text" [class.reverse-text-truncate]="!description.label">
-      <b *ngIf="!description.isAnon()" [title]="description['@id']">
-        <a [routerLink]="[resource]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
-      </b>
-      <b *ngIf="description.isAnon() && description.label">{{description.label}}</b>
-      <span *ngFor="let type of description['@type']" [title]="type.uri"
-            class="badge badge-secondary badge-pill pull-right mt-1" (click)="browseClass(type.uri)" style="cursor: pointer">
-        {{localName(type.label)}}
-      </span>
-    </p>
+  <div class="card-header" [class.reverse-text-truncate]="!description.label">
+    <b *ngIf="!description.isAnon()" [title]="description['@id']">
+      <a [routerLink]="[resource]" [queryParams]="{uri: description['@id']}">{{description.label || description['@id']}}</a>
+    </b>
+    <b *ngIf="description.isAnon() && description.label">{{description.label}}</b>
+    <span *ngFor="let type of description['@type']" [title]="type.uri"
+          class="badge text-bg-secondary rounded-pill badge-pill pull-right mt-1" (click)="browseClass(type.uri)" style="cursor: pointer">
+      {{localName(type.label)}}
+    </span>
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item small {{property.uri}}" *ngFor="let property of description.properties">

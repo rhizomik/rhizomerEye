@@ -30,6 +30,7 @@ const routes: Routes = [
   { path: 'datasets/:did/:cid/edit-resource', loadChildren: () =>
       import('./resource/edit-resource/edit-resource.module').then(m => m.EditResourceModule) },
   { path: 'datasets/:did/:cid', component: ListFacetComponent },
+  { path: 'datasets/:did/:cid/:chart', component: ListFacetComponent },
   { path: 'datasets/:did', component: WordCloudComponent },
   { path: 'datasets', component: ListDatasetComponent, canActivate: [LoggedInGuard] },
   { path: 'users/new', component: UserCreateComponent, canActivate: [AdministratorGuard] },
@@ -52,8 +53,8 @@ const routes: Routes = [
 
 export function nonStaticFiles(url: UrlSegment[]) {
   return url.length === 0 ||
-         ( !(url[0].path === 'html') && !(url[0].path === 'images') &&
-           !(url[0].path === 'ontologies') && !(url[0].path === '.well-known') ) ||
+         ( !(url[0].path === 'html') && !(url[0].path === 'images') && !(url[0].path === 'ontologies') &&
+           !(url[0].path === 'robots.txt') && !(url[0].path === '.well-known') ) ||
          ( (url[0].path === 'ontologies') && !url[url.length - 1].path.includes('.')) ?
          ({consumed: url}) : null;
 }

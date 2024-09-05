@@ -15,6 +15,14 @@ export class ClassService extends Rest2Service<Class> {
     super('datasets', 'classes', http);
   }
 
+  getDetails(did: string, cid: string, filters: Filter[], page: number, pageSize: number): Observable<any> {
+    let params = Filter.toQuery(filters);
+    params = params.append('page', (page - 1).toString());
+    params = params.append('size', pageSize.toString());
+    return this.http.get<any>(
+      `${environment.API}/datasets/${did}/classes/${cid}/describe`, {params: params});
+  }
+
   getInstances(did: string, cid: string, filters: Filter[], page: number, pageSize: number): Observable<any> {
     let params = Filter.toQuery(filters);
     params = params.append('page', (page - 1).toString());
